@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Time Management 自测 · IB 升学资料库 v1.2</title>
+<style>
+:root {
+  --bg: #0e1116; --bg-elev: #161b22; --bg-card: #1c2128;
+  --border: #30363d; --text: #e6edf3; --text-dim: #8b949e; --text-mute: #6e7681;
+  --accent: #58a6ff; --gold: #d29922; --green: #3fb950; --red: #f85149; --orange: #ff8c42;
+  --mono: 'SF Mono', 'JetBrains Mono', 'Fira Code', Consolas, monospace;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', Roboto, sans-serif; font-size: 16px; line-height: 1.7; -webkit-font-smoothing: antialiased; }
+.container { max-width: 900px; margin: 0 auto; padding: 24px; }
+.hero { padding: 40px 0 24px; border-bottom: 1px solid var(--border); margin-bottom: 24px; }
+.hero h1 { font-size: clamp(24px, 4vw, 32px); font-weight: 800; background: linear-gradient(135deg, var(--accent) 0%, var(--gold) 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 6px; }
+.hero .subtitle { color: var(--text-dim); font-size: 15px; }
+.hero .meta { color: var(--text-mute); font-size: 12px; margin-top: 8px; font-family: var(--mono); }
+.back { display: inline-block; margin-bottom: 12px; padding: 5px 10px; background: var(--bg-elev); border: 1px solid var(--border); border-radius: 6px; color: var(--accent); font-size: 12px; text-decoration: none; }
+
+section { margin-bottom: 32px; }
+h2 { font-size: 20px; font-weight: 700; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 2px solid var(--border); }
+.lead { color: var(--text-dim); font-size: 14px; margin: 8px 0 16px; padding: 10px 14px; background: var(--bg-elev); border-left: 3px solid var(--accent); border-radius: 0 6px 6px 0; }
+
+.row { display: flex; align-items: center; gap: 12px; padding: 8px 0; border-bottom: 1px solid var(--border); }
+.row:last-child { border-bottom: none; }
+.row .label { flex: 0 0 180px; font-size: 14px; }
+.row .label .key { color: var(--text-mute); font-family: var(--mono); font-size: 12px; display: block; }
+.row input { flex: 0 0 80px; padding: 6px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 4px; color: var(--text); font-family: var(--mono); text-align: center; }
+.row .visual { flex: 1; height: 24px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 4px; position: relative; overflow: hidden; }
+.row .bar { height: 100%; transition: width 0.2s; }
+.row .ideal { position: absolute; right: 0; top: 0; bottom: 0; width: 2px; background: var(--gold); }
+
+button { padding: 8px 18px; background: var(--accent); color: var(--bg); border: none; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 14px; }
+button:hover { opacity: 0.9; }
+button.secondary { background: var(--bg-elev); color: var(--text); border: 1px solid var(--border); }
+
+.summary { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin: 16px 0; }
+.box { background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 12px; text-align: center; }
+.box .v { font-family: var(--mono); font-size: 24px; font-weight: 700; }
+.box .l { color: var(--text-mute); font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; }
+.box.good { border-color: var(--green); }
+.box.warn { border-color: var(--orange); }
+.box.bad { border-color: var(--red); }
+
+.report { background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 16px 20px; margin: 12px 0; }
+.report h3 { color: var(--accent); margin-bottom: 8px; font-size: 15px; }
+.report .item { padding: 6px 0; border-bottom: 1px dashed var(--border); font-size: 14px; }
+.report .item:last-child { border-bottom: none; }
+
+.warn { color: var(--red); }
+.ok { color: var(--green); }
+.dim { color: var(--text-dim); }
+
+.footer { margin-top: 48px; padding: 20px 0; border-top: 1px solid var(--border); color: var(--text-mute); font-size: 12px; font-family: var(--mono); text-align: center; }
+
+@media (max-width: 640px) {
+  .summary { grid-template-columns: repeat(2, 1fr); }
+  .row { flex-wrap: wrap; }
+  .row .label { flex: 0 0 100%; }
+}
+</style>
+</head>
+<body>
+<div class="container">
+<a href="index.html" class="back">← 返回主页</a>
+
+<header class="hero">
+  <h1>⏱ Time Management 自测</h1>
+  <div class="subtitle">G7 的一天 24 小时——3 位老师提"work management"问题,工具帮你诊断</div>
+  <div class="meta">IB 升学资料库 v1.2 · 工具 J · 2026-06-09</div>
+</header>
+
+<section>
+  <h2>输入:你 G7 的一天</h2>
+  <p class="lead">填入每天时间分配(小时,小数也 OK)。总和 = 24(否则分析会标红)。数据存 localStorage,可随时改。</p>
+  <div id="rows"></div>
+  <div style="margin: 16px 0; display: flex; gap: 12px; flex-wrap: wrap;">
+    <button onclick="analyze()">📊 分析</button>
+    <button class="secondary" onclick="loadPreset('g7')">📋 加载 G7 典型模板</button>
+    <button class="secondary" onclick="loadPreset('g10')">📋 加载 G10 备考模板</button>
+    <button class="secondary" onclick="clearAll()">🗑 清空</button>
+  </div>
+</section>
+
+<section id="summarySection" style="display:none;">
+  <h2>总览</h2>
+  <div class="summary">
+    <div class="box"><div class="v" id="sumTotal">0</div><div class="l">总时数</div></div>
+    <div class="box" id="boxStudy"><div class="v" id="sumStudy">0</div><div class="l">学习</div></div>
+    <div class="box" id="boxSleep"><div class="v" id="sumSleep">0</div><div class="l">睡眠</div></div>
+    <div class="box" id="boxSport"><div class="v" id="sumSport">0</div><div class="l">运动</div></div>
+  </div>
+</section>
+
+<section id="reportSection" style="display:none;">
+  <h2>诊断报告</h2>
+  <div id="reportContent"></div>
+</section>
+
+<section>
+  <h2>💡 优化策略(MYP 适用)</h2>
+  <div class="report">
+    <h3>睡眠 ≥ 8.5 小时(铁律)</h3>
+    <p>研究:7-9 年级睡眠 &lt; 8 小时 = 学术表现下降 15-20%。青春期生理需要 8.5-9.5 小时。G7 阶段 <strong>睡眠优先级 > 作业</strong>。</p>
+  </div>
+  <div class="report">
+    <h3>运动 ≥ 1.5 小时/天</h3>
+    <p>不只是体育课。Henry 游泳校队 2 小时/天 + 通勤 0.5 + 拉伸 0.5 = 3 小时。运动后学习效率提升 30%(认知科学)。</p>
+  </div>
+  <div class="report">
+    <h3>学习 3-4 小时/天(课后)</h3>
+    <p>G7 不需要"刷夜"。每晚 3-4 小时高效率学习(无手机)足够。<strong>质量 > 数量</strong>:番茄工作法 25min × 6 = 2.5h 有效学习。</p>
+  </div>
+  <div class="report">
+    <h3>DP 阶段(G11-G12)转换</h3>
+    <p>DP 阶段学习时间会升到 5-6 小时/天(HL 3 门 EE/IA),睡眠可能压缩到 7.5(权宜之计)。<strong>提前训练</strong>G7-G10 学会高效是 DP 期间的关键。</p>
+  </div>
+</section>
+
+<div class="footer">Hermes · IB 升学资料库 v1.2 · Module J · 工具存 localStorage</div>
+</div>
+
+<script>
+const SLOTS = [
+  { key: 'sleep', label: '睡眠', ideal: 9, color: 'var(--accent)', category: 'sleep' },
+  { key: 'school', label: '在校(课 + 自习)', ideal: 8, color: 'var(--text-dim)', category: 'study' },
+  { key: 'homework', label: '课后作业', ideal: 1.5, color: 'var(--green)', category: 'study' },
+  { key: 'reading', label: '阅读(中文/英文)', ideal: 0.75, color: 'var(--green)', category: 'study' },
+  { key: 'review', label: '复习/备考', ideal: 1, color: 'var(--green)', category: 'study' },
+  { key: 'amc', label: 'AMC/数学竞赛', ideal: 1, color: 'var(--gold)', category: 'study' },
+  { key: 'ftc', label: 'FTC/STEM 训练', ideal: 1.5, color: 'var(--gold)', category: 'study' },
+  { key: 'swim', label: '游泳(校队/训练)', ideal: 1.5, color: 'var(--orange)', category: 'sport' },
+  { key: 'sport_other', label: '其他运动', ideal: 0.5, color: 'var(--orange)', category: 'sport' },
+  { key: 'commute', label: '通勤(校车/班车)', ideal: 1, color: 'var(--text-mute)', category: 'other' },
+  { key: 'meal', label: '三餐 + 零食', ideal: 1.5, color: 'var(--text-mute)', category: 'other' },
+  { key: 'family', label: '家庭时间', ideal: 0.5, color: 'var(--text-mute)', category: 'other' },
+  { key: 'free', label: '自由/休息', ideal: 1, color: 'var(--text-mute)', category: 'other' },
+  { key: 'screen', label: '屏幕娱乐(手机/游戏)', ideal: 0.5, color: 'var(--red)', category: 'other' },
+  { key: 'other', label: '其他(洗澡/洗澡/杂事)', ideal: 1, color: 'var(--text-mute)', category: 'other' },
+];
+
+function buildRows() {
+  const container = document.getElementById('rows');
+  container.innerHTML = SLOTS.map(s => `
+    <div class="row">
+      <div class="label">${s.label}<span class="key">${s.key}</span></div>
+      <input type="number" step="0.25" min="0" max="24" data-key="${s.key}" data-category="${s.category}" oninput="update()">
+      <div class="visual"><div class="bar" data-bar="${s.key}" style="background:${s.color}"></div><div class="ideal" style="right:calc(${s.ideal}px * 0)"></div></div>
+    </div>
+  `).join('');
+  loadData();
+}
+
+function update() {
+  let total = 0;
+  SLOTS.forEach(s => {
+    const inp = document.querySelector(`input[data-key="${s.key}"]`);
+    const v = parseFloat(inp.value) || 0;
+    const bar = document.querySelector(`.bar[data-bar="${s.key}"]`);
+    // 24h = 100% width; 1h = 4.16% width; bar width = v/24*100%
+    bar.style.width = (v / 24 * 100) + '%';
+    total += v;
+  });
+  document.getElementById('sumTotal').textContent = total.toFixed(2);
+  document.getElementById('sumTotal').parentElement.className = 'box ' + (total === 24 ? 'good' : total > 24 ? 'bad' : 'warn');
+  // save
+  saveData();
+}
+
+function analyze() {
+  const data = {};
+  let study = 0, sleep = 0, sport = 0, total = 0;
+  SLOTS.forEach(s => {
+    const inp = document.querySelector(`input[data-key="${s.key}"]`);
+    const v = parseFloat(inp.value) || 0;
+    data[s.key] = v;
+    total += v;
+    if (s.category === 'study') study += v;
+    if (s.category === 'sleep') sleep = v;
+    if (s.category === 'sport') sport += v;
+  });
+  document.getElementById('sumStudy').textContent = study.toFixed(2);
+  document.getElementById('sumSleep').textContent = sleep.toFixed(2);
+  document.getElementById('sumSport').textContent = sport.toFixed(2);
+
+  // study box
+  const studyBox = document.getElementById('boxStudy');
+  studyBox.className = 'box ' + (study >= 4 && study <= 5 ? 'good' : study >= 3 ? 'warn' : 'bad');
+  const sleepBox = document.getElementById('boxSleep');
+  sleepBox.className = 'box ' + (sleep >= 8.5 ? 'good' : sleep >= 7.5 ? 'warn' : 'bad');
+  const sportBox = document.getElementById('boxSport');
+  sportBox.className = 'box ' + (sport >= 1.5 ? 'good' : sport >= 1 ? 'warn' : 'bad');
+
+  document.getElementById('summarySection').style.display = 'block';
+
+  // report
+  const report = [];
+  if (total !== 24) {
+    report.push(`<div class="report"><h3>⚠️ 总时数 = ${total.toFixed(2)} (不是 24)</h3><p class="warn">检查输入或加上 missing 块到"其他"。</p></div>`);
+  }
+
+  if (sleep < 8.5) {
+    report.push(`<div class="report"><h3>🔴 睡眠不足 (${sleep}h)</h3>
+      <p>7-9 年级 <strong>最低 8.5 小时</strong>,推荐 9 小时。低于 7.5 = 学术表现 -15%。</p>
+      <p>建议:把"屏幕娱乐"或"其他"时间往睡眠转移。</p>
+    </div>`);
+  } else if (sleep >= 9) {
+    report.push(`<div class="report"><h3>✅ 睡眠充足 (${sleep}h)</h3><p class="ok">完美。青春期需要 8.5-9.5 小时。</p></div>`);
+  }
+
+  if (sport < 1.5) {
+    report.push(`<div class="report"><h3>🟡 运动偏少 (${sport}h)</h3>
+      <p>每天 <strong>1.5-2 小时</strong> 是 IB 高中阶段的"下限"。运动后学习效率 +30%。</p>
+      <p>Henry 案例:游泳校队 2h + 通勤 0.5h = 2.5h 满足。G7 普通学生可以从 1h 起步。</p>
+    </div>`);
+  }
+
+  const screen = data['screen'] || 0;
+  if (screen > 1.5) {
+    report.push(`<div class="report"><h3>🔴 屏幕娱乐偏多 (${screen}h)</h3>
+      <p>每天 > 1.5 小时屏幕娱乐 = 注意力下降 + 睡眠推迟风险。</p>
+      <p>建议:周末可放宽,但<strong>平日 30 分钟内</strong>。</p>
+    </div>`);
+  }
+
+  if (study > 5.5) {
+    report.push(`<div class="report"><h3>🟡 学习时间过载 (${study}h)</h3>
+      <p>G7 不需要 5.5+ 小时学习。<strong>质量 > 数量</strong>:3.5h 番茄工作法 > 5.5h 拖延。</p>
+    </div>`);
+  } else if (study < 2.5) {
+    report.push(`<div class="report"><h3>🟡 学习时间不足 (${study}h)</h3>
+      <p>课后学习 &lt; 2.5h 在 G7 偏少。可能<strong>效率</strong>问题(在刷手机)而非时间不够。</p>
+    </div>`);
+  }
+
+  const amc = data['amc'] || 0;
+  const ftc = data['ftc'] || 0;
+  if (amc + ftc === 0 && total > 0) {
+    report.push(`<div class="report"><h3>💡 建议:加 1 项"竞赛"时间</h3>
+      <p>AMC / FTC / FRC / 写作 / 科研——大学申请要"sustained" 2 年+ 课外项目。</p>
+      <p>Henry 案例:AMC 1h/天 + FTC 周末集训 = 每周 7-10h。</p>
+    </div>`);
+  }
+
+  document.getElementById('reportContent').innerHTML = report.join('') || '<div class="report"><h3>✅ 看起来不错</h3><p>睡眠 + 运动 + 学习三大块平衡,继续保持。</p></div>';
+  document.getElementById('reportSection').style.display = 'block';
+  document.getElementById('reportSection').scrollIntoView({ behavior: 'smooth' });
+}
+
+function saveData() {
+  const data = {};
+  document.querySelectorAll('input[data-key]').forEach(inp => {
+    data[inp.dataset.key] = parseFloat(inp.value) || 0;
+  });
+  localStorage.setItem('time-mgmt-v1.2', JSON.stringify(data));
+}
+
+function loadData() {
+  const raw = localStorage.getItem('time-mgmt-v1.2');
+  if (!raw) return;
+  try {
+    const data = JSON.parse(raw);
+    for (const k of Object.keys(data)) {
+      const inp = document.querySelector(`input[data-key="${k}"]`);
+      if (inp && data[k] > 0) inp.value = data[k];
+    }
+    update();
+  } catch(e) {}
+}
+
+function loadPreset(type) {
+  const presets = {
+    g7: { sleep: 9, school: 8, homework: 1.5, reading: 0.5, review: 0.5, amc: 0.75, ftc: 1, swim: 1.5, sport_other: 0.25, commute: 0.5, meal: 1.5, family: 0.5, free: 0.5, screen: 0.25, other: 0.75 },
+    g10: { sleep: 8.5, school: 8, homework: 2, reading: 0.5, review: 1, amc: 1.5, ftc: 2, swim: 1.5, sport_other: 0.25, commute: 0.5, meal: 1.5, family: 0.5, free: 0.25, screen: 0.25, other: 0.75 }
+  };
+  const p = presets[type];
+  if (!p) return;
+  for (const k of Object.keys(p)) {
+    const inp = document.querySelector(`input[data-key="${k}"]`);
+    if (inp) inp.value = p[k];
+  }
+  update();
+}
+
+function clearAll() {
+  if (confirm('清空所有输入?')) {
+    localStorage.removeItem('time-mgmt-v1.2');
+    location.reload();
+  }
+}
+
+buildRows();
+</script>
+</body>
+</html>

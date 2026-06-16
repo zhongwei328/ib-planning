@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>兴趣地图 · G7 探索工具</title>
+<style>
+:root {
+  --bg: #0e1116;
+  --bg-elev: #161b22;
+  --bg-card: #1c2128;
+  --border: #30363d;
+  --text: #e6edf3;
+  --text-dim: #8b949e;
+  --text-mute: #6e7681;
+  --accent: #58a6ff;
+  --accent-2: #d2a8ff;
+  --gold: #d29922;
+  --green: #3fb950;
+  --red: #f85149;
+  --orange: #ff8c42;
+  --mono: 'SF Mono', 'JetBrains Mono', 'Fira Code', Consolas, monospace;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body {
+  background: var(--bg); color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+  font-size: 16px; line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+  scroll-behavior: smooth;
+}
+a { color: var(--accent); text-decoration: none; border-bottom: 1px dotted var(--accent); }
+a:hover { border-bottom-style: solid; }
+.container { max-width: 800px; margin: 0 auto; padding: 24px; }
+
+.hero { padding: 48px 0 32px; border-bottom: 1px solid var(--border); margin-bottom: 32px; }
+.hero h1 { font-size: clamp(26px, 4.5vw, 38px); font-weight: 800; letter-spacing: -0.02em;
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-2) 100%);
+  -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+  margin-bottom: 12px; }
+.hero .subtitle { color: var(--text-dim); font-size: 17px; }
+.hero .meta { color: var(--text-mute); font-size: 13px; margin-top: 12px; font-family: var(--mono); }
+
+/* 进度条 */
+.progress-bar {
+  position: sticky; top: 0; z-index: 20;
+  background: rgba(14,17,22,0.85); backdrop-filter: blur(10px);
+  padding: 12px 0; margin-bottom: 32px;
+  border-bottom: 1px solid var(--border);
+}
+.progress-track { height: 4px; background: var(--bg-elev); border-radius: 2px; overflow: hidden; }
+.progress-fill { height: 100%; background: linear-gradient(90deg, var(--accent) 0%, var(--accent-2) 100%);
+  width: 0%; transition: width 0.3s; }
+.progress-text { color: var(--text-mute); font-size: 12px; font-family: var(--mono); text-align: right; margin-top: 4px; }
+
+/* 章节 */
+section { margin-bottom: 48px; }
+section h2 { font-size: clamp(20px, 3vw, 26px); font-weight: 700; margin-bottom: 8px; padding-bottom: 12px;
+  border-bottom: 2px solid var(--border); display: flex; align-items: center; gap: 10px; }
+section h2 .num { font-family: var(--mono); font-size: 16px; color: var(--text-mute); font-weight: 400; }
+section h3 { font-size: 17px; font-weight: 600; margin: 24px 0 10px; color: var(--text); }
+section p { margin-bottom: 14px; }
+.lead { color: var(--text-dim); font-size: 15px; margin: 0 0 24px; padding: 12px 16px;
+  background: var(--bg-elev); border-left: 3px solid var(--accent); border-radius: 0 6px 6px 0; }
+
+/* 题目 */
+.q { background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px;
+  padding: 18px 20px; margin-bottom: 14px; }
+.q-label { color: var(--text-mute); font-size: 12px; font-weight: 600; text-transform: uppercase;
+  letter-spacing: 0.08em; margin-bottom: 8px; font-family: var(--mono); }
+.q-text { font-size: 16px; font-weight: 500; margin-bottom: 12px; }
+.q-hint { color: var(--text-mute); font-size: 13px; margin-bottom: 12px; font-style: italic; }
+.q input[type="text"], .q textarea {
+  width: 100%; background: var(--bg); border: 1px solid var(--border); border-radius: 6px;
+  padding: 10px 12px; color: var(--text); font-family: inherit; font-size: 15px; line-height: 1.5;
+  resize: vertical; min-height: 44px;
+}
+.q input[type="text"]:focus, .q textarea:focus { outline: none; border-color: var(--accent); }
+.q textarea { min-height: 80px; }
+
+/* 选项 chips */
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 8px 14px; background: var(--bg); border: 1px solid var(--border); border-radius: 18px;
+  font-size: 14px; cursor: pointer; user-select: none; transition: all 0.15s;
+}
+.chip:hover { border-color: var(--accent); }
+.chip.selected { background: var(--accent); color: var(--bg); border-color: var(--accent); font-weight: 600; }
+.chip.emoji::before { content: attr(data-emoji); margin-right: 2px; }
+
+/* 滑块 */
+.slider-group { display: flex; flex-direction: column; gap: 18px; }
+.slider-row { display: grid; grid-template-columns: 1fr 2fr 1fr; gap: 12px; align-items: center; }
+.slider-row .end { color: var(--text-mute); font-size: 13px; text-align: center; }
+.slider-row .end:first-child { text-align: right; }
+.slider-row input[type="range"] {
+  width: 100%; -webkit-appearance: none; background: transparent;
+}
+.slider-row input[type="range"]::-webkit-slider-runnable-track {
+  height: 4px; background: var(--border); border-radius: 2px;
+}
+.slider-row input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none; width: 18px; height: 18px; background: var(--accent);
+  border-radius: 50%; margin-top: -7px; cursor: pointer;
+}
+.slider-row .end strong { color: var(--text); display: block; }
+
+/* 按钮 */
+.btn {
+  display: inline-block; padding: 12px 24px; border: none; border-radius: 8px;
+  font-size: 15px; font-weight: 600; cursor: pointer; transition: all 0.15s;
+  font-family: inherit;
+}
+.btn.primary { background: var(--accent); color: var(--bg); }
+.btn.primary:hover { background: #79b8ff; }
+.btn.alt { background: var(--bg-elev); color: var(--text); border: 1px solid var(--border); }
+.btn.alt:hover { border-color: var(--accent); }
+.btn-block { display: block; width: 100%; padding: 16px; font-size: 16px; }
+
+/* 结果页 */
+#result-screen { display: none; }
+#result-screen.visible { display: block; }
+#survey.hidden { display: none; }
+
+.result-hero { text-align: center; padding: 32px 0; }
+.result-hero h2 { font-size: 28px; border: none; padding: 0; justify-content: center; }
+
+.dim-block { background: var(--bg-elev); border: 1px solid var(--border); border-radius: 12px;
+  padding: 20px 24px; margin-bottom: 16px; }
+.dim-block h3 { color: var(--accent); margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+.dim-content { color: var(--text-dim); font-size: 15px; line-height: 1.7; }
+.dim-content strong { color: var(--text); }
+.dim-content .tag {
+  display: inline-block; padding: 2px 10px; background: rgba(88,166,255,0.15);
+  color: var(--accent); border-radius: 12px; font-size: 13px; margin: 2px 4px 2px 0;
+}
+
+.narrative-box {
+  background: linear-gradient(135deg, rgba(88,166,255,0.08) 0%, rgba(210,168,255,0.08) 100%);
+  border: 1px solid rgba(88,166,255,0.3); border-radius: 12px;
+  padding: 24px 28px; margin: 24px 0;
+}
+.narrative-box::before { content: "✦ 你的 Identity 草稿"; display: block;
+  color: var(--accent); font-weight: 600; font-size: 12px; text-transform: uppercase;
+  letter-spacing: 0.1em; margin-bottom: 12px; }
+.narrative-box p { font-size: 17px; line-height: 1.8; color: var(--text); }
+
+/* 历史 */
+.history-section { background: var(--bg-elev); border: 1px solid var(--border); border-radius: 12px;
+  padding: 24px; margin-top: 48px; }
+.history-item { padding: 14px 0; border-bottom: 1px solid var(--border); }
+.history-item:last-child { border-bottom: none; }
+.history-date { color: var(--gold); font-size: 13px; font-weight: 600; font-family: var(--mono); }
+.history-text { color: var(--text); margin-top: 4px; }
+
+.insight { background: linear-gradient(135deg, rgba(88,166,255,0.08) 0%, rgba(210,168,255,0.08) 100%);
+  border: 1px solid rgba(88,166,255,0.2); border-radius: 8px; padding: 16px 20px; margin: 16px 0 24px; }
+.insight::before { content: "★ 关键认知"; display: block; color: var(--accent); font-weight: 600;
+  font-size: 12px; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 6px; }
+
+.footer { margin-top: 64px; padding: 24px 0; border-top: 1px solid var(--border);
+  color: var(--text-mute); font-size: 13px; font-family: var(--mono); text-align: center; }
+
+@media (max-width: 640px) {
+  .slider-row { grid-template-columns: 1fr; }
+  .slider-row .end { text-align: center !important; }
+  .hero { padding: 32px 0 24px; }
+}
+</style>
+</head>
+<body>
+<div class="container">
+
+<header class="hero">
+  <h1>🗺 兴趣地图</h1>
+  <div class="subtitle">看清自己 — 升学组 G7 探索工具</div>
+  <div class="meta">5 维度 · 18 题 · 约 12 分钟 · 数据 100% 存浏览器本地</div>
+</header>
+
+<!-- 介绍 -->
+<div class="insight">
+这不是测验，<strong>没有"正确答案"</strong>。<br>
+你写的东西会在 G10 选 DP HL、G11 写文书时重新被翻出来。<br>
+所以——<strong>尽量写真话，不要写"应该"</strong>。
+</div>
+
+<!-- 进度条 -->
+<div class="progress-bar" id="progress-bar" style="display:none">
+  <div class="progress-track"><div class="progress-fill" id="progress-fill"></div></div>
+  <div class="progress-text" id="progress-text">0 / 18</div>
+</div>
+
+<!-- 表单 -->
+<form id="survey">
+
+<!-- ① 学术兴趣 -->
+<section id="sec-academic">
+  <h2><span class="num">01</span>学术兴趣</h2>
+  <p class="lead">学校课内的 + 课外的。你"自驱"喜欢什么？</p>
+
+  <div class="q">
+    <div class="q-label">Q1 · 多选（选 3 个）</div>
+    <div class="q-text">哪些科目让你"忘记时间"？</div>
+    <div class="chips" data-name="q1" data-max="3">
+      <div class="chip" data-emoji="📐" data-val="数学">数学</div>
+      <div class="chip" data-emoji="⚛" data-val="物理">物理</div>
+      <div class="chip" data-emoji="🧪" data-val="化学">化学</div>
+      <div class="chip" data-emoji="🧬" data-val="生物">生物</div>
+      <div class="chip" data-emoji="🌍" data-val="历史/地理">历史/地理</div>
+      <div class="chip" data-emoji="📚" data-val="语文/中文">语文/中文</div>
+      <div class="chip" data-emoji="✍" data-val="英语/写作">英语/写作</div>
+      <div class="chip" data-emoji="💻" data-val="编程/CS">编程/CS</div>
+      <div class="chip" data-emoji="🎨" data-val="美术/设计">美术/设计</div>
+      <div class="chip" data-emoji="🎵" data-val="音乐">音乐</div>
+      <div class="chip" data-emoji="🤔" data-val="哲学/心理">哲学/心理</div>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="q-label">Q2 · 开放</div>
+    <div class="q-text">不为学校时，你会上网/看书主动去看什么话题？</div>
+    <div class="q-hint">比如：黑洞、动漫、史前生物、AI 工具、股票、足球战术、化妆、游戏设计……随便什么</div>
+    <textarea name="q2" placeholder="我最近在看 / 想过：..."></textarea>
+  </div>
+
+  <div class="q">
+    <div class="q-label">Q3 · 多选（选 3 个）</div>
+    <div class="q-text">以下活动按"喜欢程度"选 3 个最爱的：</div>
+    <div class="chips" data-name="q3" data-max="3">
+      <div class="chip" data-emoji="📖" data-val="看书/文章">看书/文章</div>
+      <div class="chip" data-emoji="🎬" data-val="看纪录片/视频">看纪录片/视频</div>
+      <div class="chip" data-emoji="🔬" data-val="做实验/探索">做实验/探索</div>
+      <div class="chip" data-emoji="💻" data-val="写代码">写代码</div>
+      <div class="chip" data-emoji="🎮" data-val="玩游戏">玩游戏</div>
+      <div class="chip" data-emoji="✏" data-val="画画/创作">画画/创作</div>
+      <div class="chip" data-emoji="🏃" data-val="运动">运动</div>
+      <div class="chip" data-emoji="🗣" data-val="跟人讨论">跟人讨论</div>
+      <div class="chip" data-emoji="🔧" data-val="动手做东西">动手做东西</div>
+      <div class="chip" data-emoji="📝" data-val="写东西/记东西">写东西/记东西</div>
+    </div>
+  </div>
+</section>
+
+<!-- ② 动手 / 活动 -->
+<section id="sec-hands-on">
+  <h2><span class="num">02</span>动手 / 活动</h2>
+  <p class="lead">你擅长什么"形式"？做出来 / 说出来 / 跑出来 / 写出来？</p>
+
+  <div class="q">
+    <div class="q-label">Q4 · 多选（不限）</div>
+    <div class="q-text">你平时会做/想做哪些？</div>
+    <div class="chips" data-name="q4">
+      <div class="chip" data-emoji="💻" data-val="编程">编程</div>
+      <div class="chip" data-emoji="🤖" data-val="机器人/电子">机器人/电子</div>
+      <div class="chip" data-emoji="🎸" data-val="乐器">乐器</div>
+      <div class="chip" data-emoji="🎨" data-val="画画/设计">画画/设计</div>
+      <div class="chip" data-emoji="📷" data-val="摄影/视频">摄影/视频</div>
+      <div class="chip" data-emoji="⚽" data-val="运动/球类">运动/球类</div>
+      <div class="chip" data-emoji="✍" data-val="写作">写作</div>
+      <div class="chip" data-emoji="🔧" data-val="手工/DIY">手工/DIY</div>
+      <div class="chip" data-emoji="🍳" data-val="做饭">做饭</div>
+      <div class="chip" data-emoji="🎲" data-val="桌游/棋类">桌游/棋类</div>
+      <div class="chip" data-emoji="📊" data-val="数据/研究">数据/研究</div>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="q-label">Q5 · 开放</div>
+    <div class="q-text">有没有"超级废时间"但你觉得<strong>很值</strong>的事？</div>
+    <div class="q-hint">别人可能觉得"你怎么花这么多时间在这"的事</div>
+    <textarea name="q5" placeholder="我经常一做就是几小时的是：..."></textarea>
+  </div>
+
+  <div class="q">
+    <div class="q-label">Q6 · 单选</div>
+    <div class="q-text">你更喜欢哪种"成就感"？</div>
+    <div class="chips" data-name="q6" data-max="1">
+      <div class="chip" data-emoji="🏆" data-val="做一个完整作品">做一个完整作品（书/项目/产品）</div>
+      <div class="chip" data-emoji="🔁" data-val="不断尝试新东西">不断尝试新东西（多但不一定做完）</div>
+    </div>
+  </div>
+</section>
+
+<!-- ③ 你关心什么问题 -->
+<section id="sec-problems">
+  <h2><span class="num">03</span>你关心什么问题</h2>
+  <p class="lead">这决定你未来 4 年会"主动投入"在什么方向。写出真问题。</p>
+
+  <div class="q">
+    <div class="q-label">Q7 · 开放</div>
+    <div class="q-text">什么事情让你觉得"这不对"或"应该有人解决"？</div>
+    <div class="q-hint">学校里的 / 家里的 / 网上看到的 / 朋友遇到的 —— 都可以</div>
+    <textarea name="q7" placeholder="我看到 / 想到的：..."></textarea>
+  </div>
+
+  <div class="q">
+    <div class="q-label">Q8 · 多选（选 3 个最关心的）</div>
+    <div class="q-text">如果能动手解决一个问题，你会选：</div>
+    <div class="chips" data-name="q8" data-max="3">
+      <div class="chip" data-emoji="📚" data-val="教育不公平">教育不公平</div>
+      <div class="chip" data-emoji="🌱" data-val="环境/气候">环境/气候</div>
+      <div class="chip" data-emoji="🧠" data-val="心理/情绪">心理/情绪</div>
+      <div class="chip" data-emoji="👴" data-val="老人/孤独">老人/孤独</div>
+      <div class="chip" data-emoji="🐾" data-val="动物保护">动物保护</div>
+      <div class="chip" data-emoji="🔍" data-val="信息真假">信息真假</div>
+      <div class="chip" data-emoji="🌐" data-val="数字鸿沟">数字鸿沟</div>
+      <div class="chip" data-emoji="🏥" data-val="健康/医疗">健康/医疗</div>
+      <div class="chip" data-emoji="⚖" data-val="公平/歧视">公平/歧视</div>
+      <div class="chip" data-emoji="🎮" data-val="游戏/娱乐">游戏/娱乐</div>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="q-label">Q9 · 开放</div>
+    <div class="q-text">你身边的朋友会找你帮忙解决什么？</div>
+    <div class="q-hint">这题很暴露"你在别人眼里是什么样的人"</div>
+    <textarea name="q9" placeholder="朋友经常找我问 / 帮忙：..."></textarea>
+  </div>
+</section>
+
+<!-- ④ 你的工作方式 -->
+<section id="sec-energy">
+  <h2><span class="num">04</span>你的工作方式</h2>
+  <p class="lead">什么环境最出活？没有对错，但<strong>知道自己是什么样</strong>比"假装自己是另一种人"有用得多。</p>
+
+  <div class="q">
+    <div class="slider-group">
+      <div class="slider-row">
+        <div class="end"><strong>独处</strong>一个人安静</div>
+        <input type="range" name="s1" min="0" max="100" value="50">
+        <div class="end"><strong>团队</strong>一群人一起</div>
+      </div>
+      <div class="slider-row">
+        <div class="end"><strong>深度</strong>长项目慢慢磨</div>
+        <input type="range" name="s2" min="0" max="100" value="50">
+        <div class="end"><strong>多线</strong>短平快多任务</div>
+      </div>
+      <div class="slider-row">
+        <div class="end"><strong>规划</strong>先列清楚再做</div>
+        <input type="range" name="s3" min="0" max="100" value="50">
+        <div class="end"><strong>探索</strong>边做边想</div>
+      </div>
+      <div class="slider-row">
+        <div class="end"><strong>说出来</strong>讨论中想清楚</div>
+        <input type="range" name="s4" min="0" max="100" value="50">
+        <div class="end"><strong>自己想</strong>安静中想清楚</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ⑤ 你是谁 -->
+<section id="sec-identity">
+  <h2><span class="num">05</span>你是谁</h2>
+  <p class="lead">这一节是<strong>整个工具的核心</strong>。3 个开放题，没有标准答案。<br>写得"奇怪"没关系，<strong>真话比好话重要</strong>。</p>
+
+  <div class="q">
+    <div class="q-label">Q13 · 1 个词</div>
+    <div class="q-text">用 1 个词形容"你是谁"</div>
+    <div class="q-hint">可以不正经：可以是 "创作者" / "摸鱼王" / "社恐" / "解题机器" / "那个人"</div>
+    <input type="text" name="id1" placeholder="我是：____">
+  </div>
+
+  <div class="q">
+    <div class="q-label">Q14 · 完成句子</div>
+    <div class="q-text">"我是那种会 ____ 的人"</div>
+    <div class="q-hint">这一句未来会反复回到你面前</div>
+    <input type="text" name="id2" placeholder="我是那种会 ____ 的人">
+  </div>
+
+  <div class="q">
+    <div class="q-label">Q15 · 开放</div>
+    <div class="q-text">如果<strong>肯定不会失败</strong>，你会做什么？</div>
+    <div class="q-hint">这一题是文书的"金矿"——真答案比"应该的"更动人</div>
+    <textarea name="id3" placeholder="如果肯定不会失败，我会：..."></textarea>
+  </div>
+</section>
+
+<button type="submit" class="btn primary btn-block">生成我的兴趣地图 →</button>
+</form>
+
+<!-- 结果页 -->
+<div id="result-screen">
+  <div class="result-hero">
+    <h2>🗺 你的兴趣地图</h2>
+    <p style="color: var(--text-dim); margin-top: 8px;" id="result-date"></p>
+  </div>
+
+  <div id="result-content"></div>
+
+  <div class="narrative-box" id="narrative-box">
+    <p id="narrative-text"></p>
+  </div>
+
+  <div style="display: flex; gap: 12px; flex-wrap: wrap; margin-top: 32px;">
+    <button class="btn primary" onclick="exportResult()">📋 复制结果</button>
+    <button class="btn alt" onclick="restart()">🔄 再做一次</button>
+    <a class="btn alt" href="#" onclick="event.preventDefault(); document.getElementById('history-section').scrollIntoView({behavior:'smooth'})">📚 看历史</a>
+  </div>
+
+  <!-- 历史 -->
+  <div class="history-section" id="history-section">
+    <h2 style="border: none; padding: 0; margin-bottom: 16px;">📚 历史对比</h2>
+    <p style="color: var(--text-dim); font-size: 14px; margin-bottom: 16px;">每次填的"identity 一句话"纵向排列 — <strong>变化本身就是文书素材</strong>。</p>
+    <div id="history-list"></div>
+  </div>
+</div>
+
+<footer class="footer">
+  <p>升学组工具 · v1 · 2026-06-09 · 数据 100% 存浏览器本地</p>
+  <p style="margin-top: 6px;">建议：G7 现在 1 次 / G7 暑假 1 次 / G8 春 1 次 / G8 暑假 1 次 / G9 选 DP 前回顾</p>
+</footer>
+
+</div>
+
+<script>
+const STORAGE_KEY = 'interest-map-results';
+let state = { answers: {}, sliders: {} };
+
+// ===== 初始化 =====
+function init() {
+  // chips 多选
+  document.querySelectorAll('.chips').forEach(group => {
+    const name = group.dataset.name;
+    const max = parseInt(group.dataset.max || '99');
+    group.querySelectorAll('.chip').forEach(chip => {
+      chip.addEventListener('click', () => {
+        const sel = group.querySelectorAll('.chip.selected').length;
+        if (chip.classList.contains('selected')) {
+          chip.classList.remove('selected');
+          state.answers[name] = (state.answers[name] || []).filter(v => v !== chip.dataset.val);
+        } else if (sel < max) {
+          chip.classList.add('selected');
+          state.answers[name] = [...(state.answers[name] || []), chip.dataset.val];
+        }
+        updateProgress();
+      });
+    });
+  });
+  // 文本 + 滑块
+  document.querySelectorAll('input[type="text"], textarea').forEach(el => {
+    el.addEventListener('input', () => { state.answers[el.name] = el.value; updateProgress(); });
+  });
+  document.querySelectorAll('input[type="range"]').forEach(el => {
+    el.addEventListener('input', () => { state.sliders[el.name] = +el.value; updateProgress(); });
+  });
+  // 滚动监听进度
+  window.addEventListener('scroll', updateProgress);
+  // 提交
+  document.getElementById('survey').addEventListener('submit', onSubmit);
+  // 渲染历史
+  renderHistory();
+}
+
+function updateProgress() {
+  const total = 18;
+  let filled = 0;
+  // 简单判断：所有 input/textarea 非空 + 所有 chips 组至少选了一个
+  document.querySelectorAll('input[type="text"], textarea').forEach(el => { if (el.value.trim()) filled++; });
+  document.querySelectorAll('.chips').forEach(group => {
+    if (group.querySelector('.chip.selected')) filled++;
+  });
+  document.querySelectorAll('input[type="range"]').forEach(el => { filled += 0.25; }); // 4 个滑块各算 0.25
+
+  const pct = Math.min(100, Math.round((filled / total) * 100));
+  document.getElementById('progress-bar').style.display = 'block';
+  document.getElementById('progress-fill').style.width = pct + '%';
+  document.getElementById('progress-text').textContent = Math.min(total, Math.round(filled)) + ' / ' + total;
+}
+
+function onSubmit(e) {
+  e.preventDefault();
+  // 收集数据
+  const result = {
+    date: new Date().toISOString(),
+    answers: { ...state.answers },
+    sliders: { ...state.sliders }
+  };
+  // 保存
+  const all = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+  all.unshift(result);
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(all));
+  // 渲染
+  renderResult(result);
+  renderHistory();
+  // 滚动到结果
+  document.getElementById('survey').classList.add('hidden');
+  document.getElementById('result-screen').classList.add('visible');
+  window.scrollTo(0, 0);
+}
+
+function renderResult(r) {
+  const a = r.answers, s = r.sliders;
+  const date = new Date(r.date);
+  const dateStr = date.getFullYear() + '-' + String(date.getMonth()+1).padStart(2,'0') + '-' + String(date.getDate()).padStart(2,'0');
+  document.getElementById('result-date').textContent = '生成于 ' + dateStr;
+
+  // 5 维度卡片
+  const dim = (icon, title, body) => `<div class="dim-block"><h3>${icon} ${title}</h3><div class="dim-content">${body}</div></div>`;
+
+  const tagList = arr => (arr || []).map(x => `<span class="tag">${x}</span>`).join('');
+
+  // 滑块解释
+  const sliderExpl = (key, leftL, rightL) => {
+    const v = s[key] || 50;
+    let label;
+    if (v < 25) label = `强 ${leftL}`;
+    else if (v < 50) label = `偏 ${leftL}`;
+    else if (v < 75) label = `偏 ${rightL}`;
+    else label = `强 ${rightL}`;
+    return label;
+  };
+
+  const html = [
+    dim('📐', '① 学术兴趣',
+      `<p><strong>核心科目：</strong>${tagList(a.q1) || '未填'}</p>
+       <p><strong>自驱话题：</strong>${a.q2 || '—'}</p>
+       <p><strong>最爱活动：</strong>${tagList(a.q3) || '未填'}</p>`),
+    dim('🛠', '② 动手 / 活动',
+      `<p><strong>你常做的事：</strong>${tagList(a.q4) || '未填'}</p>
+       <p><strong>"超级废时间"：</strong>${a.q5 || '—'}</p>
+       <p><strong>成就感偏好：</strong>${a.q6 || '—'}</p>`),
+    dim('🌍', '③ 你关心什么问题',
+      `<p><strong>"这不对"的事：</strong>${a.q7 || '—'}</p>
+       <p><strong>最想解决的问题：</strong>${tagList(a.q8) || '未填'}</p>
+       <p><strong>朋友找你帮什么：</strong>${a.q9 || '—'}</p>`),
+    dim('⚡', '④ 你的工作方式',
+      `<p>· ${sliderExpl('s1', '独处型', '团队型')}</p>
+       <p>· ${sliderExpl('s2', '深度长项目', '短平快多任务')}</p>
+       <p>· ${sliderExpl('s3', '先规划再动手', '边做边探索')}</p>
+       <p>· ${sliderExpl('s4', '说出来想', '自己安静想')}</p>`),
+    dim('✦', '⑤ 你是谁',
+      `<p><strong>1 个词：</strong>${a.id1 || '—'}</p>
+       <p><strong>"我是那种会 ____ 的人"：</strong>${a.id2 || '—'}</p>
+       <p><strong>如果不会失败：</strong>${a.id3 || '—'}</p>`)
+  ].join('');
+
+  document.getElementById('result-content').innerHTML = html;
+
+  // Narrative 草稿
+  const subj = (a.q1 || ['某件事'])[0] || '某件事';
+  const act = (a.q4 || ['某件事'])[0] || '某件事';
+  const prob = (a.q8 || ['某些问题'])[0] || '某些问题';
+  const style = sliderExpl('s1', '独立思考', '与人协作');
+  const id1 = a.id1 || '一个还在探索的人';
+  const id2 = a.id2 || '___';
+  const id3 = a.id3 || '做真正重要的事';
+
+  const narrative = `我是 <strong>${id1}</strong>，对 <strong>${subj}</strong> 这类东西有天然的兴奋感，平时花最多时间在 <strong>${act}</strong> 上。我关心 <strong>${prob}</strong> 这种事 —— 总觉得"应该有人解决"。我工作起来是 <strong>${style}</strong> 的人，${id2}。如果肯定不会失败，我想 <strong>${id3}</strong>。`;
+
+  document.getElementById('narrative-text').innerHTML = narrative;
+}
+
+function renderHistory() {
+  const all = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+  const list = document.getElementById('history-list');
+  if (all.length === 0) {
+    list.innerHTML = '<p style="color: var(--text-mute);">还没有历史。第一次做完后会出现在这里。</p>';
+    return;
+  }
+  list.innerHTML = all.map(r => {
+    const d = new Date(r.date);
+    const dStr = d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+    return `<div class="history-item">
+      <div class="history-date">📅 ${dStr}</div>
+      <div class="history-text">"我是那种会 <strong>${r.answers.id2 || '—'}</strong> 的人"</div>
+    </div>`;
+  }).join('');
+}
+
+function restart() {
+  if (!confirm('再做一次会保存为新记录。确认开始？')) return;
+  state = { answers: {}, sliders: {} };
+  document.getElementById('survey').reset();
+  document.querySelectorAll('.chip.selected').forEach(c => c.classList.remove('selected'));
+  document.getElementById('result-screen').classList.remove('visible');
+  document.getElementById('survey').classList.remove('hidden');
+  window.scrollTo(0, 0);
+}
+
+function exportResult() {
+  const txt = document.getElementById('result-content').innerText + '\n\n' + document.getElementById('narrative-text').innerText;
+  navigator.clipboard.writeText(txt).then(() => {
+    alert('已复制到剪贴板');
+  }).catch(() => {
+    // fallback
+    const ta = document.createElement('textarea');
+    ta.value = txt;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    alert('已复制到剪贴板');
+  });
+}
+
+init();
+</script>
+
+</body>
+</html>

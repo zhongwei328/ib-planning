@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MBTI 性格测试 · G7-G11 参考用</title>
+<style>
+:root {
+  --bg: #0e1116; --bg-elev: #161b22; --bg-card: #1c2128; --border: #30363d;
+  --text: #e6edf3; --text-dim: #8b949e; --text-mute: #6e7681;
+  --accent: #58a6ff; --gold: #d29922; --green: #3fb950; --red: #f85149;
+  --mono: 'SF Mono', 'JetBrains Mono', 'Fira Code', Consolas, monospace;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif; line-height: 1.7; padding: 24px; max-width: 900px; margin: 0 auto; }
+a { color: var(--accent); text-decoration: none; border-bottom: 1px dotted var(--accent); }
+.back { color: var(--text-dim); font-size: 14px; margin-bottom: 20px; display: inline-block; border: none; }
+.back:hover { color: var(--accent); }
+h1 { font-size: 32px; margin-bottom: 8px; background: linear-gradient(135deg, #d2a8ff 0%, var(--accent) 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+.subtitle { color: var(--text-dim); margin-bottom: 24px; font-size: 15px; }
+section { display: none; }
+section.active { display: block; }
+.intro-box { background: var(--bg-elev); border: 1px solid var(--border); border-radius: 12px; padding: 24px; margin: 20px 0; }
+.intro-box p { color: var(--text-dim); margin-bottom: 12px; }
+.intro-box ul { margin: 8px 0 8px 24px; color: var(--text-dim); }
+.warn-box { background: rgba(248, 81, 73, 0.08); border: 1px solid rgba(248, 81, 73, 0.3); border-radius: 8px; padding: 16px; margin: 16px 0; }
+.warn-box::before { content: "⚠️ 重要提示："; color: var(--red); font-weight: 600; }
+.warn-box p { color: var(--text-dim); font-size: 14px; margin-top: 8px; }
+.q-block { background: var(--bg-elev); border: 1px solid var(--border); border-radius: 8px; padding: 20px; margin-bottom: 16px; }
+.q-num { color: var(--text-mute); font-size: 12px; font-family: var(--mono); margin-bottom: 6px; }
+.q-text { font-size: 16px; margin-bottom: 14px; font-weight: 500; }
+.q-scale { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; }
+.q-scale label { display: flex; flex-direction: column; align-items: center; padding: 12px 4px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 6px; cursor: pointer; transition: all 0.15s; }
+.q-scale label:hover { border-color: var(--accent); }
+.q-scale input { display: none; }
+.q-scale label:has(input:checked) { background: var(--accent); color: var(--bg); border-color: var(--accent); font-weight: 600; }
+.q-scale .num { font-size: 18px; font-weight: 700; margin-bottom: 2px; }
+.q-scale .lbl { font-size: 11px; }
+.progress { background: var(--bg-elev); border-radius: 6px; height: 6px; margin: 16px 0; overflow: hidden; }
+.progress-fill { background: var(--accent); height: 100%; transition: width 0.2s; }
+.btn { display: inline-block; padding: 12px 24px; background: var(--accent); color: var(--bg); border: none; border-radius: 6px; font-size: 15px; font-weight: 600; cursor: pointer; }
+.btn:hover { opacity: 0.9; }
+.btn.alt { background: transparent; border: 1px solid var(--border); color: var(--text); }
+.btn-row { display: flex; gap: 12px; margin-top: 24px; }
+.result-section { background: var(--bg-elev); border: 1px solid var(--border); border-radius: 12px; padding: 24px; margin: 16px 0; }
+.result-section h2 { font-size: 18px; color: var(--accent); margin-bottom: 12px; }
+.mbti-code { font-family: var(--mono); font-size: 72px; font-weight: 800; letter-spacing: 8px; color: #d2a8ff; text-align: center; padding: 24px; background: var(--bg-card); border-radius: 8px; margin: 16px 0; }
+.mbti-name { text-align: center; color: var(--text-dim); font-size: 18px; margin-bottom: 16px; }
+.mbti-name strong { color: var(--gold); }
+.dim-bar { margin: 16px 0; }
+.dim-bar .header { display: flex; justify-content: space-between; margin-bottom: 4px; font-size: 13px; }
+.dim-bar .header .l { color: var(--accent); font-weight: 600; }
+.dim-bar .header .r { color: #d2a8ff; font-weight: 600; }
+.dim-bar .track { background: var(--bg-card); border-radius: 4px; height: 14px; overflow: hidden; position: relative; display: flex; }
+.dim-bar .track .l { background: var(--accent); transition: width 0.5s; }
+.dim-bar .track .r { background: #d2a8ff; transition: width 0.5s; }
+.dim-bar .track .center { position: absolute; left: 50%; top: 0; bottom: 0; width: 2px; background: var(--text-mute); transform: translateX(-50%); }
+.history-item { background: var(--bg-card); border: 1px solid var(--border); border-radius: 6px; padding: 12px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
+.history-item:hover { border-color: var(--accent); }
+.trait-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; margin: 12px 0; }
+.trait-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 12px 16px; }
+.trait-card h4 { color: var(--gold); font-size: 14px; margin-bottom: 6px; }
+.trait-card p { font-size: 13px; color: var(--text-dim); }
+.comm-tip { background: rgba(88,166,255,0.06); border-left: 3px solid var(--accent); padding: 12px 16px; border-radius: 0 6px 6px 0; margin: 8px 0; color: var(--text-dim); font-size: 14px; }
+@media (max-width: 640px) { .q-scale { grid-template-columns: repeat(5, 1fr); } .q-scale .lbl { display: none; } .mbti-code { font-size: 48px; letter-spacing: 4px; } }
+</style>
+</head>
+<body>
+
+<a class="back" href="index.html">← 返回 IB 升学资料库</a>
+
+<section id="screen-intro" class="active">
+  <h1>🧠 MBTI 性格测试</h1>
+  <div class="subtitle">4 维 / 32 题 / 约 10 分钟 — 家庭沟通 + 自我了解用</div>
+
+  <div class="warn-box">
+    <p><strong>这不是给大学看的。</strong>MBTI 在学术界信效度有限（一个人不同时间测出不同结果的概率 50%+）。</p>
+    <p>大学招生官看到文书"我是 INTP"通常<strong>不会加分</strong>，反而会显得"读了太多小红书"。</p>
+    <p>MBTI 真正有用：<strong>家庭沟通</strong>（理解孩子为什么需要独处）、<strong>自我接纳</strong>（"原来我不是'内向'，是 I 型"）。</p>
+  </div>
+
+  <div class="intro-box">
+    <p><strong>4 个维度</strong>（每维 8 题，测完给出偏向百分比）：</p>
+    <ul>
+      <li><strong>E / I</strong> — 能量来源（外向 ↔ 内向）</li>
+      <li><strong>S / N</strong> — 认知方式（实感 ↔ 直觉）</li>
+      <li><strong>T / F</strong> — 决策方式（思考 ↔ 情感）</li>
+      <li><strong>J / P</strong> — 生活态度（判断 ↔ 感知）</li>
+    </ul>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn" onclick="startTest()">开始测试 →</button>
+    <button class="btn alt" onclick="showHistory()">查看历史记录</button>
+  </div>
+</section>
+
+<section id="screen-questions">
+  <h2 id="q-header" style="font-size: 14px; color: var(--text-dim); margin-bottom: 8px;">题目 1 / 32</h2>
+  <div class="progress"><div class="progress-fill" id="prog" style="width: 0%"></div></div>
+  <div id="q-card"></div>
+  <div class="btn-row">
+    <button class="btn alt" id="prev" onclick="prevQ()">← 上一题</button>
+    <button class="btn" id="next" onclick="nextQ()">下一题 →</button>
+  </div>
+</section>
+
+<section id="screen-result">
+  <h2 style="color: var(--accent); margin-bottom: 16px;">🎭 你的 MBTI 类型</h2>
+  <div class="mbti-code" id="mbti-code">----</div>
+  <div class="mbti-name" id="mbti-name"></div>
+  <div id="result-detail"></div>
+  <div class="btn-row">
+    <button class="btn" onclick="exportResult()">📋 复制结果</button>
+    <button class="btn alt" onclick="restart()">再做一次</button>
+  </div>
+</section>
+
+<section id="screen-history">
+  <h2 style="color: var(--accent); margin-bottom: 16px;">📚 历史记录</h2>
+  <div id="history-list"></div>
+  <div class="btn-row">
+    <button class="btn alt" onclick="show('screen-intro')">← 返回</button>
+    <button class="btn alt" onclick="clearAll()">🗑 清空全部</button>
+  </div>
+</section>
+
+<script>
+const QUESTIONS = [
+  // E/I (8)
+  { dim: 'EI', dir: 'E', text: '我喜欢在多人聚会上成为焦点' },
+  { dim: 'EI', dir: 'I', text: '我需要独处时间来"充电"' },
+  { dim: 'EI', dir: 'E', text: '我倾向于先说再想' },
+  { dim: 'EI', dir: 'I', text: '我倾向于先想再说' },
+  { dim: 'EI', dir: 'E', text: '跟一群人待久了我会更有精力' },
+  { dim: 'EI', dir: 'I', text: '跟一群人待久了我需要找地方独处' },
+  { dim: 'EI', dir: 'E', text: '我喜欢跟新朋友聊天' },
+  { dim: 'EI', dir: 'I', text: '我更愿意跟熟悉的朋友深聊' },
+  // S/N (8)
+  { dim: 'SN', dir: 'S', text: '我更关注具体事实而不是抽象概念' },
+  { dim: 'SN', dir: 'N', text: '我更容易被新想法和可能性吸引' },
+  { dim: 'SN', dir: 'S', text: '我信任经验和已被证明的方法' },
+  { dim: 'SN', dir: 'N', text: '我喜欢挑战传统做法' },
+  { dim: 'SN', dir: 'S', text: '我注重当下而不是未来' },
+  { dim: 'SN', dir: 'N', text: '我经常思考 5-10 年后的事情' },
+  { dim: 'SN', dir: 'S', text: '我喜欢按明确步骤执行' },
+  { dim: 'SN', dir: 'N', text: '我更喜欢跳跃式、发散性思考' },
+  // T/F (8)
+  { dim: 'TF', dir: 'T', text: '我做决定时主要靠逻辑分析' },
+  { dim: 'TF', dir: 'F', text: '我做决定时主要考虑他人感受' },
+  { dim: 'TF', dir: 'T', text: '我倾向于客观分析而不是共情' },
+  { dim: 'TF', dir: 'F', text: '我倾向于共情而不是分析' },
+  { dim: 'TF', dir: 'T', text: '我追求公平高于和谐' },
+  { dim: 'TF', dir: 'F', text: '我追求和谐高于公平' },
+  { dim: 'TF', dir: 'T', text: '我批评时直话直说' },
+  { dim: 'TF', dir: 'F', text: '我批评时会先考虑对方感受' },
+  // J/P (8)
+  { dim: 'JP', dir: 'J', text: '我喜欢提前规划' },
+  { dim: 'JP', dir: 'P', text: '我喜欢灵活应变' },
+  { dim: 'JP', dir: 'J', text: '我房间 / 桌面通常很整齐' },
+  { dim: 'JP', dir: 'P', text: '我房间 / 桌面通常比较随性' },
+  { dim: 'JP', dir: 'J', text: '我喜欢事情有明确截止时间' },
+  { dim: 'JP', dir: 'P', text: '我喜欢保留选择余地' },
+  { dim: 'JP', dir: 'J', text: '我列出清单并完成' },
+  { dim: 'JP', dir: 'P', text: '我更信任临场发挥' }
+];
+
+const TYPES = {
+  INTJ: { name: '建筑师 (Architect)', desc: '独立、有战略思维、追求能力与逻辑', strengths: '长期规划、独立思考、系统设计', weaknesses: '可能显得冷漠、对低效不耐烦', learn: '需要"为什么"和长远意义', family: '给足独处空间；用"系统 / 战略"框架沟通' },
+  INTP: { name: '逻辑学家 (Logician)', desc: '好奇、理论性强、享受思考本身', strengths: '抽象思维、创意、问题本质', weaknesses: '难以执行、容易拖延', learn: '需要"为什么"和自由探索', family: '别催太紧；接受"看似没在做事其实在思考"' },
+  ENTJ: { name: '指挥官 (Commander)', desc: '果断、领导力强、目标导向', strengths: '执行、决策、领导团队', weaknesses: '可能显得强势、不耐心', learn: '需要挑战和"赢"的感觉', family: '给明确目标；允许争论' },
+  ENTP: { name: '辩论家 (Debater)', desc: '创新、思维敏捷、爱挑战传统', strengths: '创意、辩论、看到多种可能', weaknesses: '容易半途而废、不喜重复', learn: '需要"新意"和讨论空间', family: '辩论不是吵架；接受"反问"是思考方式' },
+  INFJ: { name: '提倡者 (Advocate)', desc: '理想主义、有洞察力、追求意义', strengths: '深度共情、写作、远见', weaknesses: '容易内耗、对自己要求过高', learn: '需要"意义"和一对一深度', family: '重视孩子的"内心世界"；避免"过度安排"' },
+  INFP: { name: '调停者 (Mediator)', desc: '价值观驱动、富有同情心', strengths: '真诚、想象、关心他人', weaknesses: '容易敏感、回避冲突', learn: '需要"价值观匹配"和自由', family: '尊重孩子的"敏感"是优点不是缺点' },
+  ENFJ: { name: '主人公 (Protagonist)', desc: '有感染力、善于引导他人成长', strengths: '教学、激励、社交', weaknesses: '过度承担他人情绪', learn: '需要"助人"和被认可的反馈', family: '孩子是"小太阳"，但也要有独处充电时间' },
+  ENFP: { name: '竞选者 (Campaigner)', desc: '热情、创造性强、社交', strengths: '创意、社交、可能性思维', weaknesses: '难以专注、易厌倦', learn: '需要"新鲜感"和"连接"', family: '接受"广泛兴趣"不是不专注' },
+  ISTJ: { name: '物流师 (Logistician)', desc: '可靠、注重实际、有条理', strengths: '执行、可靠、细节把控', weaknesses: '抗拒变化、可能过于保守', learn: '需要"明确步骤"和稳定环境', family: '用清单和截止日期；接受孩子的"按部就班"' },
+  ISFJ: { name: '守护者 (Defender)', desc: '温暖、负责任、细心', strengths: '关怀、记忆细节、可靠', weaknesses: '过度牺牲、回避冲突', learn: '需要"被需要"和稳定关系', family: '孩子会记得你做过的所有事；多表达爱' },
+  ESTJ: { name: '总经理 (Executive)', desc: '务实、果断、有组织力', strengths: '管理、执行、传统价值', weaknesses: '可能过于直接、不灵活', learn: '需要"明确目标"和规则', family: '用"实际成果"反馈；接受"挑战规则"也是学习' },
+  ESFJ: { name: '执政官 (Consul)', desc: '友好、有责任心、务实', strengths: '社交、合作、组织', weaknesses: '过度在意他人评价', learn: '需要"群体归属"和正向反馈', family: '孩子是"小外交家"；需要明确边界避免过度讨好' },
+  ISTP: { name: '鉴赏家 (Virtuoso)', desc: '冷静、动手能力强、独立', strengths: '分析、动手、问题解决', weaknesses: '可能显得疏离、难以承诺', learn: '需要"动手"和"自由"', family: '接受孩子的"独立"是常态' },
+  ISFP: { name: '探险家 (Adventurer)', desc: '敏感、活在当下、有艺术感', strengths: '审美、活在当下、善良', weaknesses: '回避冲突、过度自我批评', learn: '需要"自由"和"美感"', family: '孩子对"美"敏感；少安排多放手' },
+  ESTP: { name: '企业家 (Entrepreneur)', desc: '行动派、务实、社交', strengths: '应变、谈判、行动力', weaknesses: '可能冲动、不喜长期计划', learn: '需要"实战"和即时反馈', family: '孩子是"行动派"；给具体任务而不是抽象道理' },
+  ESFP: { name: '表演者 (Entertainer)', desc: '热情、随性、爱关注', strengths: '社交、表演、活在当下', weaknesses: '容易分心、回避深度', learn: '需要"互动"和正向反馈', family: '孩子是"小太阳"；需要结构但不能太死板' }
+};
+
+let state = { answers: new Array(QUESTIONS.length).fill(null), current: 0 };
+const STORAGE_KEY = 'mbti-results';
+
+function show(id) {
+  document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+function startTest() {
+  state = { answers: new Array(QUESTIONS.length).fill(null), current: 0 };
+  show('screen-questions');
+  renderQ();
+}
+
+function renderQ() {
+  const i = state.current;
+  const q = QUESTIONS[i];
+  document.getElementById('q-header').textContent = `题目 ${i+1} / ${QUESTIONS.length} · ${dimFullName(q.dim)}`;
+  document.getElementById('prog').style.width = ((i) / QUESTIONS.length * 100) + '%';
+  document.getElementById('prev').disabled = i === 0;
+  document.getElementById('next').textContent = (i === QUESTIONS.length - 1) ? '生成结果 →' : '下一题 →';
+  const card = document.getElementById('q-card');
+  card.innerHTML = `
+    <div class="q-block">
+      <div class="q-num">维度：${dimFullName(q.dim)}</div>
+      <div class="q-text">${q.text}</div>
+      <div class="q-scale">
+        ${[1,2,3,4,5].map(v => `
+          <label>
+            <input type="radio" name="q${i}" value="${v}" ${state.answers[i]===v?'checked':''} onchange="state.answers[${i}]=${v}">
+            <span class="num">${v}</span>
+            <span class="lbl">${['很不同意','不同意','中立','同意','很同意'][v-1]}</span>
+          </label>
+        `).join('')}
+      </div>
+    </div>
+  `;
+}
+
+function dimFullName(d) {
+  return d === 'EI' ? '能量来源 E/I' : d === 'SN' ? '认知方式 S/N' : d === 'TF' ? '决策方式 T/F' : '生活态度 J/P';
+}
+
+function nextQ() {
+  if (state.answers[state.current] === null) { alert('请先选择一个选项'); return; }
+  if (state.current < QUESTIONS.length - 1) { state.current++; renderQ(); }
+  else { finishTest(); }
+}
+function prevQ() { if (state.current > 0) { state.current--; renderQ(); } }
+
+function finishTest() {
+  const raw = { E: 0, I: 0, S: 0, N: 0, T: 0, F: 0, J: 0, P: 0 };
+  QUESTIONS.forEach((q, i) => { raw[q.dir] += (state.answers[i] || 0); });
+  const pct = {
+    E: Math.round(raw.E / (raw.E + raw.I) * 100),
+    I: 100 - Math.round(raw.E / (raw.E + raw.I) * 100),
+    S: Math.round(raw.S / (raw.S + raw.N) * 100),
+    N: 100 - Math.round(raw.S / (raw.S + raw.N) * 100),
+    T: Math.round(raw.T / (raw.T + raw.F) * 100),
+    F: 100 - Math.round(raw.T / (raw.T + raw.F) * 100),
+    J: Math.round(raw.J / (raw.J + raw.P) * 100),
+    P: 100 - Math.round(raw.J / (raw.J + raw.P) * 100)
+  };
+  const code = (pct.E > 50 ? 'E' : 'I') + (pct.S > 50 ? 'S' : 'N') + (pct.T > 50 ? 'T' : 'F') + (pct.J > 50 ? 'J' : 'P');
+  const result = { date: new Date().toISOString(), raw, pct, code };
+  saveResult(result);
+  showResult(result);
+  show('screen-result');
+}
+
+function showResult(r) {
+  document.getElementById('mbti-code').textContent = r.code;
+  const t = TYPES[r.code] || { name: r.code, desc: '混合型', strengths: '—', weaknesses: '—', learn: '—', family: '—' };
+  document.getElementById('mbti-name').innerHTML = `<strong>${r.code}</strong> · ${t.name}`;
+  const detail = document.getElementById('result-detail');
+  detail.innerHTML = `
+    <div class="result-section">
+      <h2>📊 4 维偏向</h2>
+      <div class="dim-bar">
+        <div class="header"><span class="l">E 外向 ${r.pct.E}%</span><span class="r">${r.pct.I}% 内向 I</span></div>
+        <div class="track"><div class="l" style="width: ${r.pct.E}%"></div><div class="r" style="width: ${r.pct.I}%"></div><div class="center"></div></div>
+      </div>
+      <div class="dim-bar">
+        <div class="header"><span class="l">S 实感 ${r.pct.S}%</span><span class="r">${r.pct.N}% 直觉 N</span></div>
+        <div class="track"><div class="l" style="width: ${r.pct.S}%"></div><div class="r" style="width: ${r.pct.N}%"></div><div class="center"></div></div>
+      </div>
+      <div class="dim-bar">
+        <div class="header"><span class="l">T 思考 ${r.pct.T}%</span><span class="r">${r.pct.F}% 情感 F</span></div>
+        <div class="track"><div class="l" style="width: ${r.pct.T}%"></div><div class="r" style="width: ${r.pct.F}%"></div><div class="center"></div></div>
+      </div>
+      <div class="dim-bar">
+        <div class="header"><span class="l">J 判断 ${r.pct.J}%</span><span class="r">${r.pct.P}% 感知 P</span></div>
+        <div class="track"><div class="l" style="width: ${r.pct.J}%"></div><div class="r" style="width: ${r.pct.P}%"></div><div class="center"></div></div>
+      </div>
+      <p style="color: var(--text-dim); font-size: 13px; margin-top: 12px;">📌 <strong>注意：</strong>如果某维偏向 ≤ 60%（即两侧差距 < 20%），说明你在这一维<strong>是"中间型"</strong>，不是"纯 E"或"纯 I"。中间型其实更常见。</p>
+    </div>
+
+    <div class="result-section">
+      <h2>🎭 ${r.code} · ${t.name}</h2>
+      <p style="color: var(--text-dim); margin-bottom: 12px;">${t.desc}</p>
+      <div class="trait-grid">
+        <div class="trait-card"><h4>优势</h4><p>${t.strengths}</p></div>
+        <div class="trait-card"><h4>盲点</h4><p>${t.weaknesses}</p></div>
+        <div class="trait-card"><h4>学习方式</h4><p>${t.learn}</p></div>
+      </div>
+    </div>
+
+    <div class="result-section">
+      <h2>👨‍👩‍👦 家庭沟通建议</h2>
+      <div class="comm-tip">${t.family}</div>
+      <p style="color: var(--text-dim); font-size: 13px; margin-top: 12px;">📌 MBTI 不是"应该这样"——是"我现在这样"。类型会随年龄变化，<strong>G7 的结果到 G11 可能会变 1-2 个字母</strong>，这很正常。</p>
+    </div>
+
+    <div class="result-section" style="background: rgba(210, 153, 34, 0.05); border-color: rgba(210, 153, 34, 0.3);">
+      <h2>⚠️ 不要在以下场景用 MBTI</h2>
+      <ul style="color: var(--text-dim); padding-left: 20px; font-size: 14px;">
+        <li><strong>大学申请文书</strong> — 招生官看到"I am an INTJ"会觉得"不够严肃"</li>
+        <li><strong>专业选择</strong> — 用<strong>霍兰德 + 兴趣地图</strong>更靠谱（已为你建好工具）</li>
+        <li><strong>职业定型</strong> — G7 的测试结果不能决定 G12 的方向</li>
+        <li><strong>解释"为什么失败"</strong> — "我是 T 型所以不会照顾人"是逃避，不是理由</li>
+      </ul>
+      <p style="color: var(--text-dim); font-size: 13px; margin-top: 12px;">想看更权威的 MBTI（基于 8 维） → <a href="https://www.16personalities.com" target="_blank">16Personalities.com</a>（免费、不存你数据）</p>
+    </div>
+  `;
+}
+
+function exportResult() {
+  const r = getAllResults()[0];
+  const t = TYPES[r.code] || {};
+  const text = `MBTI 性格类型：${r.code} · ${t.name || ''}\n` +
+    `日期：${new Date(r.date).toLocaleDateString('zh-CN')}\n\n` +
+    `4 维偏向：\n` +
+    `  E/I: ${r.pct.E}% / ${r.pct.I}%\n` +
+    `  S/N: ${r.pct.S}% / ${r.pct.N}%\n` +
+    `  T/F: ${r.pct.T}% / ${r.pct.F}%\n` +
+    `  J/P: ${r.pct.J}% / ${r.pct.P}%\n\n` +
+    `描述：${t.desc || ''}\n优势：${t.strengths || ''}\n盲点：${t.weaknesses || ''}`;
+  navigator.clipboard.writeText(text).then(() => alert('已复制到剪贴板'));
+}
+
+function saveResult(r) { const all = getAllResults(); all.unshift(r); localStorage.setItem(STORAGE_KEY, JSON.stringify(all)); }
+function getAllResults() { try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'); } catch(e) { return []; } }
+
+function showHistory() {
+  const all = getAllResults();
+  const wrap = document.getElementById('history-list');
+  if (all.length === 0) { wrap.innerHTML = '<p style="color: var(--text-dim);">暂无历史记录</p>'; show('screen-history'); return; }
+  wrap.innerHTML = all.map((r, i) => `
+    <div class="history-item" onclick='loadHistory(${i})'>
+      <div>
+        <div style="font-family: var(--mono); font-size: 20px; font-weight: 700; color: #d2a8ff;">${r.code}</div>
+        <div style="color: var(--text-mute); font-size: 12px;">${new Date(r.date).toLocaleString('zh-CN')}</div>
+      </div>
+      <div style="color: var(--accent);">→ 查看</div>
+    </div>
+  `).join('');
+  show('screen-history');
+}
+function loadHistory(i) { showResult(getAllResults()[i]); show('screen-result'); }
+function clearAll() { if (confirm('清空所有历史？')) { localStorage.removeItem(STORAGE_KEY); showHistory(); } }
+function restart() { startTest(); }
+</script>
+
+</body>
+</html>

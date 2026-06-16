@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>体育特长生通道 · IB 升学资料库 v1.2</title>
+<style>
+:root {
+  --bg: #0e1116; --bg-elev: #161b22; --bg-card: #1c2128;
+  --border: #30363d; --text: #e6edf3; --text-dim: #8b949e; --text-mute: #6e7681;
+  --accent: #58a6ff; --accent-2: #d2a8ff; --gold: #d29922;
+  --green: #3fb950; --red: #f85149; --orange: #ff8c42;
+  --mono: 'SF Mono', 'JetBrains Mono', 'Fira Code', Consolas, monospace;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', Roboto, sans-serif; font-size: 16px; line-height: 1.7; -webkit-font-smoothing: antialiased; }
+.container { max-width: 1100px; margin: 0 auto; padding: 24px; }
+.hero { padding: 48px 0 32px; border-bottom: 1px solid var(--border); margin-bottom: 32px; }
+.hero h1 { font-size: clamp(26px, 4.5vw, 38px); font-weight: 800; letter-spacing: -0.02em; background: linear-gradient(135deg, var(--gold) 0%, var(--orange) 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 8px; }
+.hero .subtitle { color: var(--text-dim); font-size: 16px; }
+.hero .meta { color: var(--text-mute); font-size: 13px; margin-top: 12px; font-family: var(--mono); }
+.back { display: inline-block; margin-bottom: 16px; padding: 6px 12px; background: var(--bg-elev); border: 1px solid var(--border); border-radius: 6px; color: var(--accent); font-size: 13px; text-decoration: none; }
+section { margin-bottom: 40px; }
+h2 { font-size: clamp(20px, 3vw, 26px); font-weight: 700; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 2px solid var(--border); }
+h3 { font-size: 16px; font-weight: 600; margin: 20px 0 10px; color: var(--text); }
+.lead { color: var(--text-dim); font-size: 15px; margin: 12px 0 20px; padding: 12px 16px; background: var(--bg-elev); border-left: 3px solid var(--gold); border-radius: 0 6px 6px 0; }
+
+.pill { display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 11px; font-weight: 600; font-family: var(--mono); }
+.pill.gold { background: rgba(210, 153, 34, 0.15); color: var(--gold); border: 1px solid rgba(210, 153, 34, 0.3); }
+.pill.green { background: rgba(63, 185, 84, 0.15); color: var(--green); border: 1px solid rgba(63, 185, 80, 0.3); }
+.pill.blue { background: rgba(88, 166, 255, 0.15); color: var(--accent); border: 1px solid rgba(88, 166, 255, 0.3); }
+.pill.red { background: rgba(248, 81, 73, 0.15); color: var(--red); border: 1px solid rgba(248, 81, 73, 0.3); }
+
+.table-wrap { overflow-x: auto; margin: 12px 0 16px; border: 1px solid var(--border); border-radius: 8px; }
+table { width: 100%; border-collapse: collapse; font-size: 14px; }
+thead { background: var(--bg-elev); }
+th { padding: 10px 12px; font-weight: 600; color: var(--text-dim); border-bottom: 1px solid var(--border); text-align: left; white-space: nowrap; }
+td { padding: 8px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
+tbody tr:last-child td { border-bottom: none; }
+tbody tr:hover { background: var(--bg-elev); }
+
+.grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 16px; margin: 16px 0; }
+.card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 16px 20px; }
+.card h4 { color: var(--gold); margin-bottom: 8px; font-size: 15px; }
+.card .meta { color: var(--text-mute); font-size: 12px; font-family: var(--mono); margin-bottom: 10px; }
+.card ul { margin: 8px 0 0 18px; font-size: 14px; }
+.card li { margin-bottom: 4px; }
+
+.warn { color: var(--red); }
+.gold { color: var(--gold); }
+.dim { color: var(--text-dim); font-size: 13px; }
+
+.footer { margin-top: 64px; padding: 24px 0; border-top: 1px solid var(--border); color: var(--text-mute); font-size: 12px; font-family: var(--mono); text-align: center; }
+@media (max-width: 640px) { .container { padding: 16px; } th, td { padding: 6px 8px; font-size: 12px; } }
+</style>
+</head>
+<body>
+<div class="container">
+<a href="index.html" class="back">← 返回主页</a>
+
+<header class="hero">
+  <h1>🏊 体育特长生通道</h1>
+  <div class="subtitle">DIII / NESCAC / D1 walk-on · 美本体育招生的"另一条赛道"</div>
+  <div class="meta">IB 升学资料库 v1.2 · 工具 D · 2026-06-09</div>
+</header>
+
+<section>
+  <h2>1. 为什么这条通道?</h2>
+  <p class="lead">美本 Top 30 申请池里,90% 是"学术 + 软实力"维度,只有 5-10% 是"体育特长生"。**对体育强 + 学术中等的学生,这条通道反而是优势赛道**——你竞争的池子小很多。</p>
+  <p>Henry 案例:游泳校队 + 3 学期全 7/8 = 体育特长生通道<strong>直接适用</strong>。但 v1.1 资料库<strong>完全没提</strong>——这是核心盲点。</p>
+</section>
+
+<section>
+  <h2>2. 三大通道对比</h2>
+  <div class="table-wrap"><table>
+    <thead>
+      <tr>
+        <th>通道</th>
+        <th>竞技水平</th>
+        <th>学术要求</th>
+        <th>经济资助</th>
+        <th>Henry 适合度</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>D1 (NCAA)</strong></td>
+        <td>国家队/省队级别</td>
+        <td>中等(教练权重 60%)</td>
+        <td>✅ 全额奖学金</td>
+        <td><span class="pill red">G7 还早</span></td>
+      </tr>
+      <tr>
+        <td><strong>DIII (NESCAC 等)</strong></td>
+        <td>校队级别</td>
+        <td>高(申请池竞争激烈)</td>
+        <td>❌ 无运动奖学金(need-based 可申请)</td>
+        <td><span class="pill gold">⭐ 强烈推荐</span></td>
+      </tr>
+      <tr>
+        <td><strong>Club Team</strong></td>
+        <td>任何水平</td>
+        <td>高</td>
+        <td>❌ 无</td>
+        <td><span class="pill green">✅ 保底</span></td>
+      </tr>
+      <tr>
+        <td><strong>Walk-on(D1 非招募)</strong></td>
+        <td>校队级别但未签 NLI</td>
+        <td>高</td>
+        <td>❌ 无运动奖学金</td>
+        <td><span class="pill gold">⭐ 高回报</span></td>
+      </tr>
+    </tbody>
+  </table></div>
+  <p class="dim">D1 招募 = 高中教练直接联系你。Walk-on = 你自己申请 + 试训。DIII = 学术+体育综合评估,NESCAC 是顶尖 DIII 联盟(Williams/Amherst/Middlebury 等)。</p>
+</section>
+
+<section>
+  <h2>3. NESCAC 联盟 — Henry 的"主战场"</h2>
+  <p>NESCAC(New England Small College Athletic Conference)是<strong>学术 + 体育最均衡</strong>的 DIII 联盟。学校包括:</p>
+  <div class="grid-2">
+    <div class="card">
+      <h4>🏛 顶尖 NESCAC(美本 Top 10-20)</h4>
+      <div class="meta">学术 ≥ 体育</div>
+      <ul>
+        <li><strong>Williams College</strong>(USNWR #1 文理)</li>
+        <li><strong>Amherst College</strong>(USNWR #2)</li>
+        <li><strong>Middlebury College</strong></li>
+        <li><strong>Bowdoin College</strong></li>
+        <li><strong>Pomona College</strong>(西海岸对标)</li>
+        <li><strong>Wesleyan University</strong></li>
+      </ul>
+    </div>
+    <div class="card">
+      <h4>🎯 工程 / 理科 NESCAC</h4>
+      <div class="meta">数学 + 物理强项</div>
+      <ul>
+        <li><strong>Harvey Mudd</strong>(理工最强文理)</li>
+        <li><strong>Carleton College</strong></li>
+        <li><strong>Colby College</strong></li>
+        <li><strong>Bates College</strong></li>
+      </ul>
+    </div>
+  </div>
+  <p class="dim">NESCAC <strong>不</strong>给运动奖学金,但"被招募"的学生拿 need-based financial aid 概率更高(教练向招生办推)。</p>
+</section>
+
+<section>
+  <h2>4. 时间线(7-12 年级)</h2>
+  <div class="table-wrap"><table>
+    <thead>
+      <tr><th>年级</th><th>关键动作</th><th>Henry 进度</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><strong>G7 (现在)</strong></td>
+        <td>校队成绩稳定 + 参加省级/全国级比赛</td>
+        <td><span class="pill green">✅ 已达成</span></td></tr>
+      <tr><td><strong>G8</strong></td>
+        <td>主项 + 副项(200m 自由泳 / IM)开发;Times 突破</td>
+        <td><span class="dim">待规划</span></td></tr>
+      <tr><td><strong>G9</strong></td>
+        <td>出"招募级别"成绩(state-level cut)</td>
+        <td><span class="dim">待规划</span></td></tr>
+      <tr><td><strong>G10</strong></td>
+        <td>联系目标学校教练(发 times + 视频)</td>
+        <td><span class="dim">待规划</span></td></tr>
+      <tr><td><strong>G11 春</strong></td>
+        <td>校园访问(unofficial visit) + summer camp</td>
+        <td><span class="dim">待规划</span></td></tr>
+      <tr><td><strong>G12 秋</strong></td>
+        <td>ED/EA 申请(教练直接联系招生办)</td>
+        <td><span class="dim">待规划</span></td></tr>
+    </tbody>
+  </table></div>
+  <p class="lead"><strong>关键里程碑</strong>:G9 出"招募级"成绩 → G10 教练发函 → G11 校园访问 → G12 ED。这就是体育特长生通道的"4 年闭环"。</p>
+</section>
+
+<section>
+  <h2>5. 学术 + 体育 双轮策略</h2>
+  <p>特长生通道≠ 学术放水。NESCAC 录取率 < 15%,学术门槛反而高:</p>
+  <ul>
+    <li><strong>IB 预估分 38+/42</strong>(同常规申请)</li>
+    <li><strong>SAT 1500+ / ACT 33+</strong>(美本 Top 文理)</li>
+    <li><strong>TOEFL 105+</strong>(国际生)</li>
+    <li><strong>软实力强</strong> — Henry 老师评语"role model"是核心卖点</li>
+  </ul>
+  <div class="card">
+    <h4>⚠️ "教练权重 vs 学术权重" 平衡术</h4>
+    <p>体育特长生申请时,推荐信结构很重要:</p>
+    <ul>
+      <li><strong>2 封学科推荐信</strong>(数学 + 1 门核心)</li>
+      <li><strong>1 封教练推荐信</strong>(校队 + 比赛成绩)</li>
+      <li><strong>1 封"班主任/升学顾问"信</strong>(整体评价)</li>
+    </ul>
+    <p>教练信要包含:具体 times + 比赛成绩 + 训练态度 + 领导力。学术信要包含:criterion 全维度 + 进步趋势 + 同伴帮助。</p>
+  </div>
+</section>
+
+<section>
+  <h2>6. Henry 的"教练信"怎么准备</h2>
+  <p>游泳教练 Darwin Chen 已经给 Henry 3 学期 32/32 满分。但教练信<strong>不能只写分数</strong>,要包含:</p>
+  <ul>
+    <li>📊 <strong>具体 times</strong>(50m / 100m / 200m 自由泳)</li>
+    <li>🏆 <strong>比赛成绩</strong>(省级 / 全国级 / 国际级名次)</li>
+    <li>💪 <strong>训练态度</strong>(出勤率 / 自训 / 主动加练)</li>
+    <li>👥 <strong>领导力</strong>(队长 / 副队长 / 带新人)</li>
+    <li>🧠 <strong>战术理解</strong>(接力棒次 / 体能分配 / 心理素质)</li>
+  </ul>
+  <p class="lead">Henry 现在 G7 阶段——<strong>G9 之前</strong>的目标:成为校队主力 + 参加省级青少年赛 + 进省队集训名单。这是"招募级"的入场券。</p>
+</section>
+
+<section>
+  <h2>7. 行动清单</h2>
+  <ul>
+    <li>☐ G8 暑假:参加 1 个美国大学 swimming camp(2-3 周,NESCAC 主办)</li>
+    <li>☐ G9 春:出"招募级"times(查目标学校的 recruiting standards)</li>
+    <li>☐ G9 夏:主动联系 5-10 所学校教练(发 times + 训练视频 + 学术简报)</li>
+    <li>☐ G10:校园参观(自费或受邀) + 1 封教练推荐信准备</li>
+    <li>☐ G11:ED 选校 + 学术 + 体育两线作战</li>
+  </ul>
+</section>
+
+<div class="footer">Hermes · IB 升学资料库 v1.2 · Module D · 资料源:NESCAC 官方 / USNWR / 校内升学顾问</div>
+</div>
+</body>
+</html>

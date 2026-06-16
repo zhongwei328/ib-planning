@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IB 升学资料库 · v1 雏形</title>
+<style>
+:root {
+  --bg: #0e1116;
+  --bg-elev: #161b22;
+  --bg-card: #1c2128;
+  --border: #30363d;
+  --text: #e6edf3;
+  --text-dim: #8b949e;
+  --text-mute: #6e7681;
+  --accent: #58a6ff;
+  --accent-2: #d2a8ff;
+  --gold: #d29922;
+  --green: #3fb950;
+  --red: #f85149;
+  --orange: #ff8c42;
+  --mono: 'SF Mono', 'JetBrains Mono', 'Fira Code', Consolas, monospace;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', Roboto, sans-serif;
+  font-size: 16px;
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+  scroll-behavior: smooth;
+}
+a { color: var(--accent); text-decoration: none; border-bottom: 1px dotted var(--accent); }
+a:hover { border-bottom-style: solid; }
+.container { max-width: 1200px; margin: 0 auto; padding: 24px; }
+.hero { padding: 64px 0 48px; border-bottom: 1px solid var(--border); margin-bottom: 48px; }
+.hero h1 { font-size: clamp(28px, 5vw, 44px); font-weight: 800; letter-spacing: -0.02em; background: linear-gradient(135deg, var(--accent) 0%, var(--accent-2) 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 12px; }
+.hero .subtitle { color: var(--text-dim); font-size: 18px; }
+.hero .meta { color: var(--text-mute); font-size: 14px; margin-top: 16px; font-family: var(--mono); }
+
+/* Profile card */
+.profile {
+  background: var(--bg-elev);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 24px;
+  margin-bottom: 32px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px 24px;
+}
+.profile-item { }
+.profile-item .label { color: var(--text-mute); font-size: 12px; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 4px; }
+.profile-item .value { color: var(--text); font-weight: 600; font-size: 16px; }
+.profile-item .value .star { color: var(--gold); }
+
+/* TOC */
+.toc { background: var(--bg-elev); border: 1px solid var(--border); border-radius: 12px; padding: 20px 24px; margin-bottom: 48px; position: sticky; top: 16px; z-index: 10; backdrop-filter: blur(8px); }
+.toc h2 { font-size: 13px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-dim); margin-bottom: 12px; font-weight: 600; }
+.toc ol { list-style: none; counter-reset: toc; columns: 2; column-gap: 32px; }
+.toc ol li { counter-increment: toc; margin-bottom: 6px; break-inside: avoid; }
+.toc ol li a { color: var(--text); display: block; padding: 4px 0; border: none; font-size: 14px; }
+.toc ol li a::before { content: counter(toc, decimal-leading-zero) " "; color: var(--text-mute); font-family: var(--mono); margin-right: 8px; font-size: 12px; }
+.toc ol li a:hover { color: var(--accent); }
+
+/* Sections */
+section { margin-bottom: 64px; scroll-margin-top: 80px; }
+section h2 { font-size: clamp(22px, 3.5vw, 30px); font-weight: 700; margin-bottom: 8px; padding-bottom: 16px; border-bottom: 2px solid var(--border); display: flex; align-items: center; gap: 12px; }
+section h2 .num { font-family: var(--mono); font-size: 18px; color: var(--text-mute); font-weight: 400; }
+section h2 .title { flex: 1; }
+section h3 { font-size: 18px; font-weight: 600; margin: 24px 0 8px; color: var(--text); }
+section h4 { font-size: 14px; font-weight: 600; margin: 20px 0 8px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.05em; }
+section p { margin-bottom: 12px; }
+section ul, section ol { margin: 8px 0 16px 24px; }
+section li { margin-bottom: 4px; }
+section strong { color: var(--text); font-weight: 600; }
+
+.lead { color: var(--text-dim); font-size: 15px; margin: 12px 0 24px; padding: 12px 16px; background: var(--bg-elev); border-left: 3px solid var(--accent); border-radius: 0 6px 6px 0; }
+
+/* Status pills */
+.pill { display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 12px; font-weight: 600; font-family: var(--mono); }
+.pill.green { background: rgba(63, 185, 84, 0.15); color: var(--green); border: 1px solid rgba(63, 185, 84, 0.3); }
+.pill.gold { background: rgba(210, 153, 34, 0.15); color: var(--gold); border: 1px solid rgba(210, 153, 34, 0.3); }
+.pill.red { background: rgba(248, 81, 73, 0.15); color: var(--red); border: 1px solid rgba(248, 81, 73, 0.3); }
+.pill.blue { background: rgba(88, 166, 255, 0.15); color: var(--accent); border: 1px solid rgba(88, 166, 255, 0.3); }
+.pill.orange { background: rgba(255, 140, 66, 0.15); color: var(--orange); border: 1px solid rgba(255, 140, 66, 0.3); }
+
+/* Tables */
+.table-wrap { overflow-x: auto; margin: 16px 0 24px; border: 1px solid var(--border); border-radius: 8px; }
+table { width: 100%; border-collapse: collapse; font-size: 14px; }
+thead { background: var(--bg-elev); }
+th { text-align: left; padding: 10px 14px; font-weight: 600; color: var(--text-dim); border-bottom: 1px solid var(--border); white-space: nowrap; }
+td { padding: 8px 14px; border-bottom: 1px solid var(--border); vertical-align: top; }
+tbody tr:last-child td { border-bottom: none; }
+tbody tr:hover { background: var(--bg-elev); }
+
+/* Cards */
+.grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 16px; margin: 16px 0 24px; }
+.card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 16px 20px; }
+.card h4 { color: var(--accent); margin-bottom: 8px; }
+.card .card-meta { color: var(--text-mute); font-size: 12px; font-family: var(--mono); margin-bottom: 12px; }
+
+/* Timeline */
+.timeline { position: relative; padding-left: 24px; margin: 16px 0 24px; }
+.timeline::before { content: ""; position: absolute; left: 8px; top: 0; bottom: 0; width: 2px; background: var(--border); }
+.tl-item { position: relative; margin-bottom: 16px; padding-left: 24px; }
+.tl-item::before { content: ""; position: absolute; left: -20px; top: 8px; width: 12px; height: 12px; border-radius: 50%; background: var(--accent); border: 2px solid var(--bg); box-shadow: 0 0 0 2px var(--accent); }
+.tl-item .tl-year { font-family: var(--mono); color: var(--gold); font-size: 13px; font-weight: 600; }
+.tl-item .tl-title { font-weight: 600; margin-top: 2px; }
+.tl-item .tl-desc { color: var(--text-dim); font-size: 14px; }
+
+/* Key insight */
+.insight { background: linear-gradient(135deg, rgba(88,166,255,0.08) 0%, rgba(210,168,255,0.08) 100%); border: 1px solid rgba(88,166,255,0.2); border-radius: 8px; padding: 16px 20px; margin: 16px 0 24px; }
+.insight::before { content: "★ 关键认知"; display: block; color: var(--accent); font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 6px; }
+.warn { color: var(--red); }
+.gold { color: var(--gold); }
+
+.footer { margin-top: 96px; padding: 32px 0; border-top: 1px solid var(--border); color: var(--text-mute); font-size: 13px; font-family: var(--mono); text-align: center; }
+
+@media (max-width: 640px) {
+  .toc { position: static; }
+  .toc ol { columns: 1; }
+  section h2 { font-size: 20px; }
+  th, td { padding: 6px 10px; font-size: 13px; }
+  .profile { grid-template-columns: 1fr 1fr; }
+}
+</style>
+</head>
+<body>
+<div class="container">
+
+<header class="hero">
+  <h1>IB 升学资料库</h1>
+  <div class="subtitle">七年级 · 数学 + STEM 强项 · 大学规划 v1 雏形</div>
+  <div class="meta">Last updated: <span id="last-updated"></span> · v1.0 · 维护者: Hermes</div>
+</header>
+
+<!-- ============= PROFILE ============= -->
+<div class="profile">
+  <div class="profile-item">
+    <div class="label">学校</div>
+    <div class="value">中国国际学校</div>
+  </div>
+  <div class="profile-item">
+    <div class="label">年级</div>
+    <div class="value">G7（七年级 / IB MYP 末段）</div>
+  </div>
+  <div class="profile-item">
+    <div class="label">成绩</div>
+    <div class="value"><span class="star">★</span> 年级第一（1-7 年级持续）</div>
+  </div>
+  <div class="profile-item">
+    <div class="label">数学竞赛</div>
+    <div class="value">AMC 8 = 23/25 <span class="pill gold">Top 1%</span></div>
+  </div>
+  <div class="profile-item">
+    <div class="label">数学其他</div>
+    <div class="value">UKMT · 袋鼠赛（优异）</div>
+  </div>
+  <div class="profile-item">
+    <div class="label">机器人</div>
+    <div class="value">FLL 华东 <span class="pill gold">季军</span> → 亚洲总决赛</div>
+  </div>
+  <div class="profile-item">
+    <div class="label">下阶段</div>
+    <div class="value">FTC · AMC 10 备考</div>
+  </div>
+  <div class="profile-item">
+    <div class="label">暑假</div>
+    <div class="value">托福冲刺</div>
+  </div>
+  <div class="profile-item">
+    <div class="label">英语标化</div>
+    <div class="value">小托福 <span class="star">865</span> <span class="pill green">✅ B2</span> · 学院托福 <span class="star">627</span> <span class="pill green">✅ C1</span></div>
+  </div>
+  <div class="profile-item">
+    <div class="label">长线目标</div>
+    <div class="value">大学规划</div>
+  </div>
+</div>
+
+<!-- ============= TOC ============= -->
+<nav class="toc">
+  <h2>目录</h2>
+  <ol>
+    <li><a href="#sec-overview">整体画像 & 升学逻辑</a></li>
+    <li><a href="#sec-academic">学术背景（IB 选课 / 校内成绩）</a></li>
+    <li><a href="#sec-math">数学竞赛（AMC 8/10/12 · AIME 路径）</a></li>
+    <li><a href="#sec-stem">机器人 / STEM（FLL → FTC → FRC）</a></li>
+    <li><a href="#sec-test">标化考试（托福 / 小托福 / SSAT）</a></li>
+    <li><a href="#sec-univ">大学规划（美 / 英 / 港 / 加 Top 30）</a></li>
+    <li><a href="#sec-timeline">7-12 年级时间线</a></li>
+    <li><a href="#sec-resources">资源 / 链接</a></li>
+    <li><a href="interest-map.html">🗺 兴趣地图（自测工具）</a></li>
+    <li><a href="holland-test.html">🔧 霍兰德职业兴趣测试</a></li>
+    <li><a href="mbti-test.html">🧠 MBTI 性格测试（仅参考）</a></li>
+  </ol>
+</nav>
+
+<!-- ============= SECTION 1 ============= -->
+<section id="sec-overview">
+  <h2><span class="num">01</span><span class="title">整体画像 & 升学逻辑</span></h2>
+  <p class="lead">七年级 + 年级第一 + AMC 8 全球前 1% + FLL 季军 = 学术 + 竞赛 + 项目的"三角形"已经初具雏形。在美本 Top 30 申请中，这三个维度都不可或缺。</p>
+
+  <h3>1.1 升学评估的"三脚架"</h3>
+  <div class="grid-2">
+    <div class="card">
+      <h4>① 学术硬实力</h4>
+      <div class="card-meta">标化 + 校内 GPA + 课程难度</div>
+      <ul>
+        <li>GPA <span class="pill green">✅ 顶尖</span>（年级第一）</li>
+        <li>IB 课程体系 <span class="pill blue">✅</span></li>
+        <li>小托福 865 <span class="pill green">✅ B2</span></li>
+        <li>学院托福 627 <span class="pill green">✅ C1</span></li>
+        <li>托福 (iBT) <span class="pill orange">⏳ G8 首考</span></li>
+        <li>SAT/ACT <span class="pill blue">G11 启动</span></li>
+      </ul>
+    </div>
+    <div class="card">
+      <h4>② 竞赛 / 学术成果</h4>
+      <div class="card-meta">量化能力 + 持续性 + 难度</div>
+      <ul>
+        <li>AMC 8 23/25 <span class="pill gold">✅ Top 1%</span></li>
+        <li>UKMT / 袋鼠 <span class="pill green">✅</span></li>
+        <li>AMC 10/AIME <span class="pill orange">⏳ 备考中</span></li>
+        <li>学科类国际赛 <span class="pill blue">待规划</span></li>
+      </ul>
+    </div>
+    <div class="card">
+      <h4>③ 项目 / 影响力</h4>
+      <div class="card-meta">深度 + 持续 + 解决真问题</div>
+      <ul>
+        <li>FLL 华东季军 <span class="pill gold">✅</span></li>
+        <li>FLL 亚洲总决赛 <span class="pill orange">⏳ 进行中</span></li>
+        <li>FTC <span class="pill blue">G8 启动</span></li>
+        <li>科研/论文 <span class="pill blue">G10-G11</span></li>
+      </ul>
+    </div>
+    <div class="card">
+      <h4>④ 文书 / 故事线</h4>
+      <div class="card-meta">从"做了什么"到"成为谁"</div>
+      <ul>
+        <li>目前是"会做很多事" <span class="pill orange">G7-9</span></li>
+        <li>需要聚焦"一个核心身份" <span class="pill red">⚠️ G10 前</span></li>
+        <li>招生官视角："这个孩子想要解决什么问题"</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="insight">七年级是规划黄金期，<strong>不是因为"要开始卷"</strong>，而是因为接下来 4 年（8-11 年级）要做的事需要"长周期 + 持续性 + 深度"。一个 AMC 8 全球前 1% 的孩子，如果只停留在"刷题拿分"，到 11 年级会发现简历上全是奖项但没有"故事"。</div>
+</section>
+
+<!-- ============= SECTION 2 ============= -->
+<section id="sec-academic">
+  <h2><span class="num">02</span><span class="title">学术背景：IB 选课 + 校内 GPA</span></h2>
+
+  <h3>2.1 IB 课程路径</h3>
+  <div class="table-wrap"><table>
+    <thead><tr><th>阶段</th><th>年级</th><th>关键节点</th></tr></thead>
+    <tbody>
+      <tr><td><strong>IB MYP</strong></td><td>G6-G10</td><td>校内成绩单是大学申请核心材料；G9-G10 选课决定 DP 难度</td></tr>
+      <tr><td><strong>IB DP</strong></td><td>G11-G12</td><td>选 6 门课（3 HL + 3 SL）+ TOK + EE；HL 难度是大学看重的"挑战上限"</td></tr>
+      <tr><td><strong>IB 预估分</strong></td><td>G12 上</td><td>申请大学用的核心分数（不是最终考分）</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>2.2 IB 选课推荐（按数学/工程方向）</h3>
+  <div class="table-wrap"><table>
+    <thead><tr><th>组别</th><th>推荐 HL</th><th>推荐 SL</th><th>说明</th></tr></thead>
+    <tbody>
+      <tr><td>Group 1 语言</td><td>中文 A</td><td>—</td><td>母语优势</td></tr>
+      <tr><td>Group 2 语言</td><td>英语 B</td><td>—</td><td>托福/SAT 体系需英语 B HL</td></tr>
+      <tr><td>Group 3 社科</td><td>经济 HL</td><td>—</td><td>对工程方向加分（理解系统）</td></tr>
+      <tr><td>Group 4 实验科学</td><td>物理 HL</td><td>化学 SL</td><td>STEM 标配</td></tr>
+      <tr><td>Group 5 数学</td><td>数学 AA HL</td><td>—</td><td><strong>数学强项必选 AA HL</strong></td></tr>
+      <tr><td>Group 6 艺术/选修</td><td>—</td><td>计算机科学 SL 或 设计技术 SL</td><td>辅助工程方向</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>2.3 校内 GPA 维持</h3>
+  <ul>
+    <li><strong>现状：年级第一</strong>，这是 Top 30 申请的"门票"</li>
+    <li>挑战：进入 G10 之后 IB MYP 难度提升，需保持</li>
+    <li>策略：选课不要"贪多"，HL 选 3 门真正强的</li>
+  </ul>
+
+  <div class="insight">IB DP 的"HL 选什么"比"分多高"更重要。<strong>美本招生官想看到的是：你选了最有挑战的课，并且搞定了它</strong>。数学 AA HL + 物理 HL 是 STEM 方向的"标配签名"。</div>
+</section>
+
+<!-- ============= SECTION 3 ============= -->
+<section id="sec-math">
+  <h2><span class="num">03</span><span class="title">数学竞赛：AMC 8 → 10/12 → AIME 路径</span></h2>
+
+  <h3>3.1 当前战绩</h3>
+  <div class="grid-2">
+    <div class="card">
+      <h4>AMC 8 (2025-26)</h4>
+      <div class="card-meta">MAA · 全球性 · 25 道题 · 40 分钟</div>
+      <p>得分 <strong class="gold">23/25</strong> — 全球前 1%</p>
+      <p class="warn">⚠️ AMC 8 是入门级；真正的"学术含金量"在 AMC 10/12</p>
+    </div>
+    <div class="card">
+      <h4>UKMT 系列</h4>
+      <div class="card-meta">英国 · Junior / Intermediate / Senior</div>
+      <p>Junior Mathematical Challenge (G7-G8) <strong class="gold">优异</strong></p>
+      <p>后续：Senior Mathematical Challenge（G9+）→ British Mathematical Olympiad</p>
+    </div>
+    <div class="card">
+      <h4>袋鼠数学 (Math Kangaroo)</h4>
+      <div class="card-meta">国际 · 普及型 · 各年级分级</div>
+      <p>学校代表 / 满分 / 卓越（待你确认具体奖项）</p>
+    </div>
+    <div class="card">
+      <h4>接下来要做</h4>
+      <div class="card-meta">2026-27 目标</div>
+      <p>AMC 10 备考 <span class="pill orange">主目标</span></p>
+      <p>UKMT Senior 冲金银</p>
+    </div>
+  </div>
+
+  <h3>3.2 AMC 进阶路径（核心路径）</h3>
+  <div class="timeline">
+    <div class="tl-item">
+      <div class="tl-year">G7 (现在)</div>
+      <div class="tl-title">AMC 8 完成（23/25） + UKMT Junior / 袋鼠赛</div>
+      <div class="tl-desc">✅ 已有</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-year">G8 (2026-27)</div>
+      <div class="tl-title">AMC 10 冲 130+ / 132+ 进 AIME</div>
+      <div class="tl-desc">2026-11 月考 AMC 10 A 或 B；目标 Honor Roll (130+) 或 Distinction (132+ 进 AIME 邀请赛)</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-year">G9 (2027-28)</div>
+      <div class="tl-title">AIME 冲刺 + AMC 12 同步</div>
+      <div class="tl-desc">AIME 2 月考；目标 8-10 分；同步备考 AMC 12</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-year">G10 (2028-29)</div>
+      <div class="tl-title">AIME 10+ + USAMO/USAJMO 选拔</div>
+      <div class="tl-desc">USAJMO 入围 = 数学天才的"硬通货"；中国籍学生需通过 China TST 选拔</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-year">G11 (2029-30)</div>
+      <div class="tl-title">Math Prize / Putnam 准备 / 科研</div>
+      <div class="tl-desc">高阶比赛 + 大学级数学研究</div>
+    </div>
+  </div>
+
+  <h3>3.3 关键节点：AIME 邀请</h3>
+  <ul>
+    <li><strong>AMC 10 考到 130+</strong> → Honor Roll</li>
+    <li><strong>AMC 10 考到 132+（前 2.5%）</strong> → 邀请参加 AIME</li>
+    <li><strong>AIME 8+ 分</strong> → 数学能力"硬证据"，对 Top 30 申请是强加分</li>
+    <li><strong>AIME 12+ 分</strong> → 申请 MIT/Caltech/CMU 数学/CS 的"门槛级"</li>
+  </ul>
+
+  <h3>3.4 推荐书目</h3>
+  <div class="table-wrap"><table>
+    <thead><tr><th>书名</th><th>难度</th><th>阶段</th><th>说明</th></tr></thead>
+    <tbody>
+      <tr><td>《Art of Problem Solving (AoPS) Volume 1 & 2》</td><td>AMC 10 入门</td><td>G8 必读</td><td>AMC 备考"圣经"</td></tr>
+      <tr><td>《Precalculus》</td><td>中级</td><td>G8 暑假</td><td>AMC 12 必学</td></tr>
+      <tr><td>《Calculus》</td><td>中级</td><td>G9</td><td>AIME 高分必备</td></tr>
+      <tr><td>AMC 历年真题</td><td>—</td><td>持续</td><td>必须刷完 2010-2025 共 30 套</td></tr>
+      <tr><td>AoPS Online School</td><td>系统</td><td>G8-G10</td><td>数学夏校 + 在线课程</td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="insight">AMC 8 的 23/25 在申请中"含金量有限"——美本 Top 30 看到 AMC 8 不会"wow"。但这个成绩说明基础牢固。<strong>真正的"硬通货"是 AIME 邀请（AMC 10 132+）</strong>。从现在到 11 年级，目标应该是 AIME 10+。</div>
+</section>
+
+<!-- ============= SECTION 4 ============= -->
+<section id="sec-stem">
+  <h2><span class="num">04</span><span class="title">机器人 / STEM：FLL → FTC → FRC 进阶</span></h2>
+
+  <h3>4.1 FIRST 体系（最主流的青少年机器人竞赛）</h3>
+  <div class="table-wrap"><table>
+    <thead><tr><th>阶段</th><th>赛事</th><th>年级</th><th>类型</th><th>含金量</th></tr></thead>
+    <tbody>
+      <tr><td>入门</td><td>FLL (First Lego League)</td><td>G4-G8</td><td>乐高 EV3/Spike + 课题研究</td><td>中</td></tr>
+      <tr><td>进阶</td><td>FTC (First Tech Challenge)</td><td>G7-G12</td><td>Java/C++ + 18"×18" 机器人 + 团队</td><td><strong class="gold">高</strong></td></tr>
+      <tr><td>专业</td><td>FRC (First Robotics Competition)</td><td>G9-G12</td><td>120 磅工业级机器人 + 6 周建造</td><td><strong class="gold">极高</strong></td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>4.2 当前战绩</h3>
+  <div class="card">
+    <h4>FLL 华东赛区季军</h4>
+    <div class="card-meta">2025-26 赛季</div>
+    <p>已晋级 <strong class="gold">亚洲总决赛</strong>（北京）</p>
+    <p>FLL 的"含金量"在于：项目研究 + 机器人设计 + 核心价值观 综合评分</p>
+  </div>
+
+  <h3>4.3 接下来：FTC 路径</h3>
+  <ul>
+    <li><strong>G8 (2026-27)</strong>：FTC 第一年；目标 赛区 8-16 强</li>
+    <li><strong>G9 (2027-28)</strong>：FTC 核心年；目标 赛区冠军 / 晋级世锦赛</li>
+    <li><strong>G10 (2028-29)</strong>：FTC 冲刺 / FRC 启动；目标 全国赛</li>
+    <li><strong>G11 (2029-30)</strong>：FRC 旗舰年；目标 主力程序员 / 总设计师</li>
+  </ul>
+
+  <h3>4.4 顶级大学怎么看？</h3>
+  <div class="grid-2">
+    <div class="card">
+      <h4>MIT</h4>
+      <p>FTC/FRC 经历 + 主导角色 + 国家级奖项 = <strong class="gold">强加分</strong></p>
+      <p>每年录取约 15-20% 有 FIRST 经历的申请者</p>
+    </div>
+    <div class="card">
+      <h4>CMU / Georgia Tech</h4>
+      <p>FRC 主力队员 + 工程类夏校 = <strong class="gold">签名项</strong></p>
+      <p>CMU 工程学院明确说"FRC 经历是申请中最受欢迎的"之一</p>
+    </div>
+    <div class="card">
+      <h4>Stanford / Berkeley</h4>
+      <p>FRC + 编程/AI 项目 = <strong class="gold">匹配项</strong></p>
+      <p>偏好"动手 + 解决真问题"的申请者</p>
+    </div>
+    <div class="card">
+      <h4>Cornell / 普林 / 哈佛</h4>
+      <p>FIRST 经历是"识别度高的活动"</p>
+      <p>需要配合其他文科/服务类活动</p>
+    </div>
+  </div>
+
+  <div class="insight">FTC → FRC 路径对中国国际学校孩子特别友好：成本相对低（2-3 万人民币/赛季）、周期合理（每年 9 月-3 月）、技术含量高（Java/C++/CAD）。<strong>关键：不要只当队员，要做"主导角色"</strong>（队长 / 总设计师 / 主程序员 / 战略负责人）——招生官看到的不是"参与"，是"leadership"。</div>
+</section>
+
+<!-- ============= SECTION 5 ============= -->
+<section id="sec-test">
+  <h2><span class="num">05</span><span class="title">标化考试：托福 / 小托福 / SAT</span></h2>
+
+  <h3>5.0 当前战绩</h3>
+  <div class="grid-2">
+    <div class="card">
+      <h4>小托福 (TOEFL Junior)</h4>
+      <div class="card-meta">2024 年 · 5 年级时考 · 满分 900</div>
+      <p>得分 <strong class="gold">865 / 900</strong> <span class="pill green">✅ 优秀</span></p>
+      <p>对应 <strong>CEFR B2</strong>（欧洲共同语言参考标准 B2，约高中毕业生英语水平）</p>
+      <p class="warn">同年级段（5 年级） 845+ 已属"高阶"；865 是 B2 段位的上限，距 C1 只差 5 分</p>
+      <p style="color: var(--text-dim); font-size: 13px; margin-top: 8px;">📌 这是 <strong>2 年前</strong>的成绩。考虑到已过去 2 年，<strong>实际英语能力大概率已突破 C1</strong>。</p>
+    </div>
+    <div class="card">
+      <h4>学院托福 (TOEFL ITP / Institutional)</h4>
+      <div class="card-meta">2026 年初 · 7 年级 · 满分 677</div>
+      <p>得分 <strong class="gold">627 / 677</strong> <span class="pill green">✅ 接近满分</span></p>
+      <p>对应 <strong>CEFR C1</strong>（大学水平），换算为正式托福 (iBT) 约 <strong>95-105</strong> 分</p>
+      <p><strong>93% percentile</strong> — 排名前 7%，等同北美 11-12 年级英语优秀生</p>
+      <p class="warn">学院托福无口语/写作，<strong>阅读 + 听力 + 语法三项满分 627</strong>，说明学术英语基础非常扎实</p>
+      <p style="color: var(--text-dim); font-size: 13px; margin-top: 8px;">📌 这是 <strong>最近一次</strong>考的（今年初），是当前英语能力的最佳基准。</p>
+    </div>
+  </div>
+
+  <h3>5.1 标化路线</h3>
+  <div class="timeline">
+    <div class="tl-item">
+      <div class="tl-year">G7 (现在)</div>
+      <div class="tl-title">小托福 865 (2024) ✅ + 学院托福 627 (2026 初) ✅</div>
+      <div class="tl-desc">英语已达 C1；暑假冲托福 iBT 100+</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-year">G8 (2026-27)</div>
+      <div class="tl-title">托福首考</div>
+      <div class="tl-desc">目标 100+；国际学校孩子有优势</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-year">G9 (2027-28)</div>
+      <div class="tl-title">托福冲 110+ / SSAT 准备</div>
+      <div class="tl-desc">申请寄宿美高 / 美本夏校需要</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-year">G10 (2028-29)</div>
+      <div class="tl-title">SAT / ACT 启动</div>
+      <div class="tl-desc">G10 暑假首考；目标 1500+</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-year">G11 (2029-30)</div>
+      <div class="tl-title">SAT 冲分 + 提交申请</div>
+      <div class="tl-desc">G11 秋季再考；ED/EA 提交</div>
+    </div>
+  </div>
+
+  <h3>5.2 托福目标分解</h3>
+  <div class="table-wrap"><table>
+    <thead><tr><th>分数段</th><th>学校档次</th><th>建议</th></tr></thead>
+    <tbody>
+      <tr><td>100+</td><td>Top 50 主流</td><td>基础线</td></tr>
+      <tr><td>105+</td><td>Top 30 主流</td><td>申请主力目标</td></tr>
+      <tr><td>110+</td><td>Top 15 主流</td><td>强力加分</td></tr>
+      <tr><td>115+</td><td>Top 10 顶尖</td><td>几乎无短板</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>5.3 暑假托福冲刺建议</h3>
+  <ul>
+    <li>国际学校孩子，<strong>听力 + 口语</strong>是优势</li>
+    <li><strong>阅读 + 写作</strong>需要专项训练</li>
+    <li>每天 2-3 小时持续 6-8 周，目标首考 100+</li>
+    <li>资料：TPO 真题（50 套）+ 官方指南（OG）</li>
+    <li><strong>起点定位：</strong> 学院托福 627/677 = iBT 约 95-105 区间 —— 第一次正式托福极有可能直接 <strong class="gold">冲 105+</strong>，跳过"100 入门"阶段</li>
+  </ul>
+
+  <div class="insight">国际学校孩子在托福上有结构性优势（日常沉浸式英语），<strong>但"会说"和"考高分"是两件事</strong>。托福考核的是学术英语能力 —— 写作的逻辑、阅读的精度、听力的笔记、口语的论证。暑假冲刺前先做 1 套 TPO 摸底，定位弱项。</div>
+</section>
+
+<!-- ============= SECTION 6 ============= -->
+<section id="sec-univ">
+  <h2><span class="num">06</span><span class="title">大学规划：美 / 英 / 港 / 加 Top 30</span></h2>
+
+  <h3>6.1 4 大方向画像</h3>
+  <div class="grid-2">
+    <div class="card">
+      <h4>🇺🇸 美本 Top 30</h4>
+      <div class="card-meta">最主流目标</div>
+      <ul>
+        <li>MIT / Caltech / Stanford / Harvard</li>
+        <li>CMU / Berkeley / UMich / Georgia Tech</li>
+        <li>Cornell / Brown / Northwestern</li>
+        <li>申请节点：G11 秋季 ED/EA，G12 春季 RD</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h4>🇬🇧 英本 G5</h4>
+      <div class="card-meta">牛津 / 剑桥 / 帝国 / UCL / LSE</div>
+      <ul>
+        <li>牛剑需要 <strong>笔试 + 面试</strong>（MAT/ENGAA/NSAA）</li>
+        <li>IC 重视竞赛（AMC/AIME/UKMT）</li>
+        <li>申请节点：G12 上 10/15 截止（UCAS）</li>
+        <li>IB 预估分 40+/42 是门槛</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h4>🇭🇰 港本</h4>
+      <div class="card-meta">港大 / 港中文 / 港科大</div>
+      <ul>
+        <li>港大：IB 38+/42（顶级专业）</li>
+        <li>港中文 / 港科大：IB 36+</li>
+        <li>全英文教学，与 IB 体系无缝衔接</li>
+        <li>费用：12-18 万 RMB/年</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h4>🇨🇦 加本</h4>
+      <div class="card-meta">多伦多 / UBC / 麦吉尔</div>
+      <ul>
+        <li>IB 38-42 直录</li>
+        <li>多大工程 / 计算机：IB 40+</li>
+        <li>UBC：IB 38+</li>
+        <li>性价比高，移民路径友好</li>
+      </ul>
+    </div>
+  </div>
+
+  <h3>6.2 顶级学校对当前档案的"匹配度"评估</h3>
+  <div class="table-wrap"><table>
+    <thead><tr><th>学校</th><th>学术</th><th>数学/STEM</th><th>匹配度</th><th>建议</th></tr></thead>
+    <tbody>
+      <tr><td><strong>MIT</strong></td><td>年级第一 ✅</td><td>AMC 8 23/25 + FTC ⭐⭐⭐</td><td><span class="pill gold">极高</span></td><td>主攻方向；需 AIME 10+</td></tr>
+      <tr><td><strong>Caltech</strong></td><td>年级第一 ✅</td><td>数学 + STEM ⭐⭐⭐</td><td><span class="pill gold">极高</span></td><td>需 AIME + FRC 深度参与</td></tr>
+      <tr><td><strong>CMU</strong></td><td>年级第一 ✅</td><td>FRC 主力 + CS ⭐⭐⭐</td><td><span class="pill gold">极高</span></td><td>主攻方向；CS 路线</td></tr>
+      <tr><td><strong>Stanford</strong></td><td>年级第一 ✅</td><td>需要"故事" ⭐⭐</td><td><span class="pill orange">高</span></td><td>需补"为什么要做这个"</td></tr>
+      <tr><td><strong>Berkeley</strong></td><td>年级第一 ✅</td><td>数学 + 工程 ⭐⭐⭐</td><td><span class="pill gold">高</span></td><td>工程方向首选</td></tr>
+      <tr><td><strong>Cornell</strong></td><td>年级第一 ✅</td><td>FRC + 工程 ⭐⭐</td><td><span class="pill blue">中-高</span></td><td>工程 CS 路线</td></tr>
+      <tr><td><strong>Georgia Tech</strong></td><td>年级第一 ✅</td><td>FTC/FRC ⭐⭐⭐</td><td><span class="pill gold">高</span></td><td>性价比之王</td></tr>
+      <tr><td>牛津 / 剑桥</td><td>IB 40+ 预估</td><td>MAT 笔试 + 面试</td><td><span class="pill blue">中-高</span></td><td>需 G11 启动</td></tr>
+      <tr><td>Imperial / UCL</td><td>IB 38+</td><td>AMC/AIME ⭐⭐⭐</td><td><span class="pill gold">高</span></td><td>主申方向之一</td></tr>
+      <tr><td>多伦多 / UBC</td><td>IB 38+</td><td>不挑剔 ⭐⭐</td><td><span class="pill orange">保底</span></td><td>G12 上提交</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>6.3 不同方向的关键节点</h3>
+  <ul>
+    <li><strong>🇺🇸 美本：</strong> G11 秋季 ED/EA（11/1 / 11/15）；G12 春季 RD（1/1）；准备时间 18+ 月</li>
+    <li><strong>🇬🇧 英本：</strong> G12 秋季 10/15 UCAS 截止；牛剑需 G11 暑假前确定</li>
+    <li><strong>🇭🇰 港本：</strong> 港大 G12 上 10 月截止；港中文 / 港科大 G12 上 11 月</li>
+    <li><strong>🇨🇦 加本：</strong> 1-3 月截止；多大 / UBC 接受 IBD 预估分直录</li>
+  </ul>
+
+  <div class="insight">家长最容易犯的错："等到 G11 再想大学"。<strong>美本 Top 30 申请是从 G7 开始的马拉松</strong>。你现在种下的每个种子（GPA、AMC、FTC、托福），到 G11 都会变成"已投入 4-5 年"的故事 —— 这是招生官最爱听的故事。</div>
+</section>
+
+<!-- ============= SECTION 7 ============= -->
+<section id="sec-timeline">
+  <h2><span class="num">07</span><span class="title">7-12 年级总时间线</span></h2>
+  <div class="table-wrap"><table>
+    <thead><tr><th>年级</th><th>学术</th><th>竞赛 / STEM</th><th>标化</th><th>活动 / 其他</th></tr></thead>
+    <tbody>
+      <tr><td><strong>G7 (现在)</strong></td><td>GPA 第一</td><td>AMC 8 完成 ✅；FLL 亚总 ✅</td><td>小托福 865 ✅；学院托福 627 ✅</td><td>开始写"兴趣地图"</td></tr>
+      <tr><td><strong>G8 (2026-27)</strong></td><td>GPA 保持；MYP 选课</td><td>AMC 10 冲 132+；FTC 第一年</td><td>托福首考 100+</td><td>社团 / 兴趣延续</td></tr>
+      <tr><td><strong>G9 (2027-28)</strong></td><td>IB MYP 末；选 DP HL</td><td>AMC 12 + AIME 8+；FTC 主力</td><td>托福 110+</td><td>夏校申请 (RSI / SSP / MITES)</td></tr>
+      <tr><td><strong>G10 (2028-29)</strong></td><td>IB DP 开始</td><td>AIME 10+；FRC 启动 / FTC 冲刺</td><td>SAT 1500+ 首考</td><td>科研项目 / 论文 / 影响力活动</td></tr>
+      <tr><td><strong>G11 (2029-30)</strong></td><td>IB DP 核心；预估分出</td><td>AMC 12 / AIME 12+；FRC 主力</td><td>SAT 冲 1550+</td><td>夏校顶级；ED/EA 申请</td></tr>
+      <tr><td><strong>G12 (2030-31)</strong></td><td>IB DP 考完；录取</td><td>持续</td><td>已提交</td><td>RD / 英港加申请</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>7.1 关键节点倒推</h3>
+  <ul>
+    <li><strong>2026-11</strong>：AMC 10 首考（目标 132+）</li>
+    <li><strong>2027 暑假</strong>：第一次"含金量高"的夏校（RSI / SSP / MITY / 加拿大科学夏令营）</li>
+    <li><strong>2028-10</strong>：SAT 首考</li>
+    <li><strong>2029-2029-11</strong>：ED/EA 申请提交（MIT EA 11/1、Stanford REA 11/1）</li>
+    <li><strong>2030-10-15</strong>：UCAS 英本申请截止（如果走英国）</li>
+  </ul>
+</section>
+
+<!-- ============= SECTION 8 ============= -->
+<section id="sec-resources">
+  <h2><span class="num">08</span><span class="title">资源 / 链接</span></h2>
+  <h3>8.1 数学竞赛</h3>
+  <ul>
+    <li><a href="https://artofproblemsolving.com" target="_blank">Art of Problem Solving (AoPS)</a> — AMC 备考"圣经"</li>
+    <li><a href="https://www.maa.org/math-competitions" target="_blank">MAA Official AMC</a></li>
+    <li><a href="https://www.olympiad.org.uk" target="_blank">UKMT</a> — 英国数学信托</li>
+    <li><a href="https://www.mathkangaroo.com" target="_blank">Math Kangaroo</a></li>
+  </ul>
+
+  <h3>8.2 机器人 / STEM</h3>
+  <ul>
+    <li><a href="https://www.firstinspires.org" target="_blank">FIRST Inspires</a> — 全球 FIRST 总部</li>
+    <li><a href="https://www.firstchina.cn" target="_blank">FIRST China</a> — 中国区</li>
+    <li>FTC Tech Spec / Game Manual — 每年 9 月发布</li>
+  </ul>
+
+  <h3>8.3 标化考试</h3>
+  <ul>
+    <li><a href="https://www.ets.org/toefl" target="_blank">TOEFL Official</a></li>
+    <li>TPO 真题（50 套）</li>
+    <li><a href="https://www.collegeboard.org" target="_blank">College Board / SAT</a></li>
+  </ul>
+
+  <h3>8.4 大学申请</h3>
+  <ul>
+    <li><a href="https://www.commonapp.org" target="_blank">Common App</a> — 美本主申请系统</li>
+    <li><a href="https://www.ucas.com" target="_blank">UCAS</a> — 英本申请系统</li>
+    <li><a href="https://www.topuniversities.com" target="_blank">QS Rankings</a> — 大学排名参考</li>
+  </ul>
+
+  <h3>8.5 夏校 / 学术项目</h3>
+  <ul>
+    <li>RSI (Research Science Institute) — 申请最难，含金量最高</li>
+    <li>SSP (Summer Science Program) — 顶级</li>
+    <li>MITES (MIT) — 面向少数族裔 / 多元背景学生</li>
+    <li>YYGS (Yale Young Global Scholars) — 偏人文社科</li>
+    <li>Garcia Center / Stony Brook — 偏 STEM 科研</li>
+  </ul>
+</section>
+
+<!-- ============= FEEDBACK ============= -->
+<section id="sec-feedback" style="background: var(--bg-elev); border: 1px solid var(--border); border-radius: 12px; padding: 32px;">
+  <h2 style="border: none; padding: 0; margin-bottom: 16px;">📝 改进意见收集</h2>
+  <p style="color: var(--text-dim); margin-bottom: 16px;">这是 v1 雏形。后面你说哪几块要加 / 改 / 删，我直接重生成。</p>
+  <h4>可以反馈的维度</h4>
+  <ul>
+    <li><strong>框架：</strong>加新模块、改层级、合并 / 拆解</li>
+    <li><strong>内容：</strong>细节展开、加入案例、添加对比</li>
+    <li><strong>数据：</strong>补充你的具体奖项、成绩、活动</li>
+    <li><strong>时间线：</strong>调整节点、添加 / 删除</li>
+    <li><strong>学校：</strong>增加 / 调整目标学校</li>
+  </ul>
+  <h4>需要补充的信息</h4>
+  <ul>
+    <li>具体学校名称？</li>
+    <li>具体奖项细节（袋鼠赛什么奖？UKMT 几等奖？）</li>
+    <li>FTC 队伍编号？</li>
+    <li>孩子现在读的 MYP 哪些科目？最喜欢的科目？</li>
+    <li>父母背景 / 校友资源？</li>
+  </ul>
+</section>
+
+<footer class="footer">
+  <p>本文档由 Hermes 整理 · v1.1 · 2026-06-09</p>
+  <p style="margin-top: 8px;">持续更新机制：用户提供新问题 / 新信息 → 重做研究 → 重生成</p>
+</footer>
+
+</div>
+<script>
+document.getElementById('last-updated').textContent = new Date().toISOString().split('T')[0];
+</script>
+</body>
+</html>

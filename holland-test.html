@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>霍兰德职业兴趣测试 · G7-G11 升学</title>
+<style>
+:root {
+  --bg: #0e1116; --bg-elev: #161b22; --bg-card: #1c2128; --border: #30363d;
+  --text: #e6edf3; --text-dim: #8b949e; --text-mute: #6e7681;
+  --accent: #58a6ff; --gold: #d29922; --green: #3fb950; --red: #f85149;
+  --mono: 'SF Mono', 'JetBrains Mono', 'Fira Code', Consolas, monospace;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif; line-height: 1.7; padding: 24px; max-width: 900px; margin: 0 auto; }
+a { color: var(--accent); text-decoration: none; border-bottom: 1px dotted var(--accent); }
+.back { color: var(--text-dim); font-size: 14px; margin-bottom: 20px; display: inline-block; border: none; }
+.back:hover { color: var(--accent); }
+h1 { font-size: 32px; margin-bottom: 8px; background: linear-gradient(135deg, var(--accent) 0%, var(--accent) 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+.subtitle { color: var(--text-dim); margin-bottom: 24px; font-size: 15px; }
+section { display: none; }
+section.active { display: block; }
+.intro-box { background: var(--bg-elev); border: 1px solid var(--border); border-radius: 12px; padding: 24px; margin: 20px 0; }
+.intro-box p { color: var(--text-dim); margin-bottom: 12px; }
+.dim-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin: 16px 0; }
+.dim-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 12px; }
+.dim-card .code { font-family: var(--mono); font-weight: 700; font-size: 18px; color: var(--accent); }
+.dim-card .name { font-size: 13px; color: var(--text); margin: 4px 0; }
+.dim-card .desc { font-size: 12px; color: var(--text-mute); }
+.q-block { background: var(--bg-elev); border: 1px solid var(--border); border-radius: 8px; padding: 20px; margin-bottom: 16px; }
+.q-num { color: var(--text-mute); font-size: 12px; font-family: var(--mono); margin-bottom: 6px; }
+.q-text { font-size: 16px; margin-bottom: 14px; font-weight: 500; }
+.q-scale { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; }
+.q-scale label { display: flex; flex-direction: column; align-items: center; padding: 12px 4px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 6px; cursor: pointer; transition: all 0.15s; }
+.q-scale label:hover { border-color: var(--accent); }
+.q-scale input { display: none; }
+.q-scale label:has(input:checked) { background: var(--accent); color: var(--bg); border-color: var(--accent); font-weight: 600; }
+.q-scale .num { font-size: 18px; font-weight: 700; margin-bottom: 2px; }
+.q-scale .lbl { font-size: 11px; }
+.progress { background: var(--bg-elev); border-radius: 6px; height: 6px; margin: 16px 0; overflow: hidden; }
+.progress-fill { background: var(--accent); height: 100%; transition: width 0.2s; }
+.btn { display: inline-block; padding: 12px 24px; background: var(--accent); color: var(--bg); border: none; border-radius: 6px; font-size: 15px; font-weight: 600; cursor: pointer; }
+.btn:hover { opacity: 0.9; }
+.btn.alt { background: transparent; border: 1px solid var(--border); color: var(--text); }
+.btn-row { display: flex; gap: 12px; margin-top: 24px; }
+.result-section { background: var(--bg-elev); border: 1px solid var(--border); border-radius: 12px; padding: 24px; margin: 16px 0; }
+.result-section h2 { font-size: 18px; color: var(--accent); margin-bottom: 12px; }
+.holland-code { font-family: var(--mono); font-size: 56px; font-weight: 800; letter-spacing: 12px; color: var(--gold); text-align: center; padding: 24px; background: var(--bg-card); border-radius: 8px; margin: 16px 0; }
+.dim-result { display: grid; grid-template-columns: 60px 1fr 60px; gap: 12px; align-items: center; padding: 8px 0; }
+.dim-result .code { font-family: var(--mono); font-weight: 700; color: var(--accent); font-size: 18px; }
+.dim-result .name { font-size: 14px; }
+.dim-result .bar { background: var(--bg-card); border-radius: 4px; height: 12px; overflow: hidden; }
+.dim-result .fill { height: 100%; background: linear-gradient(90deg, var(--accent) 0%, #2f6fb8 100%); transition: width 0.5s; }
+.dim-result .pct { font-family: var(--mono); font-size: 14px; color: var(--text-dim); text-align: right; }
+.career-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px; margin: 16px 0; }
+.career-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 16px; }
+.career-card h4 { color: var(--gold); font-size: 14px; margin-bottom: 8px; }
+.career-card ul { font-size: 13px; color: var(--text-dim); padding-left: 20px; }
+.career-card li { margin-bottom: 4px; }
+.warn { color: var(--red); font-size: 13px; margin-top: 8px; }
+.history-item { background: var(--bg-card); border: 1px solid var(--border); border-radius: 6px; padding: 12px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
+.history-item:hover { border-color: var(--accent); }
+.disclaimer { background: rgba(210, 153, 34, 0.08); border: 1px solid rgba(210, 153, 34, 0.3); border-radius: 8px; padding: 12px 16px; margin: 16px 0; font-size: 13px; color: var(--text-dim); }
+.disclaimer::before { content: "⚠️ "; }
+@media (max-width: 640px) { .q-scale { grid-template-columns: repeat(5, 1fr); } .q-scale .lbl { display: none; } }
+</style>
+</head>
+<body>
+
+<a class="back" href="index.html">← 返回 IB 升学资料库</a>
+
+<section id="screen-intro" class="active">
+  <h1>🔧 霍兰德职业兴趣测试</h1>
+  <div class="subtitle">6 维 / 30 题 / 约 8 分钟 — 美本选专业 + 文书方向最实用的工具</div>
+
+  <div class="intro-box">
+    <p><strong>霍兰德 (John Holland)</strong> 是 1959 年提出的职业兴趣理论，<strong>被美本职业中心和大学官方职业规划系统广泛使用</strong>。和 MBTI 不同，霍兰德<strong>有 100+ 年的信效度研究支撑</strong>，是大公司 HR、职业咨询师、大学的"标准工具"。</p>
+    <p>测完后你会得到一个<strong>3 字母代码</strong>（如 <code>RIA</code>），这个代码能：</p>
+    <ul style="margin: 8px 0 8px 24px; color: var(--text-dim);">
+      <li>对应<strong>美本专业大类</strong>（如 RIA → 工程 / 计算机）</li>
+      <li>识别<strong>最容易自我冲突的维度</strong>（如高 R + 高 S = 既爱动手又爱帮人）</li>
+      <li>给<strong>文书故事线</strong>提供素材</li>
+    </ul>
+  </div>
+
+  <h2 style="font-size: 16px; color: var(--text-dim); margin: 24px 0 12px;">6 个维度（RIASEC）</h2>
+  <div class="dim-grid">
+    <div class="dim-card"><div class="code">R</div><div class="name">实际型 (Realistic)</div><div class="desc">动手、操作、工具、机械</div></div>
+    <div class="dim-card"><div class="code">I</div><div class="name">调研型 (Investigative)</div><div class="desc">分析、思考、研究、探索</div></div>
+    <div class="dim-card"><div class="code">A</div><div class="name">艺术型 (Artistic)</div><div class="desc">创造、表达、设计、想象</div></div>
+    <div class="dim-card"><div class="code">S</div><div class="name">社会型 (Social)</div><div class="desc">助人、教学、关怀、合作</div></div>
+    <div class="dim-card"><div class="code">E</div><div class="name">企业型 (Enterprising)</div><div class="desc">领导、说服、竞争、影响</div></div>
+    <div class="dim-card"><div class="code">C</div><div class="name">常规型 (Conventional)</div><div class="desc">秩序、数据、组织、细节</div></div>
+  </div>
+
+  <div class="disclaimer">本测试是霍兰德量表的精简版，用于<strong>自我了解 + 选专业参考</strong>，<strong>不构成职业建议</strong>。建议每 1-2 年做一次，看兴趣如何演变。</div>
+
+  <div class="btn-row">
+    <button class="btn" onclick="startTest()">开始测试 →</button>
+    <button class="btn alt" onclick="showHistory()">查看历史记录</button>
+  </div>
+</section>
+
+<section id="screen-questions">
+  <h2 id="q-header" style="font-size: 14px; color: var(--text-dim); margin-bottom: 8px;">题目 1 / 30</h2>
+  <div class="progress"><div class="progress-fill" id="prog" style="width: 0%"></div></div>
+  <div id="q-card"></div>
+  <div class="btn-row">
+    <button class="btn alt" id="prev" onclick="prevQ()">← 上一题</button>
+    <button class="btn" id="next" onclick="nextQ()">下一题 →</button>
+  </div>
+</section>
+
+<section id="screen-result">
+  <h2 style="color: var(--accent); margin-bottom: 16px;">📊 你的霍兰德代码</h2>
+  <div class="holland-code" id="holland-code">---</div>
+  <div id="result-detail"></div>
+  <div class="btn-row">
+    <button class="btn" onclick="exportResult()">📋 复制结果</button>
+    <button class="btn alt" onclick="restart()">再做一次</button>
+  </div>
+</section>
+
+<section id="screen-history">
+  <h2 style="color: var(--accent); margin-bottom: 16px;">📚 历史记录</h2>
+  <div id="history-list"></div>
+  <div class="btn-row">
+    <button class="btn alt" onclick="show('screen-intro')">← 返回</button>
+    <button class="btn alt" onclick="clearAll()">🗑 清空全部</button>
+  </div>
+</section>
+
+<script>
+const DIMS = ['R', 'I', 'A', 'S', 'E', 'C'];
+const DIM_NAMES = { R: '实际型 (Realistic)', I: '调研型 (Investigative)', A: '艺术型 (Artistic)', S: '社会型 (Social)', E: '企业型 (Enterprising)', C: '常规型 (Conventional)' };
+const CAREERS = {
+  R: { name: '工程 / 技术 / 动手', list: ['机械工程', '土木工程', '电气工程', '计算机科学 (CS)', '建筑学', '航空航天'] },
+  I: { name: '研究 / 科学 / 分析', list: ['数学', '物理', '化学', '生物', '心理学 (研究型)', '经济学 (量化)'] },
+  A: { name: '艺术 / 设计 / 创意', list: ['艺术设计', '电影 / 影视', '音乐', '文学 / 创意写作', '建筑 (偏设计)', '服装设计'] },
+  S: { name: '教育 / 心理 / 公益', list: ['教育学', '心理学 (临床)', '医学 (儿科 / 精神科)', '社会工作', '公共政策', '国际关系'] },
+  E: { name: '商科 / 法律 / 政治', list: ['商科 / 金融', '市场营销', '法律', '政治学', '创业 / 风险投资', '咨询'] },
+  C: { name: '会计 / 金融 / 运营', list: ['会计', '金融工程', '精算', '数据分析', '运营管理', '图书馆 / 信息管理'] }
+};
+const QUESTIONS = [
+  { dim: 'R', text: '组装家具 / 修小电器 / 拆东西看内部结构' },
+  { dim: 'R', text: '操作工具 (电钻 / 3D 打印机 / 焊接)' },
+  { dim: 'R', text: '户外运动 (爬山 / 骑行 / 露营)' },
+  { dim: 'R', text: '编程 / 调试代码 / 修 bug' },
+  { dim: 'R', text: '机械 / 车辆 / 设备的故障诊断' },
+  { dim: 'I', text: '思考抽象问题 (哲学 / 数学证明 / 理论)' },
+  { dim: 'I', text: '做实验 / 科学项目 / 探究自然现象' },
+  { dim: 'I', text: '读科学 / 数学 / 学术文章' },
+  { dim: 'I', text: '解决复杂逻辑题 / 数独 / 奥数' },
+  { dim: 'I', text: '调研一个感兴趣的话题 (深挖资料)' },
+  { dim: 'A', text: '画画 / 设计 / 做音乐 / 创作' },
+  { dim: 'A', text: '写故事 / 写诗 / 创意写作' },
+  { dim: 'A', text: '创意活动 (拍照 / 视频 / 短视频)' },
+  { dim: 'A', text: '设计海报 / logo / UI / 视觉' },
+  { dim: 'A', text: '戏剧 / 表演 / 朗诵 / 表达' },
+  { dim: 'S', text: '教同学不会的题 / 给朋友讲知识' },
+  { dim: 'S', text: '帮助有困难的人 (情绪 / 学业 / 心理)' },
+  { dim: 'S', text: '组织社区 / 学校公益活动' },
+  { dim: 'S', text: '当志愿者 / 服务他人' },
+  { dim: 'S', text: '调解朋友间的矛盾 / 引导对话' },
+  { dim: 'E', text: '领导团队完成项目 (队长 / 主导)' },
+  { dim: 'E', text: '说服别人接受你的想法 / 谈判' },
+  { dim: 'E', text: '主持会议 / 活动 / 节目' },
+  { dim: 'E', text: '销售 / 推广 / 商业类工作' },
+  { dim: 'E', text: '创业 / 做小生意 / 投资' },
+  { dim: 'C', text: '整理笔记 / 资料 / 文件归档' },
+  { dim: 'C', text: '记账 / 做表格 / 数据录入' },
+  { dim: 'C', text: '严格按计划 / 流程执行' },
+  { dim: 'C', text: '检查细节 / 校对 / 找错' },
+  { dim: 'C', text: '维护秩序 / 规则 / 制度' }
+];
+
+let state = { answers: new Array(QUESTIONS.length).fill(null), current: 0 };
+const STORAGE_KEY = 'holland-results';
+
+function show(id) {
+  document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+function startTest() {
+  state = { answers: new Array(QUESTIONS.length).fill(null), current: 0 };
+  show('screen-questions');
+  renderQ();
+}
+
+function renderQ() {
+  const i = state.current;
+  const q = QUESTIONS[i];
+  document.getElementById('q-header').textContent = `题目 ${i+1} / ${QUESTIONS.length} · 维度：${DIM_NAMES[q.dim].split(' ')[0]}`;
+  document.getElementById('prog').style.width = ((i) / QUESTIONS.length * 100) + '%';
+  document.getElementById('prev').disabled = i === 0;
+  document.getElementById('next').textContent = (i === QUESTIONS.length - 1) ? '生成结果 →' : '下一题 →';
+  const labels = ['1\n很不喜欢', '2\n不太喜欢', '3\n中立', '4\n比较喜欢', '5\n很喜欢'];
+  const card = document.getElementById('q-card');
+  card.innerHTML = `
+    <div class="q-block">
+      <div class="q-num">维度：${DIM_NAMES[q.dim]}</div>
+      <div class="q-text">${q.text}</div>
+      <div class="q-scale">
+        ${[1,2,3,4,5].map(v => `
+          <label>
+            <input type="radio" name="q${i}" value="${v}" ${state.answers[i]===v?'checked':''} onchange="state.answers[${i}]=${v}">
+            <span class="num">${v}</span>
+            <span class="lbl">${['很不喜欢','不太喜欢','中立','比较喜欢','很喜欢'][v-1]}</span>
+          </label>
+        `).join('')}
+      </div>
+    </div>
+  `;
+}
+
+function nextQ() {
+  if (state.answers[state.current] === null) { alert('请先选择一个选项'); return; }
+  if (state.current < QUESTIONS.length - 1) { state.current++; renderQ(); }
+  else { finishTest(); }
+}
+
+function prevQ() { if (state.current > 0) { state.current--; renderQ(); } }
+
+function finishTest() {
+  const raw = {};
+  DIMS.forEach(d => raw[d] = 0);
+  QUESTIONS.forEach((q, i) => raw[q.dim] += (state.answers[i] || 0));
+  const max = Math.max(...Object.values(raw));
+  const pct = {};
+  DIMS.forEach(d => pct[d] = Math.round(raw[d] / max * 100));
+  const sorted = [...DIMS].sort((a, b) => pct[b] - pct[a]);
+  const code = sorted.slice(0, 3).join('');
+  const result = { date: new Date().toISOString(), raw, pct, code };
+  saveResult(result);
+  showResult(result);
+  show('screen-result');
+}
+
+function showResult(r) {
+  document.getElementById('holland-code').textContent = r.code;
+  const top3 = r.code.split('');
+  const sorted = [...DIMS].sort((a, b) => r.pct[b] - r.pct[a]);
+  const detail = document.getElementById('result-detail');
+  detail.innerHTML = `
+    <div class="result-section">
+      <h2>6 维分数（百分比）</h2>
+      ${sorted.map(d => `
+        <div class="dim-result">
+          <div class="code">${d}</div>
+          <div class="bar"><div class="fill" style="width: ${r.pct[d]}%"></div></div>
+          <div class="pct">${r.pct[d]}%</div>
+        </div>
+      `).join('')}
+    </div>
+    <div class="result-section">
+      <h2>📚 你的代码 "${r.code}" 解读</h2>
+      <p style="color: var(--text-dim); margin-bottom: 12px;">前 3 个字母代表你最强的 3 个兴趣维度。<strong>第一个字母最强</strong>（如 RIA 中 R 最强）。</p>
+      <ul style="color: var(--text-dim); padding-left: 20px;">
+        ${top3.map((d, i) => `<li><strong>${i+1}. ${DIM_NAMES[d]}</strong> — ${describeDim(d, i, top3)}</li>`).join('')}
+      </ul>
+    </div>
+    <div class="result-section">
+      <h2>🎓 对应美本专业方向</h2>
+      <p style="color: var(--text-dim); margin-bottom: 12px;">按你代码的 3 个维度，对应这些专业大类（学校具体选课再细化）：</p>
+      <div class="career-grid">
+        ${top3.map(d => `
+          <div class="career-card">
+            <h4>${d} · ${CAREERS[d].name}</h4>
+            <ul>${CAREERS[d].list.map(c => `<li>${c}</li>`).join('')}</ul>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+    <div class="result-section">
+      <h2>📝 文书 + 活动建议</h2>
+      <ul style="color: var(--text-dim); padding-left: 20px;">
+        <li><strong>故事核心：</strong>"我从小就喜欢<strong>${top3[0] === 'R' ? '动手' : top3[0] === 'I' ? '思考' : top3[0] === 'A' ? '创造' : top3[0] === 'S' ? '帮人' : top3[0] === 'E' ? '影响' : '组织'}</strong>，这让我…"</li>
+        <li><strong>活动筛选：</strong>优先做"${CAREERS[top3[0]].name}"相关项目；放弃<strong>低分维度</strong>的活动</li>
+        <li><strong>避免陷阱：</strong>代码是 ${r.code}，但<strong>不要求你"全做"</strong>。专注第 1 维度（最强项），第 2/3 做辅助</li>
+        <li><strong>夏校选：</strong>结合代码查 RSI / SSP / MITES / Garcia Center 等，看哪个匹配</li>
+      </ul>
+      <p class="warn">⚠️ 霍兰德是工具，<strong>不是宿命</strong>。很多成功人士代码"看起来不匹配"（如 Steve Jobs 是 IAR）。用它<strong>理解自己</strong>，不要被它限制。</p>
+    </div>
+  `;
+}
+
+function describeDim(d, idx, code) {
+  const strengths = {
+    R: '动手能力、技术工程、问题解决',
+    I: '研究分析、独立思考、深度学习',
+    A: '创造力、表达、视觉/语言',
+    S: '教学能力、关怀、共情',
+    E: '领导力、说服、影响力',
+    C: '组织力、细心、数据处理'
+  };
+  if (idx === 0) return `你的<strong>主兴趣</strong>。${strengths[d]} 是你最自然的能量来源。`;
+  if (idx === 1) return `强辅助维度。${strengths[d]}能补充你的主兴趣，形成独特组合。`;
+  return `次要维度。在特定场景下发挥（如你主 R 但 S 也高，可能喜欢"技术 + 帮人"的项目）。`;
+}
+
+function exportResult() {
+  const r = getAllResults()[0];
+  const top3 = r.code.split('');
+  const text = `霍兰德职业兴趣代码：${r.code}\n` +
+    `日期：${new Date(r.date).toLocaleDateString('zh-CN')}\n\n` +
+    `6 维分数：\n` +
+    DIMS.map(d => `  ${d} (${DIM_NAMES[d].split(' ')[0]}): ${r.pct[d]}%`).join('\n') +
+    `\n\n前 3 强：\n` +
+    top3.map((d, i) => `  ${i+1}. ${d} - ${DIM_NAMES[d]}`).join('\n') +
+    `\n\n推荐专业：\n` +
+    top3.map(d => `  ${d}: ${CAREERS[d].list.join('、')}`).join('\n');
+  navigator.clipboard.writeText(text).then(() => alert('已复制到剪贴板'));
+}
+
+function saveResult(r) {
+  const all = getAllResults();
+  all.unshift(r);
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(all));
+}
+function getAllResults() { try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'); } catch(e) { return []; } }
+
+function showHistory() {
+  const all = getAllResults();
+  const wrap = document.getElementById('history-list');
+  if (all.length === 0) { wrap.innerHTML = '<p style="color: var(--text-dim);">暂无历史记录</p>'; show('screen-history'); return; }
+  wrap.innerHTML = all.map((r, i) => `
+    <div class="history-item" onclick='loadHistory(${i})'>
+      <div>
+        <div style="font-family: var(--mono); font-size: 20px; font-weight: 700; color: var(--gold);">${r.code}</div>
+        <div style="color: var(--text-mute); font-size: 12px;">${new Date(r.date).toLocaleString('zh-CN')}</div>
+      </div>
+      <div style="color: var(--accent);">→ 查看</div>
+    </div>
+  `).join('');
+  show('screen-history');
+}
+function loadHistory(i) { showResult(getAllResults()[i]); show('screen-result'); }
+function clearAll() { if (confirm('清空所有历史？')) { localStorage.removeItem(STORAGE_KEY); showHistory(); } }
+function restart() { startTest(); }
+</script>
+
+</body>
+</html>

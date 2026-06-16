@@ -1,0 +1,1055 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MYP Criterion 诊断矩阵 · 多学期版 · IB 升学资料库 v1.2</title>
+<style>
+:root {
+  --bg: #0e1116; --bg-elev: #161b22; --bg-card: #1c2128;
+  --border: #30363d; --text: #e6edf3; --text-dim: #8b949e; --text-mute: #6e7681;
+  --accent: #58a6ff; --accent-2: #d2a8ff; --gold: #d29922;
+  --green: #3fb950; --red: #f85149; --orange: #ff8c42;
+  --lv7: #2ea043; --lv6: #3fb950; --lv5: #d29922; --lv4: #ff8c42; --lv3: #f85149; --lv2: #8b0000; --lv1: #4a0000; --lv0: #2a2a2a;
+  --mono: 'SF Mono', 'JetBrains Mono', 'Fira Code', Consolas, monospace;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body {
+  background: var(--bg); color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', Roboto, sans-serif;
+  font-size: 16px; line-height: 1.7; -webkit-font-smoothing: antialiased;
+}
+.container { max-width: 1200px; margin: 0 auto; padding: 24px; }
+.hero { padding: 48px 0 32px; border-bottom: 1px solid var(--border); margin-bottom: 32px; }
+.hero h1 { font-size: clamp(26px, 4.5vw, 38px); font-weight: 800; letter-spacing: -0.02em; background: linear-gradient(135deg, var(--accent) 0%, var(--accent-2) 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 8px; }
+.hero .subtitle { color: var(--text-dim); font-size: 16px; }
+.hero .meta { color: var(--text-mute); font-size: 13px; margin-top: 12px; font-family: var(--mono); }
+.back { display: inline-block; margin-bottom: 16px; padding: 6px 12px; background: var(--bg-elev); border: 1px solid var(--border); border-radius: 6px; color: var(--accent); font-size: 13px; text-decoration: none; }
+.back:hover { background: var(--bg-card); }
+.badge { display: inline-block; padding: 2px 8px; background: var(--accent); color: var(--bg); border-radius: 4px; font-size: 11px; font-weight: 700; margin-left: 8px; }
+.badge.new { background: var(--green); }
+.badge.henry { background: var(--gold); color: #000; }
+
+section { margin-bottom: 48px; }
+h2 { font-size: clamp(20px, 3vw, 26px); font-weight: 700; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 2px solid var(--border); }
+h3 { font-size: 16px; font-weight: 600; margin: 20px 0 10px; color: var(--text); }
+.lead { color: var(--text-dim); font-size: 15px; margin: 12px 0 20px; padding: 12px 16px; background: var(--bg-elev); border-left: 3px solid var(--accent); border-radius: 0 6px 6px 0; }
+
+.toolbar { display: flex; gap: 12px; margin: 16px 0 24px; flex-wrap: wrap; }
+button { padding: 8px 16px; background: var(--bg-elev); border: 1px solid var(--border); border-radius: 6px; color: var(--text); font-size: 14px; cursor: pointer; font-family: inherit; }
+button:hover { background: var(--bg-card); }
+button.primary { background: var(--accent); color: var(--bg); border-color: var(--accent); font-weight: 600; }
+button.danger { background: var(--bg-elev); color: var(--red); border-color: var(--red); }
+button.gold { background: var(--gold); color: #000; border-color: var(--gold); font-weight: 600; }
+
+.table-wrap { overflow-x: auto; margin: 12px 0 24px; border: 1px solid var(--border); border-radius: 8px; }
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+thead { background: var(--bg-elev); }
+th { padding: 8px 10px; font-weight: 600; color: var(--text-dim); border-bottom: 1px solid var(--border); text-align: left; white-space: nowrap; }
+td { padding: 6px 10px; border-bottom: 1px solid var(--border); }
+tbody tr:last-child td { border-bottom: none; }
+tbody tr:hover { background: var(--bg-elev); }
+
+input.cell {
+  width: 56px; padding: 6px; text-align: center; background: var(--bg-card);
+  border: 1px solid var(--border); border-radius: 4px; color: var(--text);
+  font-family: var(--mono); font-size: 14px; font-weight: 600;
+}
+input.cell:focus { outline: none; border-color: var(--accent); }
+
+.lv0 { background: var(--lv0) !important; color: #555 !important; }
+.lv1 { background: var(--lv1) !important; color: #ccc !important; }
+.lv2 { background: var(--lv2) !important; color: #eee !important; }
+.lv3 { background: var(--lv3) !important; color: #fff !important; }
+.lv4 { background: var(--lv4) !important; color: #000 !important; }
+.lv5 { background: var(--lv5) !important; color: #000 !important; }
+.lv6 { background: var(--lv6) !important; color: #000 !important; }
+.lv7 { background: var(--lv7) !important; color: #fff !important; }
+.lv8 { background: #1b5e20 !important; color: #fff !important; font-weight: 700; }
+
+.mode-btn {
+  background: var(--bg);
+  color: var(--text-dim);
+  border: 1px solid var(--border);
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  transition: all 0.2s;
+}
+.mode-btn:hover {
+  background: var(--bg-elev);
+  color: var(--text);
+}
+.mode-btn.active {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+}
+
+.rec-time {
+  margin-top: 10px;
+  padding: 8px 12px;
+  background: rgba(99, 102, 241, 0.08);
+  border-left: 3px solid var(--accent);
+  border-radius: 4px;
+  font-size: 12px;
+  color: var(--text-dim);
+  line-height: 1.6;
+}
+.rec-time strong { color: var(--text); font-weight: 700; }
+
+.rec-strong {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(245, 158, 11, 0.1) 100%);
+  border-left: 4px solid #10b981;
+  border-radius: 6px;
+  padding: 14px 16px;
+  margin: 12px 0;
+}
+
+.risk { color: var(--red); font-weight: 600; }
+.warn-text { color: var(--orange); }
+.ok-text { color: var(--green); }
+.dim { color: var(--text-dim); font-size: 12px; }
+.trend-up { color: var(--green); }
+.trend-down { color: var(--red); }
+.trend-flat { color: var(--text-mute); }
+
+.legend { display: flex; gap: 6px; flex-wrap: wrap; margin: 12px 0; font-size: 12px; align-items: center; }
+.legend span { padding: 4px 10px; border-radius: 4px; font-family: var(--mono); font-weight: 600; }
+
+.report { background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 20px; margin: 16px 0; }
+.report h3 { color: var(--accent); margin-bottom: 10px; }
+.report .item { padding: 8px 0; border-bottom: 1px dashed var(--border); display: flex; gap: 12px; align-items: flex-start; }
+.report .item:last-child { border-bottom: none; }
+.report .item .score { font-family: var(--mono); font-weight: 600; min-width: 32px; text-align: center; padding: 2px 6px; border-radius: 4px; }
+.report .item .text { flex: 1; }
+
+/* === 诊断推荐样式 === */
+.rec { margin: 8px 0 4px 44px; padding: 10px 12px; background: var(--bg-elev); border-left: 3px solid var(--accent); border-radius: 4px; font-size: 13px; line-height: 1.6; }
+.rec-line { display: flex; gap: 8px; align-items: flex-start; margin: 2px 0; }
+.rec-tag { display: inline-block; padding: 1px 6px; border-radius: 3px; font-size: 11px; font-weight: 600; min-width: 56px; text-align: center; flex-shrink: 0; }
+.rec-tag.week { background: #1f3a5f; color: #93c5fd; }
+.rec-tag.summer { background: #5a3a1f; color: #fcd34d; }
+.rec-tag.res { background: #1f4a3a; color: #86efac; }
+.rec-tag.sub { background: #4a1f4a; color: #d8b4fe; }
+.rec-line.sub { margin-top: 6px; padding-top: 6px; border-top: 1px dashed var(--border); }
+
+.term-tabs { display: flex; gap: 6px; margin: 12px 0 16px; flex-wrap: wrap; align-items: center; }
+.term-tab { padding: 8px 14px; background: var(--bg-elev); border: 1px solid var(--border); border-radius: 6px 6px 0 0; cursor: pointer; font-size: 14px; color: var(--text-dim); position: relative; }
+.term-tab:hover { color: var(--text); }
+.term-tab.active { background: var(--bg-card); color: var(--accent); border-bottom-color: var(--bg-card); font-weight: 600; }
+.term-tab .close-x { margin-left: 6px; color: var(--red); font-weight: 700; cursor: pointer; }
+.term-tab .close-x:hover { color: #ff7066; }
+
+.term-input-row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; padding: 12px 0; }
+.term-input-row input, .term-input-row select { padding: 6px 10px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 4px; color: var(--text); font-family: var(--mono); font-size: 13px; }
+
+.footer { margin-top: 64px; padding: 24px 0; border-top: 1px solid var(--border); color: var(--text-mute); font-size: 12px; font-family: var(--mono); text-align: center; }
+
+@media (max-width: 640px) {
+  .container { padding: 16px; }
+  input.cell { width: 40px; }
+  th, td { padding: 4px 6px; font-size: 12px; }
+}
+</style>
+</head>
+<body>
+<div class="container">
+<a href="index.html" class="back">← 返回主页</a>
+
+<header class="hero">
+  <h1>MYP Criterion 诊断矩阵 <span class="badge new">v1.2 多学期版</span></h1>
+  <div class="subtitle">跨学期追踪 · 结构性弱项精准定位 · DP 选课与大学画像</div>
+  <div class="meta">IB MYP v1.3 · 工具 A · 最后更新: 2026-06-09 · 诊断 + 推荐 (每周 / 暑假 / 资源 + 学科特定)</div>
+</header>
+
+<section>
+  <h2>1. 这是什么</h2>
+  <p class="lead">MYP 报告给每科 4 个 criterion (A/B/C/D) 的 1-8 分,而不只是 1-7 的 final grade。<strong>只看 final grade 看不到结构性弱项</strong>。本工具:</p>
+  <ul>
+    <li>🟢 可视化 8-12 科 × 4 criterion 的热力图</li>
+    <li>🔴 找出 ≤ 5 的"结构性弱项"</li>
+    <li>📉 <strong>跨学期追踪</strong>(最多 4 个学期同时存)</li>
+    <li>📈 趋势分析(涨/跌/平)+ GPA 折线</li>
+    <li>🎯 输出 DP 选课影响 + 申请画像</li>
+  </ul>
+</section>
+
+<section>
+  <h2>2. 学期管理</h2>
+  <p class="dim">可同时存最多 4 个学期数据,tab 切换。当前学期修改自动保存到 localStorage。</p>
+
+  <div class="term-tabs" id="termTabs"></div>
+
+  <div class="term-input-row">
+    <input type="text" id="newTermName" placeholder="学期名(如 G7 末)" style="width:140px;">
+    <input type="date" id="newTermDate">
+    <button class="primary" onclick="addNewTerm()">➕ 新建学期</button>
+    <span style="margin-left: 24px; color: var(--text-mute); font-size: 12px;">|</span>
+    <button class="gold" onclick="loadHenry('G6-中')">🥇 加载 Henry G6 中期</button>
+    <button class="gold" onclick="loadHenry('G6-末')">🥈 加载 Henry G6 末</button>
+    <button class="gold" onclick="loadHenry('G7-中')">🥉 加载 Henry G7 中期</button>
+    <button class="danger" onclick="clearAll()">🗑 全部清空</button>
+  </div>
+
+  <div class="view-mode-row" style="margin-top: 16px; padding: 12px 16px; background: var(--bg-elev); border-radius: 8px; display: flex; align-items: center; gap: 12px;">
+    <span style="color: var(--text-dim); font-size: 14px;">📋 诊断推荐显示模式:</span>
+    <button id="modeParent" class="mode-btn active" onclick="setViewMode('parent')">👨‍👩‍👦 家长模式</button>
+    <button id="modeStudent" class="mode-btn" onclick="setViewMode('student')">🎒 学生模式</button>
+    <span id="modeDesc" style="color: var(--text-mute); font-size: 12px; margin-left: auto;"></span>
+  </div>
+</section>
+
+<section>
+  <h2>3. 输入分数 <span class="badge henry" id="termBadge"></span></h2>
+  <p class="dim">每科 4 个 criterion 填 0-8 分(留空=0=未评估)。颜色:🟥 0-3 / 🟧 4-5 / 🟨 6 / 🟩 7-8。改动自动保存。</p>
+  <div class="toolbar">
+    <button class="primary" onclick="analyze()">📊 分析当前学期</button>
+    <button onclick="analyzeAll()">📈 跨学期趋势分析</button>
+    <button onclick="exportData()">💾 导出全部 JSON</button>
+    <button onclick="importData()">📥 导入</button>
+  </div>
+  <div class="legend">
+    <span>颜色等级:</span>
+    <span class="lv3">3-</span>
+    <span class="lv4">4</span>
+    <span class="lv5">5</span>
+    <span class="lv6">6</span>
+    <span class="lv7">7</span>
+    <span class="lv8">8</span>
+    <span>0-2 = 深红</span>
+  </div>
+  <div class="table-wrap">
+    <table id="gradeTable">
+      <thead>
+        <tr>
+          <th>学科</th>
+          <th>A<br><span class="dim">分析</span></th>
+          <th>B<br><span class="dim">调查/构思</span></th>
+          <th>C<br><span class="dim">应用/执行</span></th>
+          <th>D<br><span class="dim">评估/反思</span></th>
+          <th>Total</th>
+          <th>Final</th>
+        </tr>
+      </thead>
+      <tbody id="gradeBody"></tbody>
+    </table>
+  </div>
+</section>
+
+<section id="reportSection" style="display:none;">
+  <h2>4. 当前学期诊断报告</h2>
+  <div id="reportContent"></div>
+</section>
+
+<section id="trendSection" style="display:none;">
+  <h2>5. 跨学期趋势分析</h2>
+  <div id="trendContent"></div>
+</section>
+
+<section>
+  <h2>6. 解读指南</h2>
+  <div class="report">
+    <h3>criterion 含义(MYP 标准)</h3>
+    <ul>
+      <li><strong>A — Analysing</strong>: 理解和拆解信息</li>
+      <li><strong>B — Investigating / Developing</strong>: 调查/创作/构思</li>
+      <li><strong>C — Communicating / Applying & Performing</strong>: 沟通/应用/执行</li>
+      <li><strong>D — Evaluating / Reflecting</strong>: 评估/反思</li>
+    </ul>
+  </div>
+  <div class="report">
+    <h3>结构性弱项 vs 一次性波动</h3>
+    <ul>
+      <li><span class="risk">🔴 真风险:</span> 1 个 criterion 在 <strong>≥2 个学期</strong> 持续 ≤5</li>
+      <li><span class="warn-text">🟡 一次波动:</span> 仅 1 个学期 ≤5 — 可能项目难度或 topic 变更</li>
+      <li><span class="ok-text">🟢 已修复:</span> 弱项学期后升 ≥6 — 看涨信号</li>
+    </ul>
+  </div>
+  <div class="report">
+    <h3>DP 选课决策(基于当前学期)</h3>
+    <p>每科 4 criterion 中,如果有 <strong>≥2 个 ≤5</strong>,这门课 DP HL 风险高(HL 要求 5-7 全维度)。</p>
+    <p>有 <strong>1 个 ≤5</strong> 的课可选 SL 或避开(强项课保持 HL)。</p>
+    <p>DP 阶段是"放大器":HL 课会聚焦弱项,SL 课可平衡。</p>
+  </div>
+</section>
+
+<div class="footer">Hermes · IB 升学资料库 v1.2 · Module A · 多学期版 · 数据存 localStorage</div>
+</div>
+
+<script>
+const SUBJECTS = [
+  'Chinese A', 'English', 'I&S', 'Sciences', 'Mathematics',
+  'Music', 'Visual Arts', 'Design', 'PHE', 'Swimming',
+  'Adventure Ed', 'SE/心理', 'IDU', 'Other'
+];
+
+const STORAGE_KEY = 'criterion-matrix-v1.3-multi';
+let state = loadState();
+let currentTerm = state.currentTerm || null;
+
+function loadState() {
+  const raw = localStorage.getItem(STORAGE_KEY);
+  if (!raw) return { currentTerm: null, terms: {} };
+  try {
+    return JSON.parse(raw);
+  } catch(e) { return { currentTerm: null, terms: {} }; }
+}
+
+function saveState() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+}
+
+function renderTabs() {
+  const container = document.getElementById('termTabs');
+  const termIds = Object.keys(state.terms);
+  let html = '';
+  for (const id of termIds) {
+    const term = state.terms[id];
+    const active = id === currentTerm ? 'active' : '';
+    html += `<div class="term-tab ${active}" onclick="switchTerm('${id}')">
+      ${term.name} <span class="dim">${term.date || ''}</span>
+      <span class="close-x" onclick="event.stopPropagation(); deleteTerm('${id}')">✕</span>
+    </div>`;
+  }
+  if (!termIds.length) {
+    html = '<span class="dim">还没学期。点下方"加载 Henry"3 个按钮可一键预填 3 学期数据,或"新建学期"手动创建。</span>';
+  }
+  container.innerHTML = html;
+  const badge = document.getElementById('termBadge');
+  if (currentTerm && state.terms[currentTerm]) {
+    badge.textContent = '当前: ' + state.terms[currentTerm].name;
+    badge.style.display = 'inline-block';
+  } else {
+    badge.style.display = 'none';
+  }
+}
+
+function switchTerm(id) {
+  saveCurrentToState();
+  currentTerm = id;
+  state.currentTerm = id;
+  saveState();
+  renderTabs();
+  buildTable();
+}
+
+function addNewTerm() {
+  const name = document.getElementById('newTermName').value.trim();
+  const date = document.getElementById('newTermDate').value;
+  if (!name) { alert('请输入学期名'); return; }
+  if (Object.keys(state.terms).length >= 4) { alert('最多 4 个学期'); return; }
+  const id = 'T' + Date.now();
+  state.terms[id] = { name, date, data: {} };
+  currentTerm = id;
+  state.currentTerm = id;
+  saveState();
+  document.getElementById('newTermName').value = '';
+  document.getElementById('newTermDate').value = '';
+  renderTabs();
+  buildTable();
+}
+
+function deleteTerm(id) {
+  if (!confirm('删除学期 "' + state.terms[id].name + '"?')) return;
+  delete state.terms[id];
+  if (currentTerm === id) {
+    const remaining = Object.keys(state.terms);
+    currentTerm = remaining[0] || null;
+    state.currentTerm = currentTerm;
+  }
+  saveState();
+  renderTabs();
+  buildTable();
+}
+
+function saveCurrentToState() {
+  if (!currentTerm) return;
+  if (!state.terms[currentTerm]) return;
+  state.terms[currentTerm].data = collectData();
+  saveState();
+}
+
+function buildTable() {
+  const tbody = document.getElementById('gradeBody');
+  tbody.innerHTML = SUBJECTS.map(sub => {
+    const data = (currentTerm && state.terms[currentTerm] && state.terms[currentTerm].data) || {};
+    const d = data[sub] || {};
+    return `<tr>
+      <td><strong>${sub}</strong></td>
+      <td><input type="number" min="0" max="8" class="cell" data-sub="${sub}" data-c="A" value="${d.A || ''}" oninput="updateCell(this)"></td>
+      <td><input type="number" min="0" max="8" class="cell" data-sub="${sub}" data-c="B" value="${d.B || ''}" oninput="updateCell(this)"></td>
+      <td><input type="number" min="0" max="8" class="cell" data-sub="${sub}" data-c="C" value="${d.C || ''}" oninput="updateCell(this)"></td>
+      <td><input type="number" min="0" max="8" class="cell" data-sub="${sub}" data-c="D" value="${d.D || ''}" oninput="updateCell(this)"></td>
+      <td class="total" data-sub="${sub}">-</td>
+      <td class="final" data-sub="${sub}">-</td>
+    </tr>`;
+  }).join('');
+  // recalc all
+  document.querySelectorAll('input.cell').forEach(c => updateCell(c));
+}
+
+function updateCell(input) {
+  const v = parseInt(input.value);
+  if (isNaN(v) || v < 0) input.value = '';
+  input.className = 'cell ' + (v >= 0 && v <= 8 ? 'lv' + v : '');
+  saveCurrentToState();
+  const sub = input.dataset.sub;
+  const cells = document.querySelectorAll(`input.cell[data-sub="${sub}"]`);
+  let total = 0, count = 0;
+  cells.forEach(c => {
+    const cv = parseInt(c.value);
+    if (!isNaN(cv) && cv > 0) { total += cv; count++; }
+  });
+  const totalCell = document.querySelector(`.total[data-sub="${sub}"]`);
+  const finalCell = document.querySelector(`.final[data-sub="${sub}"]`);
+  if (count === 4) {
+    totalCell.textContent = total + '/32';
+    let g = 1;
+    if (total >= 28) g = 7; else if (total >= 24) g = 6; else if (total >= 19) g = 5;
+    else if (total >= 15) g = 4; else if (total >= 10) g = 3; else if (total >= 6) g = 2;
+    finalCell.innerHTML = `<span class="pill lv${g >= 5 ? (g >= 6 ? (g === 7 ? '7' : '6') : '5') : '4'}">${g}</span>`;
+  } else {
+    totalCell.textContent = count ? `${total}/32*` : '-';
+    finalCell.textContent = '-';
+  }
+}
+
+function collectData() {
+  const data = {};
+  document.querySelectorAll('input.cell').forEach(c => {
+    const sub = c.dataset.sub;
+    const cr = c.dataset.c;
+    const v = parseInt(c.value);
+    if (!isNaN(v) && v > 0) {
+      if (!data[sub]) data[sub] = {};
+      data[sub][cr] = v;
+    }
+  });
+  return data;
+}
+
+// === Henry 真实数据预填 ===
+const HENRY_DATA = {
+  'G6-中': {
+  name: 'G6 中期 1st Sem',
+  date: '2025-01-22',
+  data: {
+    'Chinese A': {A:6, B:8, C:7, D:8},
+    'English': {A:8, B:7, C:7, D:7},
+    'I&S': {A:8, B:7, C:7, D:7},
+    'SE/心理': {A:8, B:8, C:8, D:8},
+    'Sciences': {A:8, B:6, C:6, D:7},
+    'Mathematics': {A:7, B:7, C:7, D:7},
+    'Music': {A:8, B:5, C:7, D:6},
+    'Visual Arts': {A:5, B:6, C:6, D:6},
+    'Adventure Ed': {A:7, B:7, C:7, D:8},  // 4 老师: Alvin + Lu + 俊乔齐 + Nicole
+    'PHE': {A:7, B:7, C:4, D:5},
+    'Swimming': {A:8, B:8, C:8, D:8},
+    'Design': {A:7, B:7, C:7, D:8}
+  }
+  },
+  'G6-末': {
+    name: 'G6 末 2nd Sem',
+    date: '2025-06-30',
+    data: {
+      'Chinese A': {A:7, B:7, C:7, D:7},
+      'English': {A:8, B:7, C:6, D:7},
+      'I&S': {A:7, B:5, C:6, D:6},
+      'SE/心理': {A:8, B:8, C:8, D:8},
+      'Sciences': {A:8, B:7, C:7, D:7},
+      'Mathematics': {A:8, B:8, C:7, D:7},
+      'Music': {A:8, B:5, C:7, D:6},
+      'Visual Arts': {A:5, B:6, C:6, D:6},
+      'Adventure Ed': {A:7, B:7, C:6, D:7},
+      'PHE': {A:7, B:6, C:5, D:6},
+      'Swimming': {A:8, B:8, C:8, D:8},
+      'Design': {A:7, B:7, C:7, D:7}
+    }
+  },
+  'G7-中': {
+    name: 'G7 中期 1st Sem',
+    date: '2026-02-06',
+    data: {
+      'Chinese A': {A:6, B:7, C:6, D:6},   // Camila Tian (新老师)
+      'English': {A:7, B:6, C:6, D:6},     // 老师未署名
+      'I&S': {A:8, B:7, C:6, D:7},         // George Wang (新老师)
+      'Sciences': {A:7, B:6, C:6, D:7},    // Millicent Mawela
+      'Mathematics': {A:8, B:8, C:8, D:7}, // Serena Liang, ⭐ C 维度 7→8 改善
+      'Visual Arts': {A:7, B:6, C:6, D:5}, // Nancy Yang, A 5→7 改善 但 D 6→5 退
+      'Adventure Ed': {A:7, B:6, C:6, D:6},// Lu 李璐 Li (新老师, 1 老师)
+      'PHE': {A:6, B:4, C:4, D:7},         // Marian Solomon, 🔴 B/C 4-4 真风险
+      'Swimming': {A:7, B:7, C:7, D:7},   // 吴呈Ramos Wu (新老师), 全维度 8→7
+      'Design': {A:6, B:6, C:7, D:7}       // Carla Pepler
+    }
+    // 注: G7 中期无 SE/心理 和 Music 评估(IB MYP 半学期课, G7 中期跳过)
+  }
+};
+
+function loadHenry(key) {
+  if (!HENRY_DATA[key]) return;
+  const h = HENRY_DATA[key];
+  // 如果已存在,确认覆盖
+  const existing = Object.keys(state.terms).find(id => state.terms[id].name === h.name);
+  if (existing && !confirm('"' + h.name + '" 已存在,覆盖?')) return;
+  const id = 'H-' + key;
+  state.terms[id] = { name: h.name, date: h.date, data: h.data };
+  currentTerm = id;
+  state.currentTerm = id;
+  saveState();
+  renderTabs();
+  buildTable();
+}
+
+// === 当前学期分析(单学期) ===
+function analyze() {
+  if (!currentTerm || !state.terms[currentTerm]) { alert('请先选一个学期'); return; }
+  saveCurrentToState();
+  const data = state.terms[currentTerm].data;
+  const termName = state.terms[currentTerm].name;
+  const report = [];
+  const weak = [];
+  for (const sub of SUBJECTS) {
+    if (!data[sub]) continue;
+    for (const c of ['A','B','C','D']) {
+      const v = data[sub][c];
+      if (v > 0 && v <= 5) {
+        weak.push({ sub, c, v, severity: v <= 4 ? 'risk' : 'warn' });
+      }
+    }
+  }
+  weak.sort((a, b) => a.v - b.v);
+  if (weak.length) {
+    const items = weak.map(w => {
+      const sev = w.severity === 'risk' ? 'risk' : 'warn-text';
+      const icon = w.severity === 'risk' ? '🔴' : '🟡';
+      return `<div class="item">
+        <span class="score ${w.severity === 'risk' ? 'lv3' : 'lv5'}">${w.v}</span>
+        <span class="text"><span class="${sev}">${icon} ${w.sub} - ${w.c} 维度 ${w.v}/8</span>
+        ${criterionExplain(w.c)}</span>
+        ${renderRec(w.sub, w.c)}
+      </div>`;
+    }).join('');
+    report.push(`<div class="report"><h3>🔍 结构性弱项 (${weak.length} 个) — ${termName}</h3>${items}</div>`);
+  } else {
+    report.push(`<div class="report"><h3>✅ 无结构性弱项</h3><p class="ok-text">所有 criterion 都 ≥ 6。学术签名极强。</p></div>`);
+  }
+  const strong = [];
+  for (const sub of SUBJECTS) {
+    if (!data[sub]) continue;
+    const vs = ['A','B','C','D'].map(c => data[sub][c]).filter(v => v > 0);
+    if (vs.length === 4 && Math.min(...vs) >= 7) {
+      strong.push({ sub, min: Math.min(...vs), total: vs.reduce((a,b) => a+b, 0) });
+    }
+  }
+  if (strong.length) {
+    const items = strong.map(s =>
+      `<div class="item"><span class="score lv7">${s.min}</span><span class="text"><span class="ok-text">⭐ ${s.sub}</span> 全维度 ≥ 7,total ${s.total}/32 → <strong>学术强项签名</strong></span></div>`
+    ).join('');
+    report.push(`<div class="report"><h3>⭐ 强项签名 (${strong.length} 科)</h3>${items}</div>`);
+  }
+  const dp = [];
+  for (const sub of SUBJECTS) {
+    if (!data[sub]) continue;
+    const vs = ['A','B','C','D'].map(c => data[sub][c]);
+    if (vs.some(v => v === 0)) continue;
+    const weakCount = vs.filter(v => v <= 5).length;
+    const min = Math.min(...vs);
+    let advice;
+    if (weakCount >= 2) advice = { hl: '❌ HL 风险', reason: `${weakCount} 个 criterion ≤ 5,DP HL 压力大` };
+    else if (weakCount === 1) advice = { hl: '⚠️ HL 谨慎', reason: `1 个弱项可在 SL 平衡` };
+    else if (min >= 7) advice = { hl: '✅ HL 推荐', reason: '全维度 ≥ 7,强项课' };
+    else advice = { hl: '🟡 HL 考虑', reason: `所有维度 ≥ 6,可 HL` };
+    dp.push({ sub, advice, total: vs.reduce((a,b) => a+b, 0) });
+  }
+  if (dp.length) {
+    dp.sort((a,b) => b.advice.hl.length - a.advice.hl.length);
+    const rows = dp.map(d =>
+      `<tr><td><strong>${d.sub}</strong></td><td>${d.advice.hl}</td><td class="dim">${d.advice.reason}</td></tr>`
+    ).join('');
+    report.push(`<div class="report"><h3>🎯 DP 选课建议</h3>
+      <div class="table-wrap"><table>
+        <thead><tr><th>学科</th><th>HL?</th><th>依据</th></tr></thead>
+        <tbody>${rows}</tbody>
+      </table></div>
+    </div>`);
+  }
+  document.getElementById('reportContent').innerHTML = report.join('');
+  document.getElementById('reportSection').style.display = 'block';
+  document.getElementById('reportSection').scrollIntoView({ behavior: 'smooth' });
+}
+
+// === 跨学期分析(趋势) ===
+function analyzeAll() {
+  const termIds = Object.keys(state.terms);
+  if (termIds.length < 2) { alert('至少需要 2 个学期才能跨学期分析'); return; }
+  // 排序 by date
+  const terms = termIds.map(id => ({ id, ...state.terms[id] })).sort((a,b) => (a.date || '').localeCompare(b.date || ''));
+  const report = [];
+
+  // 1. 学期 GPA 趋势(算术平均 final)
+  const gpaRows = terms.map(t => {
+    let total = 0, count = 0;
+    for (const sub of SUBJECTS) {
+      if (t.data[sub]) {
+        const vs = ['A','B','C','D'].map(c => t.data[sub][c]).filter(v => v > 0);
+        if (vs.length === 4) {
+          const sum = vs.reduce((a,b) => a+b, 0);
+          let g = 1;
+          if (sum >= 28) g = 7; else if (sum >= 24) g = 6; else if (sum >= 19) g = 5;
+          else if (sum >= 15) g = 4; else if (sum >= 10) g = 3; else if (sum >= 6) g = 2;
+          total += g; count++;
+        }
+      }
+    }
+    return { name: t.name, date: t.date, gpa: count ? (total/count).toFixed(2) : '-', count };
+  });
+  const gpaTable = `<div class="table-wrap"><table>
+    <thead><tr><th>学期</th><th>日期</th><th>GPA (7分制)</th><th>评估学科数</th></tr></thead>
+    <tbody>${gpaRows.map(r => `<tr><td><strong>${r.name}</strong></td><td class="dim">${r.date}</td><td style="font-size: 18px; font-weight: 700; color: var(--accent);">${r.gpa}</td><td>${r.count}/12</td></tr>`).join('')}</tbody>
+  </table></div>`;
+  report.push(`<div class="report"><h3>📈 GPA 趋势 (${gpaRows.length} 学期)</h3>${gpaTable}</div>`);
+
+  // 2. 学科 final 趋势
+  const subTrends = [];
+  for (const sub of SUBJECTS) {
+    const rows = [];
+    let prev = null;
+    for (const t of terms) {
+      const d = t.data[sub];
+      if (!d) { rows.push({ name: t.name, grade: null, change: '·' }); continue; }
+      const vs = ['A','B','C','D'].map(c => d[c]).filter(v => v > 0);
+      if (vs.length < 4) { rows.push({ name: t.name, grade: '部分', change: '·' }); continue; }
+      const sum = vs.reduce((a,b) => a+b, 0);
+      let g = 1;
+      if (sum >= 28) g = 7; else if (sum >= 24) g = 6; else if (sum >= 19) g = 5;
+      let change = '·';
+      if (prev !== null && typeof prev === 'number') {
+        if (g > prev) change = '↑';
+        else if (g < prev) change = '↓';
+        else change = '=';
+      }
+      rows.push({ name: t.name, grade: g, change });
+      prev = g;
+    }
+    if (rows.some(r => r.grade !== null && r.grade !== '·' && r.grade !== '部分')) {
+      subTrends.push({ sub, rows });
+    }
+  }
+  if (subTrends.length) {
+    const header = `<tr><th>学科</th>${terms.map(t => `<th>${t.name}<br><span class="dim">${t.date || ''}</span></th>`).join('')}</tr>`;
+    const body = subTrends.map(st => {
+      const cells = st.rows.map(r => {
+        if (r.grade === null) return '<td class="dim">-</td>';
+        if (r.grade === '部分') return '<td class="dim">部分</td>';
+        const arrow = r.change === '↑' ? '<span class="trend-up">↑</span>' : r.change === '↓' ? '<span class="trend-down">↓</span>' : r.change === '=' ? '<span class="trend-flat">=</span>' : '';
+        return `<td><span class="pill lv${r.grade >= 5 ? (r.grade >= 6 ? (r.grade === 7 ? '7' : '6') : '5') : '4'}">${r.grade}</span> ${arrow}</td>`;
+      }).join('');
+      return `<tr><td><strong>${st.sub}</strong></td>${cells}</tr>`;
+    }).join('');
+    report.push(`<div class="report"><h3>📊 学科 final 趋势 (跨 ${terms.length} 学期)</h3>
+      <div class="table-wrap"><table>
+        <thead>${header}</thead>
+        <tbody>${body}</tbody>
+      </table></div>
+    </div>`);
+  }
+
+  // 3. 真风险识别:criterion 在 ≥2 学期持续 ≤5
+  const persistentWeak = [];
+  for (const sub of SUBJECTS) {
+    for (const c of ['A','B','C','D']) {
+      const hits = terms.filter(t => t.data[sub] && t.data[sub][c] > 0 && t.data[sub][c] <= 5);
+      if (hits.length >= 2) {
+        const values = hits.map(t => `${t.name.slice(0,4)}:${t.data[sub][c]}`);
+        persistentWeak.push({ sub, c, count: hits.length, values, max: Math.max(...hits.map(t => t.data[sub][c])), min: Math.min(...hits.map(t => t.data[sub][c])) });
+      }
+    }
+  }
+  if (persistentWeak.length) {
+    persistentWeak.sort((a,b) => a.max - b.max);
+    const items = persistentWeak.map(w => {
+      const severity = w.max <= 4 ? 'risk' : 'warn-text';
+      const icon = w.max <= 4 ? '🔴' : '🟡';
+      return `<div class="item">
+        <span class="score lv${w.max}">${w.max}</span>
+        <span class="text"><span class="${severity}">${icon} ${w.sub} - ${w.c} 维度</span>
+        在 <strong>${w.count}/${terms.length} 学期</strong> 持续 ≤5 (${w.values.join(' / ')})
+        — <strong>真结构性弱项</strong>,DP HL 风险高</span>
+        ${renderRec(w.sub, w.c)}
+      </div>`;
+    }).join('');
+    report.push(`<div class="report"><h3>🔴 真结构性弱项 (${persistentWeak.length} 个,跨学期确认)</h3>${items}</div>`);
+  } else {
+    report.push(`<div class="report"><h3>✅ 无跨学期结构性弱项</h3><p class="ok-text">所有 criterion 在各学期都 ≥ 6(或仅 1 学期 ≤5 = 波动)。</p></div>`);
+  }
+
+  // 4. 改善信号
+  const improved = [];
+  for (const sub of SUBJECTS) {
+    for (const c of ['A','B','C','D']) {
+      const values = terms.map(t => t.data[sub] ? t.data[sub][c] : 0).filter(v => v > 0);
+      if (values.length >= 2) {
+        const first = values[0], last = values[values.length - 1];
+        if (last - first >= 2) {
+          improved.push({ sub, c, first, last, change: last - first });
+        }
+      }
+    }
+  }
+  if (improved.length) {
+    improved.sort((a,b) => b.change - a.change);
+    const items = improved.slice(0, 8).map(i =>
+      `<div class="item"><span class="score lv${i.last}">${i.last}</span><span class="text"><span class="ok-text">📈 ${i.sub} - ${i.c}</span> 从 ${i.first} → ${i.last} (升 +${i.change})</span></div>`
+    ).join('');
+    report.push(`<div class="report"><h3>📈 改善信号 (${improved.length} 个)</h3>${items}</div>`);
+  }
+
+  // 5. 强项继续加强(3 个类别:稳定 + 准强项 + 上升最快)
+  const reportSub = []; // [{ sub, cat, sub, avg, terms, ... }]
+  // 类别 A: 3 学期稳定 ≥7
+  const stable3 = [];
+  // 类别 B: 2 学期稳定 ≥7(可能是退出评估或新开)
+  const stable2 = [];
+  // 类别 C: 上升最快(从 ≤6 升到 7+)
+  const rising = [];
+
+  for (const sub of SUBJECTS) {
+    const dataPoints = terms.map(t => t.data[sub]).filter(d => d);
+    if (dataPoints.length < 2) continue; // 至少 2 学期数据
+
+    // 算每学期的 final grade
+    const finals = dataPoints.map(d => {
+      const vs = ['A','B','C','D'].map(c => d[c]).filter(v => v > 0);
+      if (vs.length < 4) return null;
+      const sum = vs.reduce((a,b) => a+b, 0);
+      if (sum >= 28) return 7; else if (sum >= 24) return 6; else if (sum >= 19) return 5;
+      return 4;
+    }).filter(g => g !== null);
+
+    const avg = finals.length ? (finals.reduce((a,b) => a+b, 0) / finals.length) : 0;
+    const allHigh = finals.length >= 3 && finals.every(g => g >= 7);
+    const twoHigh = finals.length >= 2 && finals.every(g => g >= 7);
+    const last = finals[finals.length - 1];
+    const first = finals[0];
+    const rising7 = last === 7 && first < 7;
+
+    if (allHigh) stable3.push({ sub, avg: avg.toFixed(2), terms: finals.length });
+    else if (twoHigh) stable2.push({ sub, avg: avg.toFixed(2), terms: finals.length });
+    else if (rising7) rising.push({ sub, avg: avg.toFixed(2), first, last });
+  }
+
+  // 排序
+  stable3.sort((a,b) => b.avg - a.avg);
+  stable2.sort((a,b) => b.avg - a.avg);
+  rising.sort((a,b) => a.first - b.first); // 升幅最大在前
+
+  if (stable3.length || stable2.length || rising.length) {
+    const blocks = [];
+    if (stable3.length) {
+      blocks.push(`<div class="rec-strong" style="border-left-color: #10b981;">
+        <h4 style="margin: 0 0 8px 0; color: #10b981;">🏆 类别 A:3 学期稳定 7+ · 强项金钉子</h4>
+        ${stable3.map(s => {
+          const rec = SUBJECT_RECS[s.sub] ? Object.values(SUBJECT_RECS[s.sub])[0] : '继续冲刺更高阶课程与竞赛';
+          return `<div style="padding: 10px; margin: 6px 0; background: rgba(16, 185, 129, 0.06); border-radius: 6px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+              <span style="font-weight: 700; color: var(--text); font-size: 15px;">${s.sub}</span>
+              <span class="pill lv7">${s.terms} 学期 7+</span>
+            </div>
+            <div style="color: var(--text-dim); font-size: 12px; margin-bottom: 6px;">平均 final <strong>${s.avg}/7</strong> · 申请画像核心</div>
+            <div style="color: var(--text); font-size: 13px; line-height: 1.5;">💡 <strong>加强</strong>:${rec}</div>
+          </div>`;
+        }).join('')}
+      </div>`);
+    }
+    if (stable2.length) {
+      blocks.push(`<div class="rec-strong" style="border-left-color: #3b82f6;">
+        <h4 style="margin: 0 0 8px 0; color: #3b82f6;">🎖 类别 B:2 学期稳定 7+ · 准强项</h4>
+        ${stable2.map(s => {
+          const rec = SUBJECT_RECS[s.sub] ? Object.values(SUBJECT_RECS[s.sub])[0] : '继续冲刺更高阶课程与竞赛';
+          return `<div style="padding: 10px; margin: 6px 0; background: rgba(59, 130, 246, 0.06); border-radius: 6px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+              <span style="font-weight: 700; color: var(--text); font-size: 15px;">${s.sub}</span>
+              <span class="pill lv7">${s.terms} 学期 7+</span>
+            </div>
+            <div style="color: var(--text-dim); font-size: 12px; margin-bottom: 6px;">平均 final <strong>${s.avg}/7</strong> · 需第 3 学期确认</div>
+            <div style="color: var(--text); font-size: 13px; line-height: 1.5;">💡 <strong>加强</strong>:${rec}</div>
+          </div>`;
+        }).join('')}
+      </div>`);
+    }
+    if (rising.length) {
+      blocks.push(`<div class="rec-strong" style="border-left-color: #f59e0b;">
+        <h4 style="margin: 0 0 8px 0; color: #f59e0b;">🚀 类别 C:上升最快 · 突破型</h4>
+        ${rising.map(s => {
+          const rec = SUBJECT_RECS[s.sub] ? Object.values(SUBJECT_RECS[s.sub])[0] : '保持势头冲刺稳定';
+          return `<div style="padding: 10px; margin: 6px 0; background: rgba(245, 158, 11, 0.06); border-radius: 6px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+              <span style="font-weight: 700; color: var(--text); font-size: 15px;">${s.sub}</span>
+              <span class="pill lv7">${s.first}→${s.last} 升 +${s.last-s.first}</span>
+            </div>
+            <div style="color: var(--text-dim); font-size: 12px; margin-bottom: 6px;">平均 final <strong>${s.avg}/7</strong> · 修复中,需保持</div>
+            <div style="color: var(--text); font-size: 13px; line-height: 1.5;">💡 <strong>保持</strong>:${rec}</div>
+          </div>`;
+        }).join('')}
+      </div>`);
+    }
+    const totalCount = stable3.length + stable2.length + rising.length;
+    report.push(`<div class="report"><h3>🏆 强项继续加强 (${totalCount} 项,3 类别)</h3>
+      <p class="dim" style="margin-bottom: 12px;">分类逻辑: <span style="color: #10b981;">A 稳定 3 学期</span> · <span style="color: #3b82f6;">B 稳定 2 学期</span> · <span style="color: #f59e0b;">C 上升最快</span>。每类含具体资源建议。</p>
+      ${blocks.join('')}
+    </div>`);
+  } else {
+    report.push(`<div class="report"><h3>🏆 强项继续加强 (0 项)</h3><p class="dim">需要至少 2 学期 7+ 才会列入。</p></div>`);
+  }
+
+  document.getElementById('trendContent').innerHTML = report.join('');
+  document.getElementById('trendSection').style.display = 'block';
+  document.getElementById('trendSection').scrollIntoView({ behavior: 'smooth' });
+}
+
+function criterionExplain(c) {
+  const dict = {
+    A: '= 理解/分析能力',
+    B: '= 调查/创作/构思',
+    C: '= 沟通/应用/执行',
+    D: '= 评估/反思'
+  };
+  return `<span class="dim">${dict[c]}</span>`;
+}
+
+// === 4 维 criterion 通用推荐(基于 IB MYP 通用知识,2026-06) ===
+// 标注:此推荐库基于 IB MYP Subject Guide + 已公开赛事 + 在线课通用资源
+// 升级建议:用户可手动调整具体赛事/课程(2026 年新增项)
+const CRITERION_RECS = {
+  'A': {
+    type: '学术深度 / 分析',
+    week_basic:  '📖 每周 1 套 1-2 页 "为什么" 短论文(IB 命令术语:analyze / explain)',
+    week_int:    '🎯 每周精读 1 篇学术文章(Nature/Science News for Students)+ 5 句 takeaways',
+    week_adv:    '🏆 备赛 AMC 8/10 / Science Olympiad / Olympiad 入门(ArtofProblemSolving Volume 1)',
+    summer:      '暑期学术夏校:YYGS / SSP / MITES / RSI / SIMR(竞争激烈,提前 1 年申请)',
+    resource:    '📚 IB Subject Guide + 5 年 Past Paper + Khan Academy(免费)',
+    fee:         '夏校 $5K-$10K | AMC 报名 $5-$10 | AoPS Volume 1 $50',
+    goal:        '6 学期:5→6 | 12 学期:5→7'
+  },
+  'B': {
+    type: '研究流程 / 创作',
+    week_basic:  '📓 建立 topic notebook,每周 3h research,记录 source / method / finding',
+    week_int:    '📊 每周 1 个 mini-project:定义问题→找数据→得出结论(用 Google Scholar + Zotero 引用)',
+    week_adv:    '🏆 备赛 Regeneron STS / Google Science Fair / 国际奥林匹克(IChO/USABO/USNCO)',
+    summer:      '教授组研究实习(冷邮件 50+ 教授,G7-8 大概率要 G9-10 才接)',
+    resource:    '📚 JSTOR 入门 + Google Scholar + Zotero(免费引用管理) + Coursera research 课',
+    fee:         '研究实习 免费 | Science Fair 报名 $30 | Regeneron STS 申请免费',
+    goal:        '8 学期:5→6 (B 维度提分空间最大)'
+  },
+  'C': {
+    type: '输出 / 执行 / 表现',
+    week_basic:  '🎤 Toastmasters Junior / 校内 Debate Club 每周 1 次 meeting',
+    week_int:    '📹 每月 1 个公开视频(科普 / 读书 / 编程 demo) 录 → 自我 review',
+    week_adv:    '🏆 演讲比赛:NSDA / Congressional Debate / Model UN / 学校代表',
+    summer:      '校队集训 + Debate Camp + 体育专项营(招生管不全免费)',
+    resource:    '📚 IB MYP Command Terms 术语表 + 录像复盘(自己录自己看)',
+    fee:         'Toastmasters 约 ¥100/月 | NSDA 报名 $20-100 | Debate Camp $1K-$5K',
+    goal:        '12 学期:5→6 (慢维度,需坚持)'
+  },
+  'D': {
+    type: '反思 / 现实应用',
+    week_basic:  '📝 周末 1 篇 metacognition journal(我学了什么/怎么用/还能怎么用)',
+    week_int:    '🌍 每月 1 次 community service + 1 篇 reflection(公益 / 实践)',
+    week_adv:    '🚀 创业实践 / 微型 NGO / 学校学生会社团 founder',
+    summer:      '社会公益 / 创业 / 实习(找导师/家人生态)',
+    resource:    '📚 IB ATL Skills 框架 + 设计思维入门 IDEO U + 当地志愿平台',
+    fee:         '公益 免费 | 实习 0-零月薪 | 设计思维课 $0-$300',
+    goal:        '6 学期:5→6 (快速维度)'
+  }
+};
+
+// === 学科特定推荐(12 学科,每学科 2-5 维) ===
+const SUBJECT_RECS = {
+  'Mathematics': {
+    A: '🔢 AoPS Volume 1 系统刷 + 每周 1 套 AMC 8 历年真题(模考 25 题 40min)',
+    B: '📐 AoPS 课程 "Introduction to Algebra" + 每周 1 个 30min deep dive problem',
+    C: '✍️ 每周 1 篇"解题思维"笔记(关键步骤 + 反思 + 一题多解) + 同伴讲题',
+    D: '🧮 现实数学:算家庭账 / 选股票 / 编程项目(把数学用在 real-world)'
+  },
+  'Sciences': {
+    A: '🔬 每周 1 个"为什么"科学小论文(Scientific American 中文版 / 新发现) + lab notebook 严格化',
+    B: '🧪 参加学校 science fair → ISEF(Intel/Regeneron ISEF, G9 申请)/ 中国区域赛',
+    C: '🗣️ 学校 science club 每月 1 次 peer presentation + YouTube science 频道',
+    D: '🌱 现实科学:养鱼 / 养花 / 编程物理模拟 / 家庭实验室'
+  },
+  'Chinese A': {
+    A: '📚 每周精读 1 本 IB 推荐中文(红岩/三体/围城/平凡的世界) + 1000 字读书笔记',
+    B: '✒️ 每周 1 篇文学评论(投稿叶圣陶杯/新概念/创新作文) + 中文辩论社',
+    C: '🎤 中文演讲比赛(学校/区域) + 朗诵会 + 学校中文报编辑',
+    D: '🏯 文化实地:博物馆/古建筑/非遗 + 写文化评论'
+  },
+  'English': {
+    A: '📖 每周精读 1 本英文原版(IB Prescribed Reading List) + 500 字 literary analysis',
+    B: '✍️ 参加 Scholastic Writing Awards / NCTE Student Writing Contest',
+    C: '🎤 Toastmasters Junior + 学校 English Debating Society + iBT Speaking 6 套真题',
+    D: '✈️ 现实英语:写博客 / 翻译 / 国际笔友 / 字幕组'
+  },
+  'I&S': {
+    A: '🌍 每周精读 1 个国际新闻主题(BBC/The Economist 青少年版) + 5 句分析',
+    B: '📊 建立"信息源"笔记(每周 3 source + 自己的 insight) + Google Scholar 入门',
+    C: '🏛️ Model UN 校内模拟 + 每年 1 次区域 MUN 会议(THIMUN / WIMUN)',
+    D: '🗳️ 现实社科学:模拟法庭 / We the People / 校学生会 / 当地 NGO 调研'
+  },
+  'SE/心理': {
+    A: '📖 每月 1 本心理学入门(《思考,快与慢》/《影响力》青少年版) + 500 字反思',
+    B: '🔍 学校心理社团 + 同伴辅导 + 学校心理周活动设计',
+    C: '💬 同伴倾听 + 学校心理公众号编辑 + 校心理剧导演',
+    D: '🌐 现实心理:Hotline 志愿者 / 同伴辅导项目 / 心理学博主'
+  },
+  'Music S1': {
+    A: '🎵 每周 1 首新曲目(ABRSM 等级考试曲目 1-2 首) + 乐理刷题',
+    B: '🎼 音乐创作工作坊(Berklee Online "Introduction to Music Theory" 课) + GarageBand 创作',
+    C: '🎤 学校乐团 / 校队 + 每季度 1 次公开演出 + 区域音乐节',
+    D: '🎧 现实音乐:音乐社区志愿者 / 老年院义演 / 校园广播台'
+  },
+  'Visual Arts': {
+    A: '🎨 每周艺术评论 1 篇(博物馆/展览/gallery visit) + 1 个 artist documentary',
+    B: '🖌️ 作品集(portfolio)系统化:每周 1 件作品 + 找 1 个 mentor 做 review',
+    C: '🖼️ 参加 Scholastic Art & Writing Awards / 校内 IB 视觉艺术展',
+    D: '📸 现实艺术:商业插画 / 当地 NGO logo / 学校活动海报'
+  },
+  'Design': {
+    A: '💻 Behance / Dribbble 每天看 30min + Adobe Creative Cloud 教程(Premiere/Illustrator/After Effects)',
+    B: '🏫 找 1 个 local 小项目(学校 / NGO) 做 design work(品牌/海报/网站)',
+    C: '🛠️ IB MYP Personal Project 展览 + 学校 Tech Fair 演示',
+    D: '🌐 现实设计:Fiverr 接单 / 校园 app / 学校数字基础设施贡献'
+  },
+  'PHE': {
+    A: '📚 每周 1 个运动项目规则 + 战术分析(Smart Sports Analytics YouTube)',
+    B: '🗺️ 健身计划系统化:教练 1v1 + 每周训练日志(心率/重量/重复)',
+    C: '🏆 校队 + 区域体育赛事 + 比赛录像 review(找战术弱点)',
+    D: '🌳 现实体育:户外活动 / 马拉松 / 攀岩 / 当地社区体育志愿者'
+  },
+  'Swimming': {
+    A: '📊 比赛录像 review(每月 1 场) + 同伴 feedback session',
+    B: '🏊 找专项教练做 technique 精修(转身/出发/划水频率)',
+    C: '🏆 区域青少年游泳赛 + 校际比赛 + 国家级青年赛(目标 times)',
+    D: '💪 现实体适能:陆上训练 + 营养 + 睡眠系统化(专业运动员标配)'
+  },
+  'Adventure Ed': {
+    A: '🏔️ 户外技能书单 + 当地户外俱乐部(Mountaineering / Kayaking 课程)',
+    B: '🗺️ 周末 1 次户外探险(徒步/皮划艇/攀岩) + logbook',
+    C: '🏕️ 校队 + 区域户外挑战赛 + 暑期户外营(NOLS / Outward Bound)',
+    D: '🌲 现实应用:户外领队 / 学校户外社团 leader / 当地环保志愿'
+  },
+  'IDU (Interdisciplinary)': {
+    A: '🔗 每月 1 个跨学科主题(eg. 城市化 = 地理 + 经济 + 历史)读 1 本 + 1500 字综述',
+    B: '🔬 跨学科小项目(科学+艺术 / 数学+历史) + IB EE 入门(4000 词研究论文)',
+    C: '🎤 跨学科展示:学校 TEDx / 校报跨学科专栏 / YouTube 频道',
+    D: '🌍 现实跨学科:可持续发展 / 城市规划志愿 / 当地社会问题调研'
+  }
+};
+
+// === 渲染推荐 (诊断后追加行动) ===
+let viewMode = 'parent'; // 'parent' (家长简版) | 'student' (学生完整)
+
+function setViewMode(mode) {
+  viewMode = mode;
+  document.getElementById('modeParent').classList.toggle('active', mode === 'parent');
+  document.getElementById('modeStudent').classList.toggle('active', mode === 'student');
+  document.getElementById('modeDesc').textContent =
+    mode === 'parent'
+      ? '只显示"每周 + 暑假",数字加粗'
+      : '完整 4 行 + 资源 + 学科特定';
+  // 重新分析(如果报告存在)
+  if (document.getElementById('reportSection').style.display !== 'none') analyze();
+  if (document.getElementById('trendSection').style.display !== 'none') analyzeAll();
+}
+
+// 时间预估(每周 h, 学期周, 提分目标)
+const REC_TIME = {
+  'A': { hrs: 1.0, weeks: 8, gain: 1 },
+  'B': { hrs: 1.5, weeks: 8, gain: 2 },
+  'C': { hrs: 1.5, weeks: 12, gain: 1 },
+  'D': { hrs: 1.0, weeks: 6, gain: 1 }
+};
+
+function renderRec(sub, c) {
+  const cr = CRITERION_RECS[c] || CRITERION_RECS['A'];
+  const subR = (SUBJECT_RECS[sub] || {})[c];
+  const t = REC_TIME[c] || REC_TIME['A'];
+
+  // 家长模式:3 个梯度选 1(基础/进阶/冲刺) + 暑假 + 时间 + 费用
+  if (viewMode === 'parent') {
+    return `<div class="rec">
+      <div class="rec-line"><span class="rec-tag week">📌 基础</span> ${cr.week_basic}</div>
+      <div class="rec-line"><span class="rec-tag week">🎯 进阶</span> ${cr.week_int}</div>
+      <div class="rec-line"><span class="rec-tag week">🏆 冲刺</span> ${cr.week_adv}</div>
+      <div class="rec-line"><span class="rec-tag summer">☀️ 暑假</span> ${cr.summer}</div>
+      <div class="rec-time">⏱ 每周 <strong>${t.hrs}h</strong> · 📅 坚持 <strong>${t.weeks} 周</strong> · 🎯 目标 <strong>+${t.gain} 分</strong><br>💰 ${cr.fee}<br>📍 路径: ${cr.goal}</div>
+    </div>`;
+  }
+  // 学生模式:完整 5 行(3 梯度 + 暑假 + 资源 + 学科特定)
+  return `<div class="rec">
+    <div class="rec-line"><span class="rec-tag week">📌 基础</span> ${cr.week_basic}</div>
+    <div class="rec-line"><span class="rec-tag week">🎯 进阶</span> ${cr.week_int}</div>
+    <div class="rec-line"><span class="rec-tag week">🏆 冲刺</span> ${cr.week_adv}</div>
+    <div class="rec-line"><span class="rec-tag summer">☀️ 暑假</span> ${cr.summer}</div>
+    <div class="rec-line"><span class="rec-tag res">📚 资源</span> ${cr.resource}</div>
+    ${subR ? `<div class="rec-line sub"><span class="rec-tag sub">${sub}</span> ${subR}</div>` : ''}
+    <div class="rec-time">⏱ 每周 <strong>${t.hrs}h</strong> · 📅 坚持 <strong>${t.weeks} 周</strong> · 🎯 目标 <strong>+${t.gain} 分</strong><br>💰 ${cr.fee}<br>📍 路径: ${cr.goal}</div>
+  </div>`;
+}
+
+function exportData() {
+  const data = state;
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'criterion-multi-' + new Date().toISOString().slice(0,10) + '.json';
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function importData() {
+  const inp = document.createElement('input');
+  inp.type = 'file';
+  inp.accept = '.json';
+  inp.onchange = e => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = ev => {
+      try {
+        const data = JSON.parse(ev.target.result);
+        if (!data.terms) throw new Error('格式错误(需要 terms 字段)');
+        state = data;
+        currentTerm = data.currentTerm || Object.keys(data.terms)[0] || null;
+        state.currentTerm = currentTerm;
+        saveState();
+        renderTabs();
+        buildTable();
+      } catch(err) { alert('导入失败: ' + err.message); }
+    };
+    reader.readAsText(file);
+  };
+  inp.click();
+}
+
+function clearAll() {
+  if (!confirm('清空所有学期数据?此操作不可恢复。')) return;
+  localStorage.removeItem(STORAGE_KEY);
+  state = { currentTerm: null, terms: {} };
+  currentTerm = null;
+  renderTabs();
+  buildTable();
+  document.getElementById('reportSection').style.display = 'none';
+  document.getElementById('trendSection').style.display = 'none';
+}
+
+// 初始化
+renderTabs();
+buildTable();
+</script>
+</body>
+</html>
