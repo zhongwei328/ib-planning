@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>职业兴趣报告生成器 · IB Planning</title>
+<style>
+:root {
+  --bg: #0f172a; --bg-elev: #1e293b; --bg-card: #1a2540;
+  --text: #f1f5f9; --text-dim: #94a3b8;
+  --i: #6366f1; --s: #10b981; --r: #f59e0b; --a: #ec4899; --e: #8b5cf6; --c: #64748b;
+  --border: #334155; --radius: 10px;
+  --accent: #6366f1;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system,"PingFang SC","Microsoft YaHei",sans-serif;
+  background: var(--bg); color: var(--text); line-height: 1.7;
+  padding: 24px 16px 60px; max-width: 860px; margin: 0 auto; }
+
+/* ── INPUT PHASE ── */
+.input-wrap { max-width: 640px; margin: 0 auto; }
+.logo { text-align: center; margin-bottom: 32px; }
+.logo-emoji { font-size: 48px; }
+.logo h1 { font-size: 22px; margin: 8px 0 4px; }
+.logo p { color: var(--text-dim); font-size: 13px; }
+
+.section { background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 20px; margin-bottom: 20px; }
+.section-title { font-size: 14px; font-weight: 700; margin-bottom: 16px;
+  display: flex; align-items: center; gap: 8px; }
+.section-title span { font-size: 16px; }
+
+.info-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+.info-row.full { grid-template-columns: 1fr; }
+label { font-size: 13px; color: var(--text-dim); display: block; margin-bottom: 5px; }
+input[type="text"], input[type="number"] {
+  width: 100%; background: var(--bg-elev); border: 1px solid var(--border);
+  border-radius: 6px; color: var(--text); padding: 8px 10px; font-size: 14px;
+  outline: none; transition: border-color 0.2s; }
+input:focus { border-color: var(--accent); }
+
+.holland-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.dim-row { background: var(--bg-elev); border-radius: 8px; padding: 12px; }
+.dim-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+.dim-name { font-size: 13px; font-weight: 600; }
+.dim-code { font-size: 11px; color: var(--text-dim); }
+.dim-pct { font-size: 14px; font-weight: 700; min-width: 38px; text-align: right; }
+input[type="range"] { width: 100%; accent-color: var(--accent); cursor: pointer; height: 6px; }
+input[type="range"].r { accent-color: var(--r); }
+input[type="range"].s { accent-color: var(--s); }
+input[type="range"].i { accent-color: var(--i); }
+input[type="range"].a { accent-color: var(--a); }
+input[type="range"].e { accent-color: var(--e); }
+input[type="range"].c { accent-color: var(--c); }
+
+.mbti-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.mbti-pair { background: var(--bg-elev); border-radius: 8px; padding: 14px; }
+.mbti-label { font-size: 12px; color: var(--text-dim); margin-bottom: 10px; text-align: center; }
+.mbti-label strong { color: var(--text); font-size: 14px; }
+.mbti-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.mbti-btn { background: var(--bg-card); border: 2px solid var(--border);
+  border-radius: 6px; padding: 8px; font-size: 14px; font-weight: 600;
+  color: var(--text-dim); cursor: pointer; transition: all 0.2s; text-align: center; }
+.mbti-btn:hover { border-color: var(--accent); color: var(--text); }
+.mbti-btn.selected { background: rgba(99,102,241,0.15); border-color: var(--accent); color: #a5b4fc; }
+
+.btn-row { display: flex; gap: 12px; }
+.btn { flex: 1; padding: 13px; border-radius: 8px; font-size: 15px; font-weight: 700;
+  cursor: pointer; border: none; transition: all 0.2s; }
+.btn-primary { background: var(--accent); color: #fff; }
+.btn-primary:hover { background: #4f46e5; }
+.btn-secondary { background: var(--bg-elev); color: var(--text); border: 1px solid var(--border); }
+.btn-secondary:hover { border-color: var(--accent); }
+
+/* ── REPORT PHASE ── */
+.report-wrap { display: none; }
+.report-header { text-align: center; margin-bottom: 28px; }
+.report-header h1 { font-size: 22px; margin-bottom: 6px; }
+.report-header .meta { color: var(--text-dim); font-size: 13px; }
+
+.badge-row { display: flex; justify-content: center; gap: 24px; margin-bottom: 24px; }
+.badge-card { background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 20px 32px; text-align: center; }
+.badge-big { font-size: 64px; font-weight: 900; line-height: 1; letter-spacing: -2px; }
+.badge-sub { font-size: 14px; color: var(--text-dim); margin-top: 4px; }
+.badge-card .tags { margin-top: 10px; display: flex; gap: 6px; justify-content: center; flex-wrap: wrap; }
+.tag { display: inline-block; padding: 2px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; }
+.tag-i { background: rgba(99,102,241,0.25); color: #a5b4fc; }
+.tag-s { background: rgba(16,185,129,0.25); color: #6ee7b7; }
+.tag-r { background: rgba(245,158,11,0.25); color: #fcd34d; }
+.tag-a { background: rgba(236,72,153,0.25); color: #f9a8d4; }
+.tag-e { background: rgba(139,92,246,0.25); color: #d8b4fe; }
+.tag-c { background: rgba(100,116,139,0.25); color: #cbd5e1; }
+
+.grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.grid-3 { grid-template-columns: 1fr 1fr 1fr; }
+.card { background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 18px; }
+h2 { font-size: 16px; margin: 28px 0 12px; padding-bottom: 8px;
+  border-bottom: 2px solid var(--border); }
+h3 { font-size: 14px; margin-bottom: 10px; color: #cbd5e1; }
+
+.bar-wrap { margin: 5px 0; }
+.bar-label { display: flex; justify-content: space-between; font-size: 12px; color: var(--text-dim); margin-bottom: 3px; }
+.bar { height: 8px; background: var(--border); border-radius: 4px; overflow: hidden; }
+.bar-fill { height: 100%; border-radius: 4px; }
+
+.prof-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-top: 12px; }
+.prof-item { background: var(--bg-elev); border-radius: 8px; padding: 14px;
+  border-left: 3px solid var(--border); }
+.prof-item .tag { margin-bottom: 8px; }
+.prof-name { font-size: 13px; font-weight: 600; margin-bottom: 4px; }
+.prof-hint { font-size: 11px; color: var(--text-dim); }
+
+.highlight-box { background: linear-gradient(135deg,
+  rgba(99,102,241,0.12) 0%, rgba(16,185,129,0.12) 100%);
+  border-left: 4px solid var(--i); border-radius: 6px; padding: 12px 16px;
+  margin: 12px 0; font-size: 13px; }
+.warning-box { background: rgba(239,68,68,0.1);
+  border-left: 3px solid #ef4444; border-radius: 4px; padding: 10px 14px;
+  font-size: 13px; color: #fca5a5; margin: 12px 0; }
+
+.pill { display: inline-block; background: var(--bg-elev); border: 1px solid var(--border);
+  border-radius: 20px; padding: 2px 10px; font-size: 11px; margin: 2px; }
+
+ul { padding-left: 16px; }
+li { font-size: 13px; color: var(--text-dim); margin-bottom: 4px; }
+
+.footer { text-align: center; margin-top: 40px; padding-top: 16px;
+  border-top: 1px solid var(--border); font-size: 12px; color: var(--text-dim); }
+
+#reportPhase .card { margin-bottom: 0; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 600px) {
+  .holland-grid { grid-template-columns: 1fr; }
+  .mbti-grid { grid-template-columns: 1fr; }
+  .grid, .grid-3, .prof-grid { grid-template-columns: 1fr; }
+  .info-row { grid-template-columns: 1fr; }
+  .badge-row { flex-direction: column; align-items: center; }
+}
+</style>
+</head>
+<body>
+
+<!-- ══════════ INPUT PHASE ══════════ -->
+<div id="inputPhase" class="input-wrap">
+  <div class="logo">
+    <div class="logo-emoji">🧭</div>
+    <h1>职业兴趣报告生成器</h1>
+    <p>Holland × MBTI · 3分钟生成专属分析</p>
+  </div>
+
+  <!-- 基本信息 -->
+  <div class="section">
+    <div class="section-title"><span>👤</span>基本信息</div>
+    <div class="info-row">
+      <div>
+        <label>姓名 / 代号</label>
+        <input type="text" id="inputName" placeholder="例如：Henry" />
+      </div>
+      <div>
+        <label>年级（选填）</label>
+        <input type="text" id="inputGrade" placeholder="例如：G7 IB" />
+      </div>
+    </div>
+    <div class="info-row full">
+      <div>
+        <label>报告日期</label>
+        <input type="text" id="inputDate" readonly style="cursor:default;opacity:0.7;" />
+      </div>
+    </div>
+  </div>
+
+  <!-- Holland 六维 -->
+  <div class="section">
+    <div class="section-title"><span>📊</span>Holland 职业兴趣（6维度）</div>
+    <div class="holland-grid">
+      <div class="dim-row">
+        <div class="dim-header">
+          <span class="dim-name">调研型 <span class="dim-code">Investigative</span></span>
+          <span class="dim-pct" id="pctI">70%</span>
+        </div>
+        <input type="range" class="i" id="slI" min="0" max="100" value="70" oninput="updatePct('I',this.value)" />
+      </div>
+      <div class="dim-row">
+        <div class="dim-header">
+          <span class="dim-name">社会型 <span class="dim-code">Social</span></span>
+          <span class="dim-pct" id="pctS">60%</span>
+        </div>
+        <input type="range" class="s" id="slS" min="0" max="100" value="60" oninput="updatePct('S',this.value)" />
+      </div>
+      <div class="dim-row">
+        <div class="dim-header">
+          <span class="dim-name">实际型 <span class="dim-code">Realistic</span></span>
+          <span class="dim-pct" id="pctR">50%</span>
+        </div>
+        <input type="range" class="r" id="slR" min="0" max="100" value="50" oninput="updatePct('R',this.value)" />
+      </div>
+      <div class="dim-row">
+        <div class="dim-header">
+          <span class="dim-name">艺术型 <span class="dim-code">Artistic</span></span>
+          <span class="dim-pct" id="pctA">40%</span>
+        </div>
+        <input type="range" class="a" id="slA" min="0" max="100" value="40" oninput="updatePct('A',this.value)" />
+      </div>
+      <div class="dim-row">
+        <div class="dim-header">
+          <span class="dim-name">企业型 <span class="dim-code">Enterprising</span></span>
+          <span class="dim-pct" id="pctE">30%</span>
+        </div>
+        <input type="range" class="e" id="slE" min="0" max="100" value="30" oninput="updatePct('E',this.value)" />
+      </div>
+      <div class="dim-row">
+        <div class="dim-header">
+          <span class="dim-name">常规型 <span class="dim-code">Conventional</span></span>
+          <span class="dim-pct" id="pctC">20%</span>
+        </div>
+        <input type="range" class="c" id="slC" min="0" max="100" value="20" oninput="updatePct('C',this.value)" />
+      </div>
+    </div>
+  </div>
+
+  <!-- MBTI -->
+  <div class="section">
+    <div class="section-title"><span>🧠</span>MBTI 性格类型</div>
+    <div class="mbti-grid">
+      <div class="mbti-pair">
+        <div class="mbti-label">外向 ←→ 内向<br><strong id="lblEI">?</strong></div>
+        <div class="mbti-btns">
+          <button class="mbti-btn" data-dim="EI" data-val="E" onclick="selectMBTI(this)">E 外向</button>
+          <button class="mbti-btn" data-dim="EI" data-val="I" onclick="selectMBTI(this)">I 内向</button>
+        </div>
+      </div>
+      <div class="mbti-pair">
+        <div class="mbti-label">实感 ←→ 直觉<br><strong id="lblSN">?</strong></div>
+        <div class="mbti-btns">
+          <button class="mbti-btn" data-dim="SN" data-val="S" onclick="selectMBTI(this)">S 实感</button>
+          <button class="mbti-btn" data-dim="SN" data-val="N" onclick="selectMBTI(this)">N 直觉</button>
+        </div>
+      </div>
+      <div class="mbti-pair">
+        <div class="mbti-label">思考 ←→ 情感<br><strong id="lblTF">?</strong></div>
+        <div class="mbti-btns">
+          <button class="mbti-btn" data-dim="TF" data-val="T" onclick="selectMBTI(this)">T 思考</button>
+          <button class="mbti-btn" data-dim="TF" data-val="F" onclick="selectMBTI(this)">F 情感</button>
+        </div>
+      </div>
+      <div class="mbti-pair">
+        <div class="mbti-label">判断 ←→ 知觉<br><strong id="lblJP">?</strong></div>
+        <div class="mbti-btns">
+          <button class="mbti-btn" data-dim="JP" data-val="J" onclick="selectMBTI(this)">J 判断</button>
+          <button class="mbti-btn" data-dim="JP" data-val="P" onclick="selectMBTI(this)">P 知觉</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 按钮 -->
+  <div class="btn-row">
+    <button class="btn btn-secondary" onclick="resetForm()">🔄 重置</button>
+    <button class="btn btn-primary" onclick="generate()">🚀 生成报告</button>
+  </div>
+</div>
+
+<!-- ══════════ REPORT PHASE ══════════ -->
+<div id="reportPhase" class="report-wrap">
+  <!-- 由 JS 填充 -->
+</div>
+
+<script>
+// ── State ──────────────────────────────────
+const mbtiState = { EI: null, SN: null, TF: null, JP: null };
+
+// ── Init ───────────────────────────────────
+document.getElementById('inputDate').value = new Date().toISOString().slice(0, 10);
+
+// ── Holland slider ───────────────────────────
+function updatePct(dim, val) {
+  document.getElementById('pct' + dim).textContent = val + '%';
+}
+
+// ── MBTI select ──────────────────────────────
+function selectMBTI(btn) {
+  const dim = btn.dataset.dim;
+  const val = btn.dataset.val;
+  mbtiState[dim] = val;
+  // Update label
+  const labelMap = { EI: { E: '外向 E', I: '内向 I' }, SN: { S: '实感 S', N: '直觉 N' },
+    TF: { T: '思考 T', F: '情感 F' }, JP: { J: '判断 J', P: '知觉 P' } };
+  document.getElementById('lbl' + dim).textContent = labelMap[dim][val];
+  // Style
+  document.querySelectorAll('[data-dim="'+dim+'"]').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+}
+
+// ── Reset ───────────────────────────────────
+function resetForm() {
+  ['I','S','R','A','E','C'].forEach(d => { document.getElementById('sl'+d).value = {I:70,S:60,R:50,A:40,E:30,C:20}[d]; updatePct(d, document.getElementById('sl'+d).value); });
+  ['EI','SN','TF','JP'].forEach(d => {
+    mbtiState[d] = null;
+    document.getElementById('lbl'+d).textContent = '?';
+    document.querySelectorAll('[data-dim="'+d+'"]').forEach(b => b.classList.remove('selected'));
+  });
+  document.getElementById('inputName').value = '';
+  document.getElementById('inputGrade').value = '';
+}
+
+// ── Holland data ────────────────────────────
+const HOLLAND_PROFS = {
+  ISA: { name:'调研-社会-艺术', p0:'心理学(研究/临床)', p1:'教育学/社会工作', p2:'公共政策/国际关系' },
+  IAS: { name:'调研-艺术-社会', p0:'心理学/神经科学', p1:'生物医学研究', p2:'公共卫生' },
+  IAR: { name:'调研-艺术-实际', p0:'生物/化学研究', p1:'医学预科/药学', p2:'生物医学工程' },
+  IAE: { name:'调研-艺术-企业', p0:'经济学/数据科学', p1:'商业分析/量化金融', p2:'国际商务' },
+  IAC: { name:'调研-艺术-常规', p0:'金融工程/量化交易', p1:'数据科学/统计学', p2:'精算' },
+  ISI: { name:'调研-社会-调研', p0:'医学/临床研究', p1:'心理学(临床)', p2:'生物医学' },
+  ISE: { name:'调研-社会-企业', p0:'教育技术/健康政策', p1:'公共卫生/国际发展', p2:'非营利管理' },
+  IRE: { name:'调研-实际-企业', p0:'机械工程/土木工程', p1:'电气工程/CS', p2:'建筑学' },
+  IRA: { name:'调研-实际-艺术', p0:'生物医学工程/药学', p1:'化学工程/材料科学', p2:'生物技术' },
+  IRS: { name:'调研-实际-社会', p0:'医学预科/护理', p1:'运动科学/康复医学', p2:'公共卫生' },
+  RIA: { name:'实际-调研-艺术', p0:'机械工程/航空航天', p1:'电气工程/机器人', p2:'材料工程' },
+  RIE: { name:'实际-调研-企业', p0:'计算机科学/CS', p1:'软件工程/数据科学', p2:'游戏开发' },
+  RIS: { name:'实际-调研-社会', p0:'环境工程/农业科学', p1:'生态学/地球科学', p2:'动物医学' },
+  RCA: { name:'实际-常规-艺术', p0:'建筑学/室内设计', p1:'工业设计', p2:'机械设计' },
+  RCE: { name:'实际-常规-企业', p0:'土木工程/建筑管理', p1:'物流/供应链', p2:'制造工程' },
+  RIC: { name:'实际-调研-常规', p0:'计算机工程/网络安全', p1:'电子工程', p2:'通信工程' },
+  SIA: { name:'社会-调研-艺术', p0:'心理学(临床/咨询)', p1:'艺术治疗', p2:'特殊教育' },
+  SIE: { name:'社会-调研-企业', p0:'教育学/教学设计', p1:'人力资源/组织心理', p2:'市场研究' },
+  SIC: { name:'社会-调研-常规', p0:'医学/护理', p1:'公共卫生/健康政策', p2:'社会服务管理' },
+  SRA: { name:'社会-实际-艺术', p0:'体育管理/运动科学', p1:'康复治疗', p2:'户外教育' },
+  SRE: { name:'社会-实际-企业', p0:'体育管理/事件策划', p1:'酒店管理', p2:'公共关系' },
+  SRC: { name:'社会-实际-常规', p0:'运动科学/物理治疗', p1:'康复医学', p2:'体育教育' },
+  ASE: { name:'艺术-社会-企业', p0:'广告/品牌设计', p1:'媒体策划/传播', p2:'文化管理' },
+  ASI: { name:'艺术-社会-调研', p0:'艺术治疗/音乐治疗', p1:'心理学(艺术方向)', p2:'博物馆学' },
+  AES: { name:'艺术-企业-社会', p0:'媒体/新闻', p1:'市场营销/公关', p2:'活动策划' },
+  AER: { name:'艺术-企业-实际', p0:'产品设计/用户体验', p1:'交互设计/游戏美术', p2:'数字媒体' },
+  AEC: { name:'艺术-企业-常规', p0:'媒体管理/艺术管理', p1:'品牌管理', p2:'艺术市场' },
+  AIS: { name:'艺术-调研-社会', p0:'建筑学/城市设计', p1:'景观设计', p2:'历史建筑保护' },
+  AIR: { name:'艺术-调研-实际', p0:'建筑学/工业设计', p1:'计算机图形学', p2:'游戏设计' },
+  ARI: { name:'艺术-实际-调研', p0:'工业设计/产品设计', p1:'汽车设计', p2:'航空航天设计' },
+  ARE: { name:'艺术-实际-企业', p0:'时尚管理/奢侈品牌', p1:'服装设计+商业', p2:'零售管理' },
+  ARC: { name:'艺术-实际-常规', p0:'平面设计/视觉传达', p1:'动漫/游戏美术', p2:'数字艺术' },
+  ESI: { name:'企业-社会-调研', p0:'国际关系/外交', p1:'公共政策/政治学', p2:'法律' },
+  ESE: { name:'企业-社会-企业', p0:'商业管理/创业', p1:'市场营销/销售', p2:'人力资源' },
+  ESR: { name:'企业-社会-实际', p0:'体育管理/活动策划', p1:'酒店/旅游管理', p2:'餐饮管理' },
+  EAI: { name:'企业-艺术-调研', p0:'时尚管理/媒体', p1:'广告创意/品牌战略', p2:'设计管理' },
+  EAR: { name:'企业-艺术-实际', p0:'时尚设计/产品管理', p1:'珠宝设计+商业', p2:'时尚买手' },
+  EAS: { name:'企业-艺术-社会', p0:'媒体策划/传播', p1:'广告/公关', p2:'会展管理' },
+  EIA: { name:'企业-调研-艺术', p0:'经济学/金融工程', p1:'商业分析/咨询', p2:'管理咨询' },
+  EIR: { name:'企业-调研-实际', p0:'金融工程/量化金融', p1:'投资银行/资产管理', p2:'风险管理' },
+  EIS: { name:'企业-调研-社会', p0:'国际商务/贸易', p1:'投资分析/咨询', p2:'商业开发' },
+  ECS: { name:'企业-常规-社会', p0:'会计/财务管理', p1:'商业法律/合规', p2:'行政/运营管理' },
+  ECR: { name:'企业-常规-实际', p0:'供应链管理/物流', p1:'运营管理/质量管理', p2:'采购/项目管理' },
+  ECI: { name:'企业-常规-调研', p0:'金融/银行/投资', p1:'商业分析/数据管理', p2:'信息技术管理' },
+  CIS: { name:'常规-调研-社会', p0:'医学/护理', p1:'公共卫生/健康经济', p2:'流行病学' },
+  CIE: { name:'常规-调研-企业', p0:'金融/银行', p1:'数据科学/商业分析', p2:'咨询' },
+  CIR: { name:'常规-调研-实际', p0:'计算机工程/软件工程', p1:'数据工程/AI', p2:'通信工程' },
+  CSE: { name:'常规-社会-企业', p0:'人力资源/行政管理', p1:'社会服务管理', p2:'非营利管理' },
+  CSR: { name:'常规-社会-实际', p0:'幼儿教育/特殊教育', p1:'社会工作/心理咨询', p2:'康复治疗' },
+  CSA: { name:'常规-社会-艺术', p0:'艺术教育/音乐教育', p1:'语言治疗/心理咨询', p2:'特殊教育' },
+  CES: { name:'常规-企业-社会', p0:'行政管理/商业运营', p1:'人力资源/市场', p2:'销售/采购' },
+  CER: { name:'常规-企业-实际', p0:'供应链管理/物流', p1:'运营管理/质量管理', p2:'制造/采购' },
+  CEI: { name:'常规-企业-调研', p0:'会计/金融/银行', p1:'商业分析/投资管理', p2:'信息技术管理' },
+  CRE: { name:'常规-实际-企业', p0:'建筑管理/施工', p1:'工程管理/项目管理', p2:'物流/供应链' },
+  CRI: { name:'常规-实际-调研', p0:'计算机工程/通信工程', p1:'电子工程/自动化', p2:'航空工程' },
+  CRA: { name:'常规-实际-艺术', p0:'建筑学/室内设计', p1:'工业设计/产品设计', p2:'景观设计' },
+  CAI: { name:'常规-艺术-调研', p0:'游戏开发/图形学', p1:'数字媒体/动画', p2:'计算机艺术' },
+  CAR: { name:'常规-艺术-实际', p0:'平面设计/视觉传达', p1:'动漫/游戏美术', p2:'数字媒体' },
+  CAS: { name:'常规-艺术-社会', p0:'艺术教育/音乐教育', p1:'语言治疗', p2:'艺术管理' }
+};
+
+const MBTI_DESC = {
+  INTJ: { name:'建筑师', strengths:['战略思维','独立工作','高标准'], blindspot:'社交不足','叙事':'改变世界的宏大蓝图'] },
+  INTP: { name:'逻辑学家', strengths:['深度分析','创新','逻辑'], blindspot:'执行落地差','叙事':'追求真理的思考者'] },
+  ENTJ: { name:'指挥官', strengths:['战略','决策力','领导力'], blindspot:'缺乏耐心','叙事':'改变现状的商业领袖'] },
+  ENTP: { name:'辩论家', strengths:['创意','谈判','适应力'], blindspot:'虎头蛇尾','叙事':'打破常规的创新者'] },
+  INFJ: { name:'提倡者', strengths:['洞察力','同理心','使命驱动'], blindspot:'自我牺牲','叙事':'用理想改变世界'] },
+  INFP: { name:'调停者', strengths:['创造力','同理心','价值观坚定'], blindspot:'逃避现实','叙事':'守护内心价值观的梦想家'] },
+  ENFJ: { name:'主人公', strengths:['领导力','感染力','使命感'], blindspot:'过度理想化','叙事':'激励他人共同行动的领袖'] },
+  ENFP: { name:'竞选者', strengths:['热情','创意','社交'], blindspot:'难以专注','叙事':'点燃他人热情的行动家'] },
+  ISTJ: { name:'物流师', strengths:['责任心','可靠','执行力'], blindspot:'抗拒变化','叙事':'默默扛起责任的中坚力量'] },
+  ISFJ: { name:'守护者', strengths:['关怀','可靠','细致'], blindspot:'忽视自我','叙事':'用行动守护重要的人'] },
+  ESTJ: { name:'总经理', strengths:['管理','执行','正直'], blindspot:'缺乏灵活','叙事':'建立秩序的务实管理者'] },
+  ESFJ: { name:'执政官', strengths:['关怀','社交','责任感'], blindspot:'从众压力','叙事':'让身边人生活更好的照顾者'] },
+  ISTP: { name:'鉴赏家', strengths:['动手','冷静','解决问题'], blindspot:'长期规划弱','叙事':'用双手解决真实问题的高手'] },
+  ISFP: { name:'探险家', strengths:['审美','灵活','行动力'], blindspot:'目标模糊','叙事':'活在当下、追求真实体验的艺术家'] },
+  ESTP: { name:'企业家', strengths:['行动','应变','务实'], blindspot:'冲动欠计划','叙事':'在现实中创造价值的企业家'] },
+  ESFP: { name:'表演者', strengths:['社交','热情','创意'], blindspot:'难以独处','叙事':'用活力感染周围的人'] }
+};
+
+// ── Generate ────────────────────────────────
+function generate() {
+  const name = document.getElementById('inputName').value.trim() || '用户';
+  const grade = document.getElementById('inputGrade').value.trim();
+  const date = document.getElementById('inputDate').value;
+
+  // Gather Holland
+  const holland = { I: +slI.value, S: +slS.value, R: +slR.value, A: +slA.value, E: +slE.value, C: +slC.value };
+  const sorted = Object.entries(holland).sort((a,b)=>b[1]-a[1]);
+  const top3 = sorted.slice(0,3).map(x=>x[0]).join('');
+  const profData = HOLLAND_PROFS[top3] || { name:'综合型', p0:'跨学科专业', p1:'综合发展', p2:'根据兴趣深入' };
+
+  // MBTI
+  const ei=mbtiState.EI||'?', sn=mbtiState.SN||'?', tf=mbtiState.TF||'?', jp=mbtiState.JP||'?';
+  const mbtiType = ei+sn+tf+jp;
+  const mbtiData = MBTI_DESC[mbtiType] || { name:'待探索', strengths:['待发现'], blindspot:'需更多自我探索', '叙事':'完整的自我认知需要更多实践'] };
+
+  // Color map
+  const col = { I:'#6366f1', S:'#10b981', R:'#f59e0b', A:'#ec4899', E:'#8b5cf6', C:'#64748b' };
+  const tagCls = { I:'tag-i', S:'tag-s', R:'tag-r', A:'tag-a', E:'tag-e', C:'tag-c' };
+
+  const barSection = sorted.map(([d,v]) => `
+    <div class="bar-wrap">
+      <div class="bar-label">
+        <span><span class="tag ${tagCls[d]}" style="font-size:10px;padding:1px 6px;">${d}</span> ${['调研型','社会型','实际型','艺术型','企业型','常规型'][['I','S','R','A','E','C'].indexOf(d)]}</span>
+        <span>${v}%</span>
+      </div>
+      <div class="bar"><div class="bar-fill" style="width:${v}%;background:${col[d]}"></div></div>
+    </div>`).join('');
+
+  const topTags = sorted.slice(0,3).map(([d]) => `<span class="tag ${tagCls[d]}">${d}</span>`).join('');
+
+  const profCards = [profData.p0,profData.p1,profData.p2].map((p,i)=>`
+    <div class="prof-item" style="border-left-color:${col[sorted[i][0]]}">
+      <span class="tag ${tagCls[sorted[i][0]]}">P${i}</span>
+      <div class="prof-name">${p}</div>
+    </div>`).join('');
+
+  const strList = (Array.isArray(mbtiData.strengths)?mbtiData.strengths:[mbtiData.strengths]).map(s=>`<li>${s}</li>`).join('');
+
+  const html = `
+<h2 style="margin-top:0">📐 Holland 六维解析</h2>
+<div class="grid" style="margin-bottom:0">
+  <div class="card">
+    <h3>🏆 Top 3 维度</h3>
+    ${sorted.slice(0,3).map(([d,v])=>`
+    <div class="bar-wrap">
+      <div class="bar-label"><span><strong>${d}</strong></span><span>${v}%</span></div>
+      <div class="bar"><div class="bar-fill" style="width:${v}%;background:${col[d]}"></div></div>
+    </div>`).join('')}
+    <div style="margin-top:12px;">
+      <strong>代码：${top3}</strong> · ${profData.name}
+    </div>
+  </div>
+  <div class="card">
+    <h3>📊 完整六维</h3>
+    ${barSection}
+  </div>
+</div>
+
+<h2>🧠 MBTI ${mbtiType} · ${mbtiData.name}</h2>
+<div class="grid" style="margin-bottom:0">
+  <div class="card">
+    <h3>⚡ 四维解析</h3>
+    <div style="font-size:13px;">
+      <div class="bar-wrap"><div class="bar-label"><span>E/I · ${ei==='E'?'外向':'内向'}</span><span>${ei}</span></div><div class="bar"><div class="bar-fill" style="width:${ei==='E'?66:34}%;background:#8b5cf6"></div></div></div>
+      <div class="bar-wrap"><div class="bar-label"><span>S/N · ${sn==='S'?'实感':'直觉'}</span><span>${sn}</span></div><div class="bar"><div class="bar-fill" style="width:${sn==='S'?53:47}%;background:#64748b"></div></div></div>
+      <div class="bar-wrap"><div class="bar-label"><span>T/F · ${tf==='T'?'思考':'情感'}</span><span>${tf}</span></div><div class="bar"><div class="bar-fill" style="width:${tf==='T'?64:36}%;background:#6366f1"></div></div></div>
+      <div class="bar-wrap"><div class="bar-label"><span>J/P · ${jp==='J'?'判断':'知觉'}</span><span>${jp}</span></div><div class="bar"><div class="bar-fill" style="width:${jp==='P'?76:24}%;background:#ec4899"></div></div></div>
+    </div>
+  </div>
+  <div class="card">
+    <h3>✨ 优势 & ⚠️ 盲点</h3>
+    <ul>${strList}</ul>
+    <div class="warning-box" style="margin-top:8px;">⚠️ ${mbtiData.blindspot}</div>
+  </div>
+</div>
+
+<h2>🎯 专业方向推荐（Holland ${top3} × MBTI ${mbtiType}）</h2>
+<div class="prof-grid">${profCards}</div>
+
+<h2>💡 申请叙事建议</h2>
+<div class="card">
+  <div class="highlight-box">
+    <strong>${name}</strong> 是一个 <strong>${mbtiData.name}</strong>（${mbtiType}），
+    Holland 代码 <strong>${top3}</strong>。
+    ${mbtiData['叙事']}
+  </div>
+  <p style="font-size:13px;color:var(--text-dim);margin-top:10px;">
+    注：此为基于兴趣测评的通用叙事参考。完整的申请故事还需要结合真实经历、学术兴趣和家庭背景进行深度打磨。
+  </p>
+</div>
+
+<h2>📋 行动计划模板（G8-G10）</h2>
+<div class="grid">
+  <div class="card">
+    <h3>🎯 学术准备</h3>
+    <ul>
+      <li>IB HL 选科：与 ${top3} 代码对应的核心科目</li>
+      <li>建立与专业兴趣相关的阅读/项目档案</li>
+      <li>准备相关竞赛（数学/生物/化学方向）</li>
+    </ul>
+  </div>
+  <div class="card">
+    <h3>⚡ 能力建设</h3>
+    <ul>
+      <li>${mbtiData.blindspot} → 针对性训练</li>
+      <li>团队协作项目（对应 S=高）</li>
+      <li>长周期项目（对抗 P 型虎头蛇尾）</li>
+    </ul>
+  </div>
+</div>
+<div class="footer">
+  本报告由 IB Planning 职业兴趣报告生成器自动生成 · ${date}<br>
+  基于 Holland 职业兴趣理论 × MBTI 性格理论 · 仅供参考
+</div>`;
+
+  // Build full page
+  const fullReport = `
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>${name} · 职业兴趣报告 ${date}</title>
+<style>
+${document.querySelector('style').textContent}
+</style>
+</head>
+<body>
+<div style="max-width:860px;margin:0 auto;padding:24px 16px 60px">
+  <div class="report-header">
+    <h1>🧭 ${name} · 职业兴趣报告</h1>
+    <div class="meta">${grade ? grade + ' · ' : ''}${date} · Holland ${top3} × MBTI ${mbtiType}</div>
+  </div>
+  <div class="badge-row">
+    <div class="badge-card">
+      <div class="badge-big" style="color:#6366f1">${top3}</div>
+      <div class="badge-sub">Holland 代码 · ${profData.name}</div>
+      <div class="tags">${sorted.slice(0,3).map(([d])=>`<span class="tag ${tagCls[d]}">${d} ${holland[d]}%</span>`).join('')}</div>
+    </div>
+    <div class="badge-card">
+      <div class="badge-big" style="color:#10b981">${mbtiType}</div>
+      <div class="badge-sub">MBTI · ${mbtiData.name}</div>
+      <div class="tags">
+        <span class="tag tag-e">${ei}</span>
+        <span class="tag" style="background:rgba(100,116,139,.2);color:#cbd5e1">${sn}</span>
+        <span class="tag tag-i">${tf}</span>
+        <span class="tag tag-a">${jp}</span>
+      </div>
+    </div>
+  </div>
+  ${html}
+</div>
+</body>
+</html>`;
+
+  // Render inline
+  document.getElementById('reportPhase').innerHTML = `<div style="max-width:860px;margin:0 auto;padding:0 0 40px">
+    <div class="report-header">
+      <h1>🧭 ${name} · 职业兴趣报告</h1>
+      <div class="meta">${grade ? grade + ' · ' : ''}${date} · Holland ${top3} × MBTI ${mbtiType}</div>
+    </div>
+    <div class="badge-row">
+      <div class="badge-card">
+        <div class="badge-big" style="color:#6366f1">${top3}</div>
+        <div class="badge-sub">Holland 代码 · ${profData.name}</div>
+        <div class="tags">${sorted.slice(0,3).map(([d])=>`<span class="tag ${tagCls[d]}">${d} ${holland[d]}%</span>`).join('')}</div>
+      </div>
+      <div class="badge-card">
+        <div class="badge-big" style="color:#10b981">${mbtiType}</div>
+        <div class="badge-sub">MBTI · ${mbtiData.name}</div>
+        <div class="tags">
+          <span class="tag tag-e">${ei}</span>
+          <span class="tag" style="background:rgba(100,116,139,.2);color:#cbd5e1">${sn}</span>
+          <span class="tag tag-i">${tf}</span>
+          <span class="tag tag-a">${jp}</span>
+        </div>
+      </div>
+    </div>
+    ${html}
+    <div class="btn-row" style="margin-top:32px;max-width:500px;margin-left:auto;margin-right:auto;">
+      <button class="btn btn-secondary" onclick="window.print()">🖨️ 打印 / 另存PDF</button>
+      <button class="btn btn-primary" onclick="downloadReport()">📥 下载报告HTML</button>
+    </div>
+    <div class="btn-row" style="margin-top:12px;max-width:500px;margin-left:auto;margin-right:auto;">
+      <button class="btn btn-secondary" onclick="showInput()">🔄 重新填写</button>
+    </div>
+  </div>`;
+
+  document.getElementById('inputPhase').style.display = 'none';
+  document.getElementById('reportPhase').style.display = 'block';
+  window._reportHTML = fullReport;
+  window.scrollTo(0,0);
+}
+
+function showInput() {
+  document.getElementById('inputPhase').style.display = 'block';
+  document.getElementById('reportPhase').style.display = 'none';
+  window.scrollTo(0,0);
+}
+
+function downloadReport() {
+  const blob = new Blob([window._reportHTML], {type:'text/html'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = '职业兴趣报告.html';
+  a.click();
+}
+</script>
+</body>
+</html>
