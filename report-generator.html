@@ -130,6 +130,15 @@ li { font-size: 13px; color: var(--text-dim); margin-bottom: 4px; }
 
 #reportPhase .card { margin-bottom: 0; }
 
+.chip-btn {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 6px 12px; background: var(--bg-elev); border: 1px solid var(--border);
+  border-radius: 18px; font-size: 13px; cursor: pointer; user-select: none;
+  transition: all 0.15s; color: var(--text-dim);
+}
+.chip-btn:hover { border-color: var(--accent); color: var(--text); }
+.chip-btn.selected { background: rgba(99,102,241,0.2); border-color: var(--accent); color: #a5b4fc; font-weight: 600; }
+
 /* ── RESPONSIVE ── */
 @media (max-width: 600px) {
   .holland-grid { grid-template-columns: 1fr; }
@@ -255,6 +264,122 @@ li { font-size: 13px; color: var(--text-dim); margin-bottom: 4px; }
     </div>
   </div>
 
+  <!-- 兴趣地图（可选） -->
+  <div class="section" id="interestSection">
+    <div class="section-title" style="cursor:pointer;" onclick="toggleInterest()">
+      <span>🗺</span>兴趣地图（选填 · 让报告更个性化）
+      <span id="interestToggle" style="margin-left:auto;font-size:12px;color:var(--text-dim);">展开 ▼</span>
+    </div>
+    <div id="interestBody" style="display:none;">
+
+      <!-- ① 学术兴趣 -->
+      <div style="margin-bottom:16px;">
+        <label style="font-size:13px;font-weight:600;margin-bottom:6px;display:block;">① 学术兴趣 · 核心科目（多选）</label>
+        <div class="chips-wrap" id="chips-subjects" style="display:flex;flex-wrap:wrap;gap:6px;">
+          <div class="chip-btn" data-grp="subj" data-val="数学">📐 数学</div>
+          <div class="chip-btn" data-grp="subj" data-val="物理">⚛ 物理</div>
+          <div class="chip-btn" data-grp="subj" data-val="化学">🧪 化学</div>
+          <div class="chip-btn" data-grp="subj" data-val="生物">🧬 生物</div>
+          <div class="chip-btn" data-grp="subj" data-val="历史/地理">🌍 历史/地理</div>
+          <div class="chip-btn" data-grp="subj" data-val="语文/中文">📚 语文/中文</div>
+          <div class="chip-btn" data-grp="subj" data-val="英语/写作">✍ 英语/写作</div>
+          <div class="chip-btn" data-grp="subj" data-val="编程/CS">💻 编程/CS</div>
+          <div class="chip-btn" data-grp="subj" data-val="美术/设计">🎨 美术/设计</div>
+          <div class="chip-btn" data-grp="subj" data-val="音乐">🎵 音乐</div>
+          <div class="chip-btn" data-grp="subj" data-val="哲学/心理">🤔 哲学/心理</div>
+        </div>
+      </div>
+      <div style="margin-bottom:16px;">
+        <label style="font-size:12px;color:var(--text-dim);margin-bottom:5px;display:block;">① 自驱话题（写过什么/想过什么）</label>
+        <input type="text" id="imTopic" style="width:100%;background:var(--bg-elev);border:1px solid var(--border);border-radius:6px;color:var(--text);padding:8px 10px;font-size:13px;" placeholder="例如：动物行为、AI工具、股票、足球战术..." />
+      </div>
+      <div style="margin-bottom:16px;">
+        <label style="font-size:13px;font-weight:600;margin-bottom:6px;display:block;">① 最爱活动（多选）</label>
+        <div style="display:flex;flex-wrap:wrap;gap:6px;">
+          <div class="chip-btn" data-grp="act" data-val="看书/文章">📖 看书</div>
+          <div class="chip-btn" data-grp="act" data-val="看纪录片/视频">🎬 纪录片</div>
+          <div class="chip-btn" data-grp="act" data-val="做实验/探索">🔬 做实验</div>
+          <div class="chip-btn" data-grp="act" data-val="跟人讨论">🗣 讨论</div>
+          <div class="chip-btn" data-grp="act" data-val="动手做东西">🔧 动手</div>
+          <div class="chip-btn" data-grp="act" data-val="写东西/记东西">📝 写作</div>
+          <div class="chip-btn" data-grp="act" data-val="编程">💻 编程</div>
+          <div class="chip-btn" data-grp="act" data-val="运动">🏃 运动</div>
+          <div class="chip-btn" data-grp="act" data-val="桌游/棋类">🎲 桌游</div>
+        </div>
+      </div>
+
+      <!-- ② 动手/成就感 -->
+      <div style="margin-bottom:16px;">
+        <label style="font-size:13px;font-weight:600;margin-bottom:6px;display:block;">② 成就感偏好</label>
+        <div style="display:flex;gap:8px;">
+          <div class="chip-btn style="padding:7px 12px;border-radius:6px;" data-grp="workstyle" data-val="完整作品">🏆 做一个完整作品</div>
+          <div class="chip-btn" style="padding:7px 12px;border-radius:6px;" data-grp="workstyle" data-val="不断尝新">🔁 不断尝试新东西</div>
+        </div>
+      </div>
+
+      <!-- ③ 关心问题 -->
+      <div style="margin-bottom:16px;">
+        <label style="font-size:13px;font-weight:600;margin-bottom:6px;display:block;">③ 最想解决的问题（多选）</label>
+        <div style="display:flex;flex-wrap:wrap;gap:6px;">
+          <div class="chip-btn" data-grp="concern" data-val="环境/气候">🌱 环境/气候</div>
+          <div class="chip-btn" data-grp="concern" data-val="动物保护">🐾 动物保护</div>
+          <div class="chip-btn" data-grp="concern" data-val="教育不公平">📚 教育不公平</div>
+          <div class="chip-btn" data-grp="concern" data-val="心理/情绪">🧠 心理/情绪</div>
+          <div class="chip-btn" data-grp="concern" data-val="信息真假">🔍 信息真假</div>
+          <div class="chip-btn" data-grp="concern" data-val="健康/医疗">🏥 健康/医疗</div>
+          <div class="chip-btn" data-grp="concern" data-val="公平/歧视">⚖ 公平/歧视</div>
+          <div class="chip-btn" data-grp="concern" data-val="老人/孤独">👴 老人/孤独</div>
+        </div>
+      </div>
+      <div style="margin-bottom:16px;">
+        <label style="font-size:12px;color:var(--text-dim);margin-bottom:5px;display:block;">③ 看不惯的事</label>
+        <input type="text" id="imPetPeeve" style="width:100%;background:var(--bg-elev);border:1px solid var(--border);border-radius:6px;color:var(--text);padding:8px 10px;font-size:13px;" placeholder="让我觉得"这不对"的事情是..." />
+      </div>
+
+      <!-- ④ 工作方式 -->
+      <div style="margin-bottom:16px;">
+        <label style="font-size:13px;font-weight:600;margin-bottom:10px;display:block;">④ 工作方式</label>
+        <div style="display:grid;grid-template-columns:1fr;gap:10px;">
+          <div style="display:grid;grid-template-columns:80px 1fr 80px;gap:8px;align-items:center;">
+            <span style="font-size:12px;color:var(--text-dim);text-align:right;">独处</span>
+            <input type="range" id="slWork1" min="0" max="100" value="70" />
+            <span style="font-size:12px;color:var(--text-dim);">团队</span>
+          </div>
+          <div style="display:grid;grid-template-columns:80px 1fr 80px;gap:8px;align-items:center;">
+            <span style="font-size:12px;color:var(--text-dim);text-align:right;">深度</span>
+            <input type="range" id="slWork2" min="0" max="100" value="65" />
+            <span style="font-size:12px;color:var(--text-dim);">多线</span>
+          </div>
+          <div style="display:grid;grid-template-columns:80px 1fr 80px;gap:8px;align-items:center;">
+            <span style="font-size:12px;color:var(--text-dim);text-align:right;">规划</span>
+            <input type="range" id="slWork3" min="0" max="100" value="35" />
+            <span style="font-size:12px;color:var(--text-dim);">探索</span>
+          </div>
+          <div style="display:grid;grid-template-columns:80px 1fr 80px;gap:8px;align-items:center;">
+            <span style="font-size:12px;color:var(--text-dim);text-align:right;">说出来</span>
+            <input type="range" id="slWork4" min="0" max="100" value="75" />
+            <span style="font-size:12px;color:var(--text-dim);">自己想</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ⑤ 自我认知 -->
+      <div style="margin-bottom:4px;">
+        <label style="font-size:13px;font-weight:600;margin-bottom:6px;display:block;">⑤ 你是谁（1个词）</label>
+        <input type="text" id="imIdWord" style="width:100%;background:var(--bg-elev);border:1px solid var(--border);border-radius:6px;color:var(--text);padding:8px 10px;font-size:13px;" placeholder="例如：解题机器、社恐、创作者..." />
+      </div>
+      <div style="margin-bottom:4px;">
+        <label style="font-size:12px;color:var(--text-dim);margin-bottom:5px;display:block;">⑤ "我是那种会____的人"</label>
+        <input type="text" id="imIdSentence" style="width:100%;background:var(--bg-elev);border:1px solid var(--border);border-radius:6px;color:var(--text);padding:8px 10px;font-size:13px;" placeholder="我是那种会____的人" />
+      </div>
+      <div>
+        <label style="font-size:12px;color:var(--text-dim);margin-bottom:5px;display:block;">⑤ 如果肯定不会失败，我会做...</label>
+        <input type="text" id="imIfNotFail" style="width:100%;background:var(--bg-elev);border:1px solid var(--border);border-radius:6px;color:var(--text);padding:8px 10px;font-size:13px;" placeholder="如果肯定不会失败，我会..." />
+      </div>
+
+    </div>
+  </div>
+
   <!-- 按钮 -->
   <div class="btn-row">
     <button class="btn btn-secondary" onclick="resetForm()">🔄 重置</button>
@@ -272,6 +397,33 @@ li { font-size: 13px; color: var(--text-dim); margin-bottom: 4px; }
 const mbtiState = { EI: null, SN: null, TF: null, JP: null };
 
 // ── Init ───────────────────────────────────
+// Interest map chip buttons
+document.querySelectorAll('.chip-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const grp = btn.dataset.grp;
+    if (!window._imSelected) window._imSelected = {};
+    if (!window._imSelected[grp]) window._imSelected[grp] = [];
+    if (btn.classList.contains('selected')) {
+      btn.classList.remove('selected');
+      window._imSelected[grp] = window._imSelected[grp].filter(v => v !== btn.dataset.val);
+    } else {
+      btn.classList.add('selected');
+      window._imSelected[grp].push(btn.dataset.val);
+    }
+  });
+});
+
+function toggleInterest() {
+  const body = document.getElementById('interestBody');
+  const tog = document.getElementById('interestToggle');
+  if (body.style.display === 'none') {
+    body.style.display = 'block';
+    tog.textContent = '收起 ▲';
+  } else {
+    body.style.display = 'none';
+    tog.textContent = '展开 ▼';
+  }
+}
 document.getElementById('inputDate').value = new Date().toISOString().slice(0, 10);
 
 // ── Holland slider ───────────────────────────
@@ -303,6 +455,13 @@ function resetForm() {
   });
   document.getElementById('inputName').value = '';
   document.getElementById('inputGrade').value = '';
+  // Reset interest map
+  if (window._imSelected) { Object.keys(window._imSelected).forEach(k => delete window._imSelected[k]); }
+  document.querySelectorAll('.chip-btn').forEach(b => b.classList.remove('selected'));
+  ['imTopic','imPetPeeve','imIdWord','imIdSentence','imIfNotFail'].forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
+  ['slWork1','slWork2','slWork3','slWork4'].forEach((id,i) => { const el = document.getElementById(id); if (el) el.value = [70,65,35,75][i]; });
+  document.getElementById('interestBody').style.display = 'none';
+  document.getElementById('interestToggle').textContent = '展开 ▼';
 }
 
 // ── Holland data ────────────────────────────
@@ -402,7 +561,23 @@ function generate() {
   // MBTI
   const ei=mbtiState.EI||'?', sn=mbtiState.SN||'?', tf=mbtiState.TF||'?', jp=mbtiState.JP||'?';
   const mbtiType = ei+sn+tf+jp;
-  const mbtiData = MBTI_DESC[mbtiType] || { name:'待探索', strengths:['待发现'], blindspot:'需更多自我探索', '叙事':'完整的自我认知需要更多实践'] };
+  const mbtiData = MBTI_DESC[mbtiType] || { name:'待探索', strengths:['待发现'], blindspot:'需更多自我探索', '叙事':'完整的自我认知需要更多实践' };
+
+  // Interest map data
+  const imSubj = (window._imSelected && window._imSelected.subj) || [];
+  const imAct = (window._imSelected && window._imSelected.act) || [];
+  const imConcern = (window._imSelected && window._imSelected.concern) || [];
+  const imWorkStyle = (window._imSelected && window._imSelected.workstyle) || [];
+  const imTopic = document.getElementById('imTopic') ? document.getElementById('imTopic').value.trim() : '';
+  const imPetPeeve = document.getElementById('imPetPeeve') ? document.getElementById('imPetPeeve').value.trim() : '';
+  const imIdWord = document.getElementById('imIdWord') ? document.getElementById('imIdWord').value.trim() : '';
+  const imIdSentence = document.getElementById('imIdSentence') ? document.getElementById('imIdSentence').value.trim() : '';
+  const imIfNotFail = document.getElementById('imIfNotFail') ? document.getElementById('imIfNotFail').value.trim() : '';
+  const slW1 = document.getElementById('slWork1') ? document.getElementById('slWork1').value : 70;
+  const slW2 = document.getElementById('slWork2') ? document.getElementById('slWork2').value : 65;
+  const slW3 = document.getElementById('slWork3') ? document.getElementById('slWork3').value : 35;
+  const slW4 = document.getElementById('slWork4') ? document.getElementById('slWork4').value : 75;
+  const hasIM = imSubj.length > 0 || imIdWord || imConcern.length > 0 || imAct.length > 0;
 
   // Color map
   const col = { I:'#6366f1', S:'#10b981', R:'#f59e0b', A:'#ec4899', E:'#8b5cf6', C:'#64748b' };
@@ -465,6 +640,36 @@ function generate() {
   </div>
 </div>
 
+<h2>🧭 兴趣地图（选填）</h2>
+<div class="grid" style="margin-bottom:0">
+  <div class="card">
+    <h3>📐 学术核心</h3>
+    ${imSubj.length ? imSubj.map(s=>`<span class="pill">${s}</span>`).join('') : '<span style="font-size:13px;color:var(--text-dim)">未填写</span>'}
+    ${imTopic ? `<p style="font-size:12px;color:var(--text-dim);margin-top:8px;">自驱话题：<strong style="color:var(--text)">${imTopic}</strong></p>` : ''}
+    ${imAct.length ? `<p style="font-size:12px;color:var(--text-dim);margin-top:8px;">最爱活动：${imAct.map(a=>`<span class="pill">${a}</span>`).join('')}</p>` : ''}
+  </div>
+  <div class="card">
+    <h3>⚡ 工作方式</h3>
+    <div class="bar-wrap"><div class="bar-label"><span>团队 ←→ 独处</span><span>${slW1}</span></div><div class="bar"><div class="bar-fill" style="width:${slW1}%;background:#10b981"></div></div></div>
+    <div class="bar-wrap"><div class="bar-label"><span>深度 ←→ 多线</span><span>${slW2}</span></div><div class="bar"><div class="bar-fill" style="width:${slW2}%;background:#f59e0b"></div></div></div>
+    <div class="bar-wrap"><div class="bar-label"><span>探索 ←→ 规划</span><span>${slW3}</span></div><div class="bar"><div class="bar-fill" style="width:${slW3}%;background:#ec4899"></div></div></div>
+    <div class="bar-wrap"><div class="bar-label"><span>说出来 ←→ 自己想</span><span>${slW4}</span></div><div class="bar"><div class="bar-fill" style="width:${slW4}%;background:#6366f1"></div></div></div>
+  </div>
+</div>
+${imConcern.length || imPetPeeve ? `
+<div class="highlight-box" style="border-left-color:#10b981;">
+  <strong>③ 关心的问题：</strong>${imConcern.length ? imConcern.map(c=>`<span class="pill">${c}</span>`).join(' ') : ''}
+  ${imPetPeeve ? `<p style="margin-top:6px;font-size:12px;">看不惯的事：${imPetPeeve}</p>` : ''}
+</div>` : ''}
+${imIdWord || imIdSentence ? `
+<div class="highlight-box" style="border-left-color:#f59e0b;">
+  <strong>⑤ 自我认知</strong><br>
+  ${imIdWord ? `1个词：<strong>${imIdWord}</strong><br>` : ''}
+  ${imIdSentence ? `"我是那种会 <strong>${imIdSentence}</strong> 的人"` : ''}
+  ${imIfNotFail ? `<br><span style="font-size:12px;">如果肯定不会失败：<strong>${imIfNotFail}</strong></span>` : ''}
+</div>` : ''}
+${imWorkStyle.length ? `<p style="font-size:13px;color:var(--text-dim);margin-top:8px;">成就感偏好：<span class="pill">${imWorkStyle.join(' / ')}</span></p>` : ''}
+
 <h2>🎯 专业方向推荐（Holland ${top3} × MBTI ${mbtiType}）</h2>
 <div class="prof-grid">${profCards}</div>
 
@@ -474,6 +679,9 @@ function generate() {
     <strong>${name}</strong> 是一个 <strong>${mbtiData.name}</strong>（${mbtiType}），
     Holland 代码 <strong>${top3}</strong>。
     ${mbtiData['叙事']}
+    ${imIdWord ? `<br><br>兴趣地图揭示：${name} 用一个词形容自己是 <strong>「${imIdWord}」</strong>。${imIdSentence ? `—— ${name} 是那种会 <strong>${imIdSentence}</strong> 的人。` : ''}` : ''}
+    ${imConcern.length ? `<br>${name} 最想解决的是 <strong>${imConcern.slice(0,2).join('、')}</strong> 问题。` : ''}
+    ${imSubj.length ? `<br>学术上最感兴趣的是 <strong>${imSubj.slice(0,3).join('、')}</strong>。` : ''}
   </div>
   <p style="font-size:13px;color:var(--text-dim);margin-top:10px;">
     注：此为基于兴趣测评的通用叙事参考。完整的申请故事还需要结合真实经历、学术兴趣和家庭背景进行深度打磨。
