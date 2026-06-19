@@ -505,22 +505,22 @@ const HOLLAND_PROFS = {
 };
 
 const MBTI_DESC = {
-  INTJ: { name:'建筑师', strengths:['战略思维','独立工作','高标准'], blindspot:'社交不足','叙事':'改变世界的宏大蓝图'] },
-  INTP: { name:'逻辑学家', strengths:['深度分析','创新','逻辑'], blindspot:'执行落地差','叙事':'追求真理的思考者'] },
-  ENTJ: { name:'指挥官', strengths:['战略','决策力','领导力'], blindspot:'缺乏耐心','叙事':'改变现状的商业领袖'] },
-  ENTP: { name:'辩论家', strengths:['创意','谈判','适应力'], blindspot:'虎头蛇尾','叙事':'打破常规的创新者'] },
-  INFJ: { name:'提倡者', strengths:['洞察力','同理心','使命驱动'], blindspot:'自我牺牲','叙事':'用理想改变世界'] },
-  INFP: { name:'调停者', strengths:['创造力','同理心','价值观坚定'], blindspot:'逃避现实','叙事':'守护内心价值观的梦想家'] },
-  ENFJ: { name:'主人公', strengths:['领导力','感染力','使命感'], blindspot:'过度理想化','叙事':'激励他人共同行动的领袖'] },
-  ENFP: { name:'竞选者', strengths:['热情','创意','社交'], blindspot:'难以专注','叙事':'点燃他人热情的行动家'] },
-  ISTJ: { name:'物流师', strengths:['责任心','可靠','执行力'], blindspot:'抗拒变化','叙事':'默默扛起责任的中坚力量'] },
-  ISFJ: { name:'守护者', strengths:['关怀','可靠','细致'], blindspot:'忽视自我','叙事':'用行动守护重要的人'] },
-  ESTJ: { name:'总经理', strengths:['管理','执行','正直'], blindspot:'缺乏灵活','叙事':'建立秩序的务实管理者'] },
-  ESFJ: { name:'执政官', strengths:['关怀','社交','责任感'], blindspot:'从众压力','叙事':'让身边人生活更好的照顾者'] },
-  ISTP: { name:'鉴赏家', strengths:['动手','冷静','解决问题'], blindspot:'长期规划弱','叙事':'用双手解决真实问题的高手'] },
-  ISFP: { name:'探险家', strengths:['审美','灵活','行动力'], blindspot:'目标模糊','叙事':'活在当下、追求真实体验的艺术家'] },
-  ESTP: { name:'企业家', strengths:['行动','应变','务实'], blindspot:'冲动欠计划','叙事':'在现实中创造价值的企业家'] },
-  ESFP: { name:'表演者', strengths:['社交','热情','创意'], blindspot:'难以独处','叙事':'用活力感染周围的人'] }
+  INTJ: { name:'建筑师', strengths:['战略思维','独立工作','高标准'], blindspot:'社交不足', '叙事':'改变世界的宏大蓝图' },
+  INTP: { name:'逻辑学家', strengths:['深度分析','创新','逻辑'], blindspot:'执行落地差', '叙事':'追求真理的思考者' },
+  ENTJ: { name:'指挥官', strengths:['战略','决策力','领导力'], blindspot:'缺乏耐心', '叙事':'改变现状的商业领袖' },
+  ENTP: { name:'辩论家', strengths:['创意','谈判','适应力'], blindspot:'虎头蛇尾', '叙事':'打破常规的创新者' },
+  INFJ: { name:'提倡者', strengths:['洞察力','同理心','使命驱动'], blindspot:'自我牺牲', '叙事':'用理想改变世界' },
+  INFP: { name:'调停者', strengths:['创造力','同理心','价值观坚定'], blindspot:'逃避现实', '叙事':'守护内心价值观的梦想家' },
+  ENFJ: { name:'主人公', strengths:['领导力','感染力','使命感'], blindspot:'过度理想化', '叙事':'激励他人共同行动的领袖' },
+  ENFP: { name:'竞选者', strengths:['热情','创意','社交'], blindspot:'难以专注', '叙事':'点燃他人热情的行动家' },
+  ISTJ: { name:'物流师', strengths:['责任心','可靠','执行力'], blindspot:'抗拒变化', '叙事':'默默扛起责任的中坚力量' },
+  ISFJ: { name:'守护者', strengths:['关怀','可靠','细致'], blindspot:'忽视自我', '叙事':'用行动守护重要的人' },
+  ESTJ: { name:'总经理', strengths:['管理','执行','正直'], blindspot:'缺乏灵活', '叙事':'建立秩序的务实管理者' },
+  ESFJ: { name:'执政官', strengths:['关怀','社交','责任感'], blindspot:'从众压力', '叙事':'让身边人生活更好的照顾者' },
+  ISTP: { name:'鉴赏家', strengths:['动手','冷静','解决问题'], blindspot:'长期规划弱', '叙事':'用双手解决真实问题的高手' },
+  ISFP: { name:'探险家', strengths:['审美','灵活','行动力'], blindspot:'目标模糊', '叙事':'活在当下、追求真实体验的艺术家' },
+  ESTP: { name:'企业家', strengths:['行动','应变','务实'], blindspot:'冲动欠计划', '叙事':'在现实中创造价值的企业家' },
+  ESFP: { name:'表演者', strengths:['社交','热情','创意'], blindspot:'难以独处', '叙事':'用活力感染周围的人' }
 };
 
 // ── Generate ────────────────────────────────
@@ -538,7 +538,7 @@ function generate() {
   // MBTI
   const ei=mbtiState.EI||'?', sn=mbtiState.SN||'?', tf=mbtiState.TF||'?', jp=mbtiState.JP||'?';
   const mbtiType = ei+sn+tf+jp;
-  const mbtiData = MBTI_DESC[mbtiType] || { name:'待探索', strengths:['待发现'], blindspot:'需更多自我探索', '叙事':'完整的自我认知需要更多实践'] };
+  const mbtiData = MBTI_DESC[mbtiType] || { name:'待探索', strengths:['待发现'], blindspot:'需更多自我探索', '叙事':'完整的自我认知需要更多实践' };
 
   // Interest map data
   const im = (grp) => (window._imSelected && window._imSelected[grp]) || [];
