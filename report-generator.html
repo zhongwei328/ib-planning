@@ -372,6 +372,35 @@ const mbtiState = { EI: null, SN: null, TF: null, JP: null };
 // ── Init ───────────────────────────────────
 document.getElementById('inputDate').value = new Date().toISOString().slice(0, 10);
 
+// ── Interest map init ──────────────────────
+window._imSelected = {};
+document.querySelectorAll('.chip-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const grp = btn.dataset.grp || '';
+    const val = btn.dataset.val || '';
+    if (!window._imSelected[grp]) window._imSelected[grp] = [];
+    if (btn.classList.contains('selected')) {
+      btn.classList.remove('selected');
+      window._imSelected[grp] = window._imSelected[grp].filter(v => v !== val);
+    } else {
+      btn.classList.add('selected');
+      window._imSelected[grp].push(val);
+    }
+  });
+});
+function toggleInterest() {
+  const body = document.getElementById('interestBody');
+  const tog = document.getElementById('interestToggle');
+  if (!body || !tog) return;
+  if (body.style.display === 'none' || body.style.display === '') {
+    body.style.display = 'block';
+    tog.textContent = '收起 ▲';
+  } else {
+    body.style.display = 'none';
+    tog.textContent = '展开 ▼';
+  }
+}
+
 // ── Holland slider ───────────────────────────
 function updatePct(dim, val) {
   document.getElementById('pct' + dim).textContent = val + '%';
@@ -401,6 +430,15 @@ function resetForm() {
   });
   document.getElementById('inputName').value = '';
   document.getElementById('inputGrade').value = '';
+  // Reset interest map
+  window._imSelected = {};
+  document.querySelectorAll('.chip-btn').forEach(b => b.classList.remove('selected'));
+  ['imTopic','imPetPeeve','imIdWord','imIdSentence','imIfNotFail'].forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
+  ['slWork1','slWork2','slWork3','slWork4'].forEach((id,i) => { const el = document.getElementById(id); if (el) el.value = [70,65,35,75][i]; });
+  const ib = document.getElementById('interestBody');
+  const it = document.getElementById('interestToggle');
+  if (ib) ib.style.display = 'none';
+  if (it) it.textContent = '展开 ▼';
 }
 
 // ── Holland data ────────────────────────────
@@ -502,6 +540,23 @@ function generate() {
   const mbtiType = ei+sn+tf+jp;
   const mbtiData = MBTI_DESC[mbtiType] || { name:'待探索', strengths:['待发现'], blindspot:'需更多自我探索', '叙事':'完整的自我认知需要更多实践'] };
 
+  // Interest map data
+  const im = (grp) => (window._imSelected && window._imSelected[grp]) || [];
+  const imSubj = im('subj');
+  const imAct = im('act');
+  const imConcern = im('concern');
+  const imWorkStyle = im('workstyle');
+  const imTopic = (document.getElementById('imTopic')||{}).value.trim() || '';
+  const imPetPeeve = (document.getElementById('imPetPeeve')||{}).value.trim() || '';
+  const imIdWord = (document.getElementById('imIdWord')||{}).value.trim() || '';
+  const imIdSentence = (document.getElementById('imIdSentence')||{}).value.trim() || '';
+  const imIfNotFail = (document.getElementById('imIfNotFail')||{}).value.trim() || '';
+  const slW1 = parseInt((document.getElementById('slWork1')||{}).value) || 70;
+  const slW2 = parseInt((document.getElementById('slWork2')||{}).value) || 65;
+  const slW3 = parseInt((document.getElementById('slWork3')||{}).value) || 35;
+  const slW4 = parseInt((document.getElementById('slWork4')||{}).value) || 75;
+  const hasIM = imSubj.length > 0 || imAct.length > 0 || imConcern.length > 0 || imIdWord || imTopic || imIdSentence || imIfNotFail;
+
   // Color map
   const col = { I:'#6366f1', S:'#10b981', R:'#f59e0b', A:'#ec4899', E:'#8b5cf6', C:'#64748b' };
   const tagCls = { I:'tag-i', S:'tag-s', R:'tag-r', A:'tag-a', E:'tag-e', C:'tag-c' };
@@ -563,6 +618,47 @@ function generate() {
   </div>
 </div>
 
+<h2>🧭 兴趣地图（选填）</h2>
+<div class="grid" style="margin-bottom:0">
+  <div class="card">
+    <h3>📐 学术核心</h3>
+    ${imSubj.length > 0 ? imSubj.map(s=>`<span class="pill">${s}</span>`).join('') : '<span style="color:var(--text-dim);font-size:13px">未填写</span>'}
+    ${imTopic ? `<div style="margin-top:8px;font-size:13px;color:var(--text-dim)">📝 自驱话题：<strong style="color:var(--text)">${imTopic}</strong></div>` : ''}
+  </div>
+  <div class="card">
+    <h3>⚡ 行动偏好</h3>
+    ${imAct.length > 0 ? imAct.map(a=>`<span class="pill">${a}</span>`).join('') : '<span style="color:var(--text-dim);font-size:13px">未填写</span>'}
+    ${imWorkStyle.length > 0 ? `<div style="margin-top:8px;font-size:13px">${imWorkStyle.map(w=>`<span class="pill">${w}</span>`).join('')}</div>` : ''}
+  </div>
+</div>
+${hasIM ? `
+<div class="grid" style="margin-bottom:0">
+  <div class="card">
+    <h3>🌍 关心议题</h3>
+    ${imConcern.length > 0 ? imConcern.map(c=>`<span class="pill">${c}</span>`).join('') : '<span style="color:var(--text-dim);font-size:13px">未填写</span>'}
+    ${imPetPeeve ? `<div style="margin-top:8px;font-size:13px;color:var(--text-dim)">💢 看不惯：<strong style="color:var(--text)">${imPetPeeve}</strong></div>` : ''}
+  </div>
+  <div class="card">
+    <h3>🔧 工作方式</h3>
+    <div style="font-size:12px;color:var(--text-dim)">团队 ↔ 独处</div>
+    <div class="bar"><div class="bar-fill" style="width:${slW1}%;background:#8b5cf6"></div></div>
+    <div style="font-size:12px;color:var(--text-dim);margin-top:4px">深度 ↔ 多线</div>
+    <div class="bar"><div class="bar-fill" style="width:${slW2}%;background:#10b981"></div></div>
+    <div style="font-size:12px;color:var(--text-dim);margin-top:4px">规划 ↔ 探索</div>
+    <div class="bar"><div class="bar-fill" style="width:${slW3}%;background:#f59e0b"></div></div>
+    <div style="font-size:12px;color:var(--text-dim);margin-top:4px">说出来 ↔ 自己想</div>
+    <div class="bar"><div class="bar-fill" style="width:${slW4}%;background:#ec4899"></div></div>
+  </div>
+</div>
+${(imIdWord || imIdSentence || imIfNotFail) ? `
+<div class="card" style="margin-bottom:0">
+  <h3>✨ 自我认知</h3>
+  ${imIdWord ? `<div style="margin-bottom:6px"><span style="font-size:13px;color:var(--text-dim)">一个词：</span><strong>${imIdWord}</strong></div>` : ''}
+  ${imIdSentence ? `<div style="margin-bottom:6px"><span style="font-size:13px;color:var(--text-dim)">我是那种会 </span><strong>${imIdSentence}</strong> <span style="font-size:13px;color:var(--text-dim)"> 的人</span></div>` : ''}
+  ${imIfNotFail ? `<div style="margin-bottom:0"><span style="font-size:13px;color:var(--text-dim)">如果不会失败，我想 </span><strong>${imIfNotFail}</strong></div>` : ''}
+</div>` : ''}
+` : ''}
+
 <h2>🎯 专业方向推荐（Holland ${top3} × MBTI ${mbtiType}）</h2>
 <div class="prof-grid">${profCards}</div>
 
@@ -572,6 +668,9 @@ function generate() {
     <strong>${name}</strong> 是一个 <strong>${mbtiData.name}</strong>（${mbtiType}），
     Holland 代码 <strong>${top3}</strong>。
     ${mbtiData['叙事']}
+    ${imIdWord ? `<br><br>他用「<strong>${imIdWord}</strong>」这个词定义自己。` : ''}
+    ${imTopic ? `<br>在学术上，他自驱探索过 <strong>${imTopic}</strong>。` : ''}
+    ${imConcern.length > 0 ? `<br>他关心 <strong>${imConcern.slice(0,2).join('、')}</strong> 等议题。` : ''}
   </div>
   <p style="font-size:13px;color:var(--text-dim);margin-top:10px;">
     注：此为基于兴趣测评的通用叙事参考。完整的申请故事还需要结合真实经历、学术兴趣和家庭背景进行深度打磨。
